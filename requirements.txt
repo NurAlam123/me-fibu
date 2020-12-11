@@ -1,0 +1,5 @@
+discord
+urllib3
+translators
+wikipedia
+covid19-data
