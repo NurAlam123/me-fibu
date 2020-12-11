@@ -20,6 +20,7 @@ bot.remove_command("help")
 
 @bot.event
 async def on_ready():
+  await bot.change_presence(activity=discord.Game(name="!fibu help | Fibu | Programming Hero"))
 	print(f"Logged in as {bot.user}")
 #ping
 @bot.command()
