@@ -79,6 +79,7 @@ class Command(c.Cog):
 			await ctx.message.add_reaction("❌")
 			msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search search_word ```")
 			await ctx.send(embed=msg)
+
 #translate			
 	@c.command(aliases=["translate"])
 	async def ts(self,ctx,lang,*,text):
