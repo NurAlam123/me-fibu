@@ -56,7 +56,8 @@ class Info(commands.Cog):
 							timestamp=time.now(), 
 							description=f"```{guild}```")
 				msg.set_thumbnail(url=f"{ctx.guild.icon_url}")
-				msg.add_field(name="Region",value=f"{guild.region.title()}")
+				region = guild.region
+				msg.add_field(name="Region",value=f"{region.title()}")
 				msg.add_field(name="Owner",value=owner)
 				msg.add_field(name="Members",value=f"{guild.member_count}")
 				msg.add_field(name="Bots",value=bots)
