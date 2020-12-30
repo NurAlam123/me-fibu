@@ -19,10 +19,7 @@ class Abuse(commands.Cog):
   @commands.Cog.listener("on_message")
   async def message(self,msg):
     user = msg.author.id
-    try:
-    	server = msg.guild.id
-    except:
-    	pass
+    server = msg.guild.id
     fetch_warns = c_fibu.execute("select warnings from warnings where guild_id=? and user_id=?",(server,user,)).fetchone()
 
     if fetch_warns is None:
