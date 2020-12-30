@@ -17,9 +17,9 @@ class Abuse(commands.Cog):
   warns = 0
   
   @commands.Cog.listener("on_message")
-  async def message(self,msg):
-    user = msg.author.id
-    server = msg.guild.id
+  async def message(self,message):
+    user = message.author.id
+    server = message.guild.id
     fetch_warns = c_fibu.execute("select warnings from warnings where guild_id=? and user_id=?",(server,user,)).fetchone()
 
     if fetch_warns is None:
@@ -33,10 +33,10 @@ class Abuse(commands.Cog):
     words = c_fibu.execute("select * from abuse_words").fetchall()
     words = [i[0] for i in words]
     for word in words:
-      if word.lower() in msg.content.lower().split():
-        await msg.delete()
+      if word.lower() in message.content.lower().split():
+        await message.delete()
         self.warns+=1
-        await msg.author.send(f"Hey, {msg.author.mention}!\nYou have been warned for using bad words from {msg.guild}\nWarnings no: {self.warns}")
+        await message.author.send(f"Hey, {message.author.mention}!\nYou have been warned for using bad words from {message.guild}\nWarnings no: {self.warns}")
         
         c_fibu.execute("update warnings set warnings=? where guild_id=? and user_id=?",(self.warns,server,user,))
         con_fibu.commit()
@@ -45,11 +45,11 @@ class Abuse(commands.Cog):
         c_fibu.execute("update warnings set warnings=0 where guild_id=? and user_id=?",(server,user,))
         con_fibu.commit()
         try:
-          await msg.author.send(f"{msg.author.mention}!! You have banned from {msg.guild} for using bad words!")
+          await message.author.send(f"{message.author.mention}!! You have banned from {message.guild} for using bad words!")
         except:
           pass
         await asyncio.sleep(2)
-        await msg.guild.ban(msg.author,reason="For using bad words")
+        await message.guild.ban(message.author,reason="For using bad words")
 
 #add abuse word				
   @commands.command()
