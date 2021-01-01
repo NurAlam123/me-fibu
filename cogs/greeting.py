@@ -30,8 +30,11 @@ class Greeting(commands.Cog):
 			await ctx.send(f"Check DM {ctx.author.mention}")
 			await ctx.author.send(f"Hey {ctx.author.mention}!")
 		else:
-			await ctx.send(f"Check DM {member.mention}")
-			await member.send(f"Hey {member.mention}!")
+			if member.id == self.client.id:
+				pass
+			else:
+				await ctx.send(f"Check DM {member.mention}")
+				await member.send(f"Hey {member.mention}!")
 	
 	@commands.Cog.listener("on_message")
 	async def message(self,msg):

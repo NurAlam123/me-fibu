@@ -25,7 +25,7 @@ async def on_ready():
 #ping
 @bot.command()
 async def ping(ctx):
-	msg = discord.Embed(title="Pong 🏓", description=f"{round(bot.latency*1000)} _ms_!")
+	msg = discord.Embed(title="Pong 🏓", description=f"{round(bot.latency*1000)} _ms_!",color=0xffdf08)
 	await ctx.send(embed=msg)
 
 #cogs
