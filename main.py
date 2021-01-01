@@ -7,6 +7,8 @@ import asyncio
 
 token = os.getenv("TOKEN")
 
+dev = [680360098836906004,728260210464129075,664550550527803405,693375549686415381,555452986885668886]
+
 prefix_file = open("prefix.txt","r")
 prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
 
@@ -29,8 +31,10 @@ async def ping(ctx):
 	await ctx.send(embed=msg)
 
 #cogs
+
 @bot.command()
 async def on(ctx,file):
+	if ctx.author.id in dev:
 		try:
 			for files in os.listdir("./cogs"):
 				if files==file+".py":
@@ -38,10 +42,16 @@ async def on(ctx,file):
 					await ctx.send(f"{file} loaded!")
 		except:
 			await ctx.send(f"{file} is already loaded!")
+	else:
+		await ctx.send(f"You haven't any permission to do that!!")
 @bot.command()
 async def off(ctx,file):
-		bot.unload_extension(f"cogs.{file}")
-		await ctx.send(f"{file} unloaded!")
+		if ctx.author.id in dev:
+			bot.unload_extension(f"cogs.{file}")
+			await ctx.send(f"{file} unloaded!")
+		else:
+			await ctx.send(f"You haven't any permission to do that!!")
+			
 
 for files in os.listdir("./cogs"):
 		if files.endswith(".py"):
