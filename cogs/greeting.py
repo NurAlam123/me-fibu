@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import get
 
 class Greeting(commands.Cog):
 	def __init__(self, client):
@@ -7,7 +8,16 @@ class Greeting(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_join(self,member):
-		await member.send(f"Hello {member.mention}! Welcome to **{member.guild}** server.\nI am Fibu. Your friend and a friendly bot. I am from Programming Hero.🙂\nMy prefix is ```!fibu ```")
+		await member.send(f"Hello {member.mention}! Welcome to **{member.guild}** server.\nI am Fibu. Your friend and a friendly bot. I am from Programming Hero.🙂\nMy prefix is ```!fibu ```\nFor help type ```!fibu help```")
+		channel = member.guild.system_channel
+		if channel is None:
+			channel = get(member.guild.channels,name="general")
+			if channel is None:
+				pass
+			else:
+				await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+		else:
+			await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
 	
 	@commands.command()
 	async def hello(self,ctx):
@@ -28,7 +38,7 @@ class Greeting(commands.Cog):
 		if msg.content.lower() == "!fibu thank you":
 			await msg.add_reaction("❤️")
 		if msg.content.lower()=="!fibu ok":
-			await msg.add_reaction("👌")#
+			await msg.add_reaction("👌")
 		if msg.content.lower() == "!fibu sorry":
 			await msg.add_reaction("🙂")
 			await msg.channel.send("Ok... I forgive you. But don't repeat it again!")
