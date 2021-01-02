@@ -35,6 +35,7 @@ class Help(commands.Cog):
 						timestamp=time.now())
 			msg.add_field(name='```!fibu math equation```',
 						value='Get the result of your math equation. i.e: **!fibu math 2+2**')
+			msg.add_field(name='```!fibu quote```', value="Get a random quote")
 						
 			#msg.add_field(name='```!fibu wiki search search_word```',
 #						value='Search any details on wikipedia')
