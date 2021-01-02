@@ -97,7 +97,7 @@ class Command(c.Cog):
 	@c.command()
 	async def echo(self,ctx, channel: discord.TextChannel,*,msg):
 		await channel.send(msg)
-		await ctx.delete()
+		await ctx.message.delete()
 		
 		
 def setup(bot):
