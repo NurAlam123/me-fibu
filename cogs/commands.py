@@ -5,6 +5,7 @@ import wikipedia as wiki
 import covid19_data
 import urllib.parse,urllib.request,re
 import translators as trans
+import requests,json
 import asyncio
 
 class Command(c.Cog):
@@ -98,6 +99,15 @@ class Command(c.Cog):
 	async def echo(self,ctx, channel: discord.TextChannel,*,msg):
 		await channel.send(msg)
 		await ctx.message.delete()
+
+#quotes
+	@c.command()
+	async def quote(self, ctx):
+		url = "https://api.quotable.io/random"
+		send_req = requests.get(url)
+		quote_msg = send_req.json()["content"]
+		quote_author = send_req.json()["author"]
+		await ctx.send(f">>> {quote_msg}\n - by *{quote_author}*")
 		
 		
 def setup(bot):
