@@ -92,9 +92,12 @@ class Command(c.Cog):
 			msg.add_field(name="Word",value=f"{text.capitalize()}")
 			msg.add_field(name="Translation",value=f"{translation}")
 			await ctx.send(embed=msg)
+
+#echo
 	@c.command()
 	async def echo(self,ctx, channel: discord.TextChannel,*,msg):
 		await channel.send(msg)
+		await ctx.delete()
 		
 		
 def setup(bot):
