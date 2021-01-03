@@ -1,12 +1,7 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands as c
-import wikipedia as wiki
 import covid19_data
-import urllib.parse,urllib.request,re
-import translators as trans
-import requests,json
-import asyncio, typing
 
 class Corona(c.Cog):
 	def __init__(self,client):
