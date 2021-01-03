@@ -1,7 +1,11 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands as c
-import wikiquote as q
+import pip
+try:
+	import wikiquote as q
+except:
+	pip.main(["install","wikiquote"])
 import asyncio, typing, random
 
 class Command(c.Cog):
@@ -54,10 +58,12 @@ class Command(c.Cog):
 			quote_text= random.choice(q.quotes(random_q))
 			await ctx.send(f">>> {quote_text}\n	- *{random_q}*")
 		else:
-			search = q.search(arg)[0]
-			quote = random.choice(q.quotes(search))
-			await ctx.send(f">>> {quote_text}\n	- *{search}*")
-			
+			try:
+				search = q.search(arg)[0]
+				quote = random.choice(q.quotes(search))
+				await ctx.send(f">>> {quote}\n	- *{search}*")
+			except:
+				pass
 		
 		
 		
