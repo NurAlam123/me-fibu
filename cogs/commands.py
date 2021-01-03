@@ -56,7 +56,7 @@ class Command(c.Cog):
 		else:
 			search = q.search(arg)[0]
 			quote = random.choice(q.quotes(search))
-			await ctx.send(f">>> {quote_text}\n	- *{search}*)
+			await ctx.send(f">>> {quote_text}\n	- *{search}*")
 			
 		
 		
