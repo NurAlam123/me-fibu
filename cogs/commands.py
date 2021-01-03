@@ -6,7 +6,7 @@ import covid19_data
 import urllib.parse,urllib.request,re
 import translators as trans
 import requests,json
-import asyncio
+import asyncio, typing
 
 class Command(c.Cog):
 	def __init__(self,client):
@@ -96,9 +96,13 @@ class Command(c.Cog):
 
 #echo
 	@c.command()
-	async def echo(self,ctx, channel: discord.TextChannel,*,msg):
-		await channel.send(msg)
-		await ctx.message.delete()
+	async def echo(self,ctx, channel: typing.Optional[discord.TextChannel]=None,*,msg):
+		if channel==None:
+			await ctx.message.delete()
+			await ctx.send(msg)
+		else:
+			await ctx.message.delete()
+			await channel.send(msg)
 
 #quotes
 	@c.command()
