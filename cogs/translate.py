@@ -1,4 +1,4 @@
- import discord
+import discord
 from datetime import datetime as time
 from discord.ext import commands as c
 import translators as trans
