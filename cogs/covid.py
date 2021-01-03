@@ -8,7 +8,7 @@ import translators as trans
 import requests,json
 import asyncio, typing
 
-class Command(c.Cog):
+class Corona(c.Cog):
 	def __init__(self,client):
 		self.client = client
 
@@ -34,3 +34,7 @@ class Command(c.Cog):
 			msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
 			msg.set_footer(text="Programming Hero ")
 			await ctx.send(embed=msg)
+
+			
+def setup(bot):
+	bot.add_cog(Corona(bot))
