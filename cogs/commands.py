@@ -41,7 +41,7 @@ class Command(c.Cog):
 			await ctx.send(embed=msg)
 
 #covid19	
-	@c.command()
+	"""@c.command()
 	async def covid(self,ctx,*,country_name="total"):
 			try:
 				country = covid19_data.dataByName(country_name)
@@ -61,7 +61,7 @@ class Command(c.Cog):
 			msg.set_thumbnail(url="https://is.gd/TTTW35")
 			msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
 			msg.set_footer(text="Programming Hero ")
-			await ctx.send(embed=msg)
+			await ctx.send(embed=msg)"""
 #youtube
 	@c.group(aliases=["youtube","utube"],case_insensitive=True)
 	async def yt(slef,ctx):
