@@ -96,7 +96,7 @@ class Help(commands.Cog):
 					value='```!fibu help info```')
 			help_msg.add_field(name='Others', 	
 					value='```!fibu help others```')
-			help_msg.set_author(name=f'{client.user.name}',icon_url=f'{client.user.avatar_url}')
+			help_msg.set_author(name=f'{self.client.user.name}',icon_url=f'{self.client.user.avatar_url}')
 			help_msg.set_footer(text='Programming Hero ')
 			await ctx.send(embed = help_msg)
 
