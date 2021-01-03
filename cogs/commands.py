@@ -79,7 +79,7 @@ class Command(c.Cog):
 		except:
 			await ctx.message.add_reaction("❌")
 			msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search search_word ```")
-			await ctx.send(embed=msg)"""
+			await ctx.send(embed=msg)
 
 #translate			
 	@c.command(aliases=["translate"])
@@ -92,7 +92,7 @@ class Command(c.Cog):
 			msg = discord.Embed(title="Translator", color=0xffdf08)
 			msg.add_field(name="Word",value=f"{text.capitalize()}")
 			msg.add_field(name="Translation",value=f"{translation}")
-			await ctx.send(embed=msg)
+			await ctx.send(embed=msg)"""
 
 #echo
 	@c.command()
