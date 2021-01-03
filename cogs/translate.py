@@ -20,12 +20,11 @@ class Translate(c.Cog):
 			if lang[0]=="":
 				translation = trans.bing(text,to_language=lang[1])
 			else:
-				
 				translation = trans.bing(text,from_language=lang[0],to_language=lang[1])
 			        msg = discord.Embed(title="Translator", color=0xffdf08)
 			        msg.add_field(name="Word",value=f"{text.capitalize()}")
 			        msg.add_field(name="Translation",value=f"{translation}")
-			       await ctx.send(embed=msg)
+			       	await ctx.send(embed=msg)
 
 #echo
 
