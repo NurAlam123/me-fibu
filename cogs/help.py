@@ -11,14 +11,14 @@ def com_help(client,ctx):
 						value='Get the result of your math equation. i.e: **!fibu math 2+2**')
 			msg.add_field(name='```!fibu quote```', value="Get a random quote")
 			msg.add_field(name="```!fibu echo [channel] (message)",value="To echo a message by Fibu.\n[channel] is optional but (message) is required")
-						msg.add_field(name='```!fibu yt search search_word```',
+			msg.add_field(name='```!fibu yt search search_word```',
 						value='To seaech a video in youtube')
-'''			msg.add_field(name='```!fibu wiki search search_word```',
+			msg.add_field(name='```!fibu covid country_name```',
+						value='Get statistics of coronavirus of specific country')
+			'''msg.add_field(name='```!fibu wiki search search_word```',
 						value='Search any details on wikipedia')
 			msg.add_field(name='```!fibu translate from_language|to_language text```',
 						value='Translate your text to another language. Example: **!fibu translate en|fr Hello**\If you don't know from which language you are translating then put blank the from_language value. Example: **!fibu translate |fr Hello**')'''
-			msg.add_field(name='```!fibu covid country_name```',
-						value='Get statistics of coronavirus of specific country')
 			msg.set_author(name=f'{client.user.name}',icon_url=f'{client.user.avatar_url}')
 			msg.set_footer(text='Programming Hero ')
 			return ctx.send(embed=msg)
@@ -49,7 +49,7 @@ def info_help(client,ctx):
 
 #others =======================
 def others_help(client,ctx):
-				msg = discord.Embed(title='Help on other commands',
+			msg = discord.Embed(title='Help on other commands',
 						color=0xffdf08,
 						timestamp=time.now())
 			msg.add_field(name='```!fibu hello```', 
@@ -66,7 +66,7 @@ def others_help(client,ctx):
 
 #qna ==========================
 def qna_help(client,ctx):
-				msg = discord.Embed(title='Help on qna commands',color=0xffdf08,timestamp=time.now())
+			msg = discord.Embed(title='Help on qna commands',color=0xffdf08,timestamp=time.now())
 			msg.add_field(name='``` !fibu ans your_question```', value='Get the answer of your question')
 			msg.set_author(name=f'{client.user.name}',icon_url=f'{client.user.avatar_url}')
 			msg.set_footer(text='Programming Hero ')
@@ -107,22 +107,22 @@ class Help(commands.Cog):
 		await com_help(self.client,ctx)
 
 #qna_help
-		@help.command()
-		async def qna(self,ctx)
-			await ctx.message.add_reaction('✅')
-			await qna_help(self.client,ctx)
+	@help.command()
+	async def qna(self,ctx):
+		await ctx.message.add_reaction('✅')
+		await qna_help(self.client,ctx)
 
 #info_help
-		@help.command()
-		async def qna(self,ctx)
-			await ctx.message.add_reaction('✅')
-			await qna_help(self.client,ctx)
+	@help.command()
+	async def info(self,ctx):
+		await ctx.message.add_reaction('✅')
+		await qna_help(self.client,ctx)
 
 #others_help
-		@help.command()
-		async def qna(self,ctx)
-			await ctx.message.add_reaction('✅')
-			await qna_help(self.client,ctx)
+	@help.command()
+	async def others(self,ctx):
+		await ctx.message.add_reaction('✅')
+		await qna_help(self.client,ctx)
 
 
 def setup(bot):
