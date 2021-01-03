@@ -14,7 +14,7 @@ class Translate(c.Cog):
 		self.client = client
 
 #translate			
-	@c.command(aliases=["translate"])
+	"""@c.command(aliases=["translate"])
 	async def ts(self,ctx,lang,*,text):
 			lang = lang.split("|")
 			if lang[0]=="":
@@ -24,7 +24,7 @@ class Translate(c.Cog):
 			        msg = discord.Embed(title="Translator", color=0xffdf08)
 			        msg.add_field(name="Word",value=f"{text.capitalize()}")
 			        msg.add_field(name="Translation",value=f"{translation}")
-			       	await ctx.send(embed=msg)
+			       	await ctx.send(embed=msg)"""
 
 #echo
 
