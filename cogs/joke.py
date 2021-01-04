@@ -3,7 +3,7 @@ from datetime import datetime as time
 from discord.ext import commands as c
 import pip
 try:
-	import pyjokes as j
+	import pyjokes
 except:
 	pip.main(["install","pyjokes"])
 import asyncio, typing, random
