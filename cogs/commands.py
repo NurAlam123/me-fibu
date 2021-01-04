@@ -12,7 +12,7 @@ class Command(c.Cog):
 	def __init__(self,client):
 		self.client = client
 #math	
-	@c.command()
+	"""@c.command()
 	async def math(self,ctx,eq=""):
 		if eq=="":
 			msg = discord.Embed(title="Calculator",
@@ -38,7 +38,7 @@ class Command(c.Cog):
 			msg.add_field(name="Result",value=result)
 			msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
 			msg.set_footer(text="Programming Hero ")
-			await ctx.send(embed=msg)
+			await ctx.send(embed=msg)"""
 
 #echo
 	@c.command()
