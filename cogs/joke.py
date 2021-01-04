@@ -21,7 +21,7 @@ class Joke(c.Cog):
 	
 	@c.command()
 	async def joke(self,ctx):
-		joke = j.get_joke()
+		joke = pyjokes.get_joke()
 		await ctx.send(joke)
 		
 def setup(bot):
