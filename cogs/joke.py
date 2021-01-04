@@ -2,6 +2,7 @@ import discord
 from datetime import datetime as time
 from discord.ext import commands as c
 import pip
+import pyjokes
 try:
 	import pyjokes
 except:
