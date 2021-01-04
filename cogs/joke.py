@@ -23,7 +23,11 @@ class Joke(c.Cog):
 	@c.command()
 	async def joke(self,ctx):
 		joke = pyjokes.get_joke()
-		await ctx.send(joke)
+		msg = discord.Embed(title = "Joke" ,decription = joke, color = 0xffdf08 , timestamp = time.now())
+		msg.set_author(name = f"{self.client.user.name}" , icon_url = f"{self,client.user.avatar_url}")
+		msg.set_footer(text = "Programming Hero ")
+		main = await ctx.send(embed = msg)
+		main.add_reaction("😂")
 		
 def setup(bot):
 	bot.add_cog(Joke(bot))
