@@ -14,10 +14,10 @@ class Joke(c.Cog):
     
     
  #joke
-	@c.command()
+	"""@c.command()
 	async def joke(self,ctx):
-		joke = pyjokes.get_joke()
-        	await ctx.send(joke)
+		joke = j.get_joke()
+        	await ctx.send(joke)"""
 		
 def setup(bot):
 	bot.add_cog(Joke(bot))
