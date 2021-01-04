@@ -5,3 +5,4 @@ wikipedia
 covid19-data
 textblob
 wikiquote
+pyjokes
