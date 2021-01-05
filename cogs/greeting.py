@@ -5,7 +5,13 @@ from discord.utils import get
 class Greeting(commands.Cog):
 	def __init__(self, client):
 		self.client = client
-
+		
+		
+		
+	@commands.command()
+	async def setWelcomeChannel(self,ctx,channel:discord.TextChannel):
+			self.channel = channel.id
+			await ctx.send("Welcome Greetings update channel has been set!")
 	@commands.Cog.listener()
 	async def on_member_join(self,member):
 		await member.send(f"Hello {member.mention}! Welcome to **{member.guild}** server.\nI am Fibu. Your friend and a friendly bot. I am from Programming Hero.🙂\nMy prefix is ```!fibu ```\nFor help type ```!fibu help```")
