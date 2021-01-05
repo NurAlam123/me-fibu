@@ -17,11 +17,11 @@ class Greeting(commands.Cog):
 		if get_guild!=None:
 			c_fibu.execute("update guild_data set welcome_channel=? where guild_id=?",(channel.id,ctx.guild.id,))
 			con_fibu.commit()
-			await ctx.send("Done")
+			await ctx.send(f"Greeting channel has been updated to {channel}")
 		else:
 			c_fibu.execute("insert into guild_data(guild_id,welcome_channel) values (?,?)",(ctx.guild.id,channel.id,))
 			con_fibu.commit()
-			await ctx.send("Done")
+			await ctx.send(f"Greeting channel has been set to {channel}")
 			
 
 	@commands.Cog.listener()
