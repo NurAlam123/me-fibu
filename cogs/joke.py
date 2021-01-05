@@ -21,7 +21,7 @@ class Joke(c.Cog):
         	await ctx.send(joke)"""
 	
 	@c.command()
-	async def joke(self,ctx , client):
+	async def joke(self,ctx):
 		joke = pyjokes.get_joke()
 		msg = discord.Embed(title = "Joke" ,decription = joke, color = 0xffdf08 , timestamp = time.now())
 		#msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
