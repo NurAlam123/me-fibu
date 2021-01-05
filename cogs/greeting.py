@@ -8,15 +8,12 @@ class Greeting(commands.Cog):
 		
 		
 		
-	@commands.command()
-	async def setWelcomeChannel(self,ctx,channel:discord.TextChannel):
-			self.channel = channel.id
-			await ctx.send("Welcome Greetings update channel has been set!")
+	
 	@commands.Cog.listener()
 	async def on_member_join(self,member):
 		await member.send(f"Hello {member.mention}! Welcome to **{member.guild}** server.\nI am Fibu. Your friend and a friendly bot. I am from Programming Hero.🙂\nMy prefix is ```!fibu ```\nFor help type ```!fibu help```")
-		channel = member.guild.system_channel
-		if channel is None:
+		self.channel = member.guild.system_channel
+		if self.channel is None:
 			channel = get(member.guild.channels,name="general")
 			if channel is None:
 				pass
@@ -24,6 +21,11 @@ class Greeting(commands.Cog):
 				await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
 		else:
 			await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+	
+	@commands.command()
+	async def setWelcomeChannel(self,ctx,channel:discord.TextChannel):
+			self.channel = channel.id
+			await ctx.send("Welcome Greetings update channel has been set!")
 	
 	@commands.command()
 	async def hello(self,ctx):
