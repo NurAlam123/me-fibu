@@ -25,7 +25,7 @@ class Greeting(commands.Cog):
 			else:
 				await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
 		else:
-			await self.welcomechannel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+			await welcomechannel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
 	
 	
 	@commands.command()
