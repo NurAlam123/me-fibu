@@ -6,3 +6,4 @@ covid19-data
 textblob
 wikiquote
 pyjokes
+covid_daily
