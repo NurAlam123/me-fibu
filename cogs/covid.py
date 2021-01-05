@@ -24,6 +24,9 @@ class Corona(c.Cog):
 						msg.add_field(name="Total Deaths",value=f"{i['TotalDeaths']:,}")
 						msg.add_field(name="New Recovered",value=f"{i['NewRecovered']:,}")
 						msg.add_field(name="Total Recovered",value=f"{i['TotalRecovered']:,}")
+						msg.set_thumbnail(url="https://is.gd/TTTW35")
+						msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
+						msg.set_footer(text="Programming Hero ")
 						await ctx.send(embed=msg)
 						is_done = True
 						break
@@ -38,6 +41,9 @@ class Corona(c.Cog):
 				msg.add_field(name="Total Deaths",value=f"{world['TotalDeaths']:,}")
 				msg.add_field(name="New Recovered",value=f"{world['NewRecovered']:,}")
 				msg.add_field(name="Total Recovered",value=f"{world['TotalRecovered']:,}")
+				msg.set_thumbnail(url="https://is.gd/TTTW35")
+				msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
+				msg.set_footer(text="Programming Hero ")
 				await ctx.send(embed=msg)
 				is_done=True
 			if not is_done:
