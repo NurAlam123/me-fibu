@@ -48,7 +48,7 @@ class Corona(c.Cog):
 				is_done=True
 			if not is_done:
 				await ctx.message.add_reaction("❌")
-				msg = discord.Embed(title="Error", description="**Oops!** Not Found!\nTry again by typing ```!fibu covid country_name```")
+				msg = discord.Embed(title="Error", description="**Oops!** Not Found!\nTry again by typing ```!fibu covid country_name```",color=0xff0000)
 				msg.set_thumbnail(url="https://is.gd/TTTW35")
 				msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
 				msg.set_footer(text="Programming Hero ")

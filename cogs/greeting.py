@@ -1,32 +1,50 @@
-import discord
+import discord,sqlite3
 from discord.ext import commands
+from discord.ext.commands import has_permissions
 from discord.utils import get
+
+con_fibu = sqlite3.connect("data/fibu.db")
+c_fibu = con_fibu.cursor()
 
 class Greeting(commands.Cog):
 	def __init__(self, client):
-		self.client = client
-		
-		
-		
+		self.client = client	
 	
 	@commands.command()
+	@has_permissions(administrator=True,manage_roles=True,manage_messages=True)
 	async def setWelcomeChannel(self,ctx,channel:discord.TextChannel):
-			global welcomechannel
-			welcomechannel = channel.id
-			await ctx.send("Welcome Greetings update channel has been set!")
+		get_guild = c_fibu.execute("select welcome_channel from guild_data where guild_id=?",(ctx.guild.id,)).fetchone()
+		if get_guild!=None:
+			c_fibu.execute("update guild_data set welcome_channel=? where guild_id=?",(channel.id,ctx.guild.id,))
+			con_fibu.commit()
+			await ctx.send("Done")
+		else:
+			c_fibu.execute("insert into guild_data(guild_id,welcome_channel) values (?,?)",(ctx.guild.id,channel.id,))
+			con_fibu.commit()
+			await ctx.send("Done")
+			
+
 	@commands.Cog.listener()
 	async def on_member_join(self,member):
 		await member.send(f"Hello {member.mention}! Welcome to **{member.guild}** server.\nI am Fibu. Your friend and a friendly bot. I am from Programming Hero.🙂\nMy prefix is ```!fibu ```\nFor help type ```!fibu help```")
-		#self.welcomechannel = member.guild.system_channel
-		if welcomechannel is None:
-			channel = get(member.guild.channels,name="general")
-			if channel is None:
+		welcomeChannel = c_fibu.execute("select welcome_channel from guild_data where guild_id=?",(member.guild.id,)).fetchone()
+		if welcomeChannel is None:
+			sys_channel = member.guild.system_channel
+			if sys_channel is None:
+				channel = get(member.guild.channels,name="general")
+				if channel is None:
+					pass
+				else:
+					await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+			else:
+				await sys_channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+		else:
+			welcomeChannel = get(member.guild.channels,id=welcomeChannel[0])
+			if welcomeChannel is None:
 				pass
 			else:
-				await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
-		else:
-			await welcomechannel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
-	
+				await welcomeChannel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+
 	
 	@commands.command()
 	async def hello(self,ctx):
