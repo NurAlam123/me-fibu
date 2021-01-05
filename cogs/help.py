@@ -116,13 +116,13 @@ class Help(commands.Cog):
 	@help.command()
 	async def info(self,ctx):
 		await ctx.message.add_reaction('✅')
-		await qna_help(self.client,ctx)
+		await info_help(self.client,ctx)
 
 #others_help
 	@help.command()
 	async def others(self,ctx):
 		await ctx.message.add_reaction('✅')
-		await qna_help(self.client,ctx)
+		await others_help(self.client,ctx)
 
 
 def setup(bot):
