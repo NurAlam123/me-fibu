@@ -10,7 +10,7 @@ def com_help(client,ctx):
 			msg.add_field(name='```!fibu math equation```',
 						value='Get the result of your math equation. i.e: **!fibu math 2+2**')
 			msg.add_field(name='```!fibu quote```', value="Get a random quote")
-			msg.add_field(name="```!fibu echo [channel] (message)",value="To echo a message by Fibu.\n[channel] is optional but (message) is required")
+			msg.add_field(name="```!fibu echo [channel] (message)```",value="To echo a message by Fibu.\n[channel] is optional but (message) is required")
 			msg.add_field(name='```!fibu yt search search_word```',
 						value='To seaech a video in youtube')
 			msg.add_field(name='```!fibu covid country_name```',
