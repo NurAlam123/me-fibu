@@ -20,7 +20,7 @@ class Greeting(commands.Cog):
 			else:
 				await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
 		else:
-			await channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
+			await self.channel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
 	
 	@commands.command()
 	async def setWelcomeChannel(self,ctx,channel:discord.TextChannel):
