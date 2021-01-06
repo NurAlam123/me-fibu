@@ -67,7 +67,8 @@ async def showmdb(ctx,*,name):
 	client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")
 	db = client["fibu"]
 	col = db["guild_data"]
-	await ctx.send(col.find_one({"name":name))
+	data = {"name":f"{name}"}
+	await ctx.send(col.find_one(data))
 		
 
 bot.run(token)
