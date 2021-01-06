@@ -14,11 +14,13 @@ class Google(c.Cog):
 			pass
 	@go.command()
 	async def search(self,ctx,*,query):
+		
 		query = query.split()
-    search_word = "+".join(query)
+     		search_word = "+".join(query)
 		html = urllib.request.urlopen("https://www.google.com/search?q="+search_word)
-    goo = "https://www.google.com/search?q="+search_word
+    		goo = "https://www.google.com/search?q="+search_word
 		try:
+			
 			await ctx.message.add_reaction("📺")
 			await ctx.send("For viewing your results [Click here](goo))
 		except:
