@@ -32,7 +32,7 @@ class Info(commands.Cog):
 				msg.set_thumbnail(url=ctx.author.avatar_url)
 				msg.add_field(name="Created at",value=f"{(ctx.author.created_at).strftime('%a, %d-%b-%Y %I:%M %p')}")
 				msg.add_field(name="Joined at",value=f"{(ctx.author.joined_at).strftime('%a, %d-%b-%Y %I:%M %p')}")
-				msg.add_field(name=f"Roles [{len(roles)-1}]",value=f"{', '.join(roles)}")
+				msg.add_field(name=f"Roles [{len(roles)}]",value=f"{', '.join(roles)}")
 				msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
 				msg.set_footer(text="Programming Hero ")
 				await ctx.send(embed=msg)
