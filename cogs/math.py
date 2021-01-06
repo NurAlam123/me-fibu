@@ -1,12 +1,6 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands as c
-import pip
-try:
-	import wikiquote as q
-except:
-	pip.main(["install","wikiquote"])
-import asyncio, typing, random
 
 class Math(c.Cog):
 	def __init__(self,client):
@@ -30,15 +24,12 @@ class Math(c.Cog):
 				eq = eq.replace("÷","/")
 			if 'x' in eq.lower():
 				eq = eq.replace('x','*')
-			result = eval(eq)
-			msg = discord.Embed(title="Calculator",
-													color=0xffdf08,
-													timestamp=time.now())
-			msg.add_field(name="Math",value=eq)
-			msg.add_field(name="Result",value=result)
-			msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
-			msg.set_footer(text="Programming Hero ")
-			await ctx.send(embed=msg)	
+			try:
+				result = eval(eq)
+				await ctx.send(f"**__Your Input:__**\n```{eq}```\n**__Result:__**\n```{result}```")
+			except:
+				await ctx.send("Invalid Input")
+					
 		
 def setup(bot):
 	bot.add_cog(Math(bot))
