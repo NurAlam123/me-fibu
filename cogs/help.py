@@ -15,6 +15,7 @@ def com_help(client,ctx):
 						value='To seaech a video in youtube')
 			msg.add_field(name='```!fibu covid country_name```',
 						value='Get statistics of coronavirus of specific country')
+			msg.add_field(name="```!fibu joke```",value="To get a joke")
 			'''msg.add_field(name='```!fibu wiki search search_word```',
 						value='Search any details on wikipedia')
 			msg.add_field(name='```!fibu translate from_language|to_language text```',
