@@ -7,3 +7,5 @@ textblob
 wikiquote
 pyjokes
 covid_daily
+pymongo
+dnspython
