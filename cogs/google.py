@@ -8,7 +8,7 @@ class Google(c.Cog):
 		self.client = client
     
 #youtube
-	@c.group(aliases=["google","go"],case_insensitive=True)
+	@c.group(aliases=["google","gog"],case_insensitive=True)
 	async def go(slef,ctx):
 		if ctx.invoked_subcommand is None:
 			pass
