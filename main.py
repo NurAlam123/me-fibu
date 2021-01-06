@@ -43,7 +43,7 @@ async def on(ctx,file):
 		except:
 			await ctx.send(f"{file} is already loaded!")
 	else:
-		await ctx.send(f"You haven't any permission to do that!!")
+		await ctx.send(f"You don't have the permission to do that!!")
 @bot.command()
 async def off(ctx,file):
 		if ctx.author.id in dev:
