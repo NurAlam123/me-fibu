@@ -53,7 +53,7 @@ async def off(ctx,file):
 			except:
 				await ctx.send(f"{file} is already unloaded!")
 		else:
-			await ctx.send(f"You haven't any permission to do that!!")
+			await ctx.send(f"You don't have the permission to do that!!")
 			
 
 for files in os.listdir("./cogs"):
