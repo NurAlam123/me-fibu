@@ -63,7 +63,7 @@ for files in os.listdir("./cogs"):
 			
 ##testing mongodb
 @bot.command()
-async def showdb(ctx):
+async def showmdb(ctx):
 	client = pymongo.MongoClient("mongodb+srv://fibu-ph:ProgrammingHero900@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")
 	db = client["fibu"]
 	col = db["guild_data"]
