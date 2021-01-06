@@ -15,18 +15,18 @@ class Joke(c.Cog):
 			get_joke = requests.get(url).json()
 			msg = discord.Embed(title="Joke", description=f"{get_joke['setup']}\n{get_joke['punchline']}")
 			msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
-		msg.set_footer(text = "Programming Hero ")
-		await ctx.send(embed = msg)
-	else:
+			msg.set_footer(text = "Programming Hero ")
+			await ctx.send(embed = msg)
+		else:
 			try:
 				url = f"https://official-joke-api.appspot.com/jokes/{type}/random"
 				get_joke = requests.get(url).json()[0]
 				msg = discord.Embed(title="Joke", description=f"{get_joke['setup']}\n{get_joke['punchline']}")
 				msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
-			msg.set_footer(text = "Programming Hero ")
-			await ctx.send(embed = msg)
-		except:
-			await ctx.send(f"{type} is not a valid type!")		
+				msg.set_footer(text = "Programming Hero ")
+				await ctx.send(embed = msg)
+			except:
+				await ctx.send(f"{type} is not a valid type!")		
 		
 def setup(bot):
 	bot.add_cog(Joke(bot))
