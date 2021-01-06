@@ -27,6 +27,19 @@ class Google(c.Cog):
 			await ctx.message.add_reaction("❌")
 			msg = discord.Embed(title="Error", description="Oops.. Your search was not found o..\nPlease search again by typing ```!fibu go search search_word ```")
 			await ctx.send(embed=msg)"""
+	
+	@go.command()
+	async def search(self,ctx,*,query):
+		query = query.split()
+		search_word = "+".join(query)
+		goo = "https://www.google.com/search?q"+search_word
+		try:
+			await ctx.message.add_reaction("✔")
+			await ctx.send(f"For viewing your results [Click here]({goo})")
+		except:
+			await ctx.message.add_reaction("❌")
+			msg = discord.Embed(title="Error", description="Oops.. Your search was not found o..\nPlease search again by typing ```!fibu go search search_word ```")
+			await ctx.send(embed = msg)
 
 
 		
