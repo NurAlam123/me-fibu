@@ -59,6 +59,13 @@ async def off(ctx,file):
 for files in os.listdir("./cogs"):
 		if files.endswith(".py"):
 			bot.load_extension(f"cogs.{files[:-3]}")
+			
+##testing mongodb
+import pymongo
+try:
+	client = pymongo.MongoClient("mongodb+srv://fibu-ph:ProgrammingHero900@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")
+except:
+		print ("Not working!!")
 		
 
 bot.run(token)
