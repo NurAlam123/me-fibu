@@ -1,32 +1,38 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands as c
-import pip
-import pyjokes
-try:
-	import pyjokes
-except:
-	pip.main(["install","pyjokes"])
-import asyncio, typing, random
+#import pyjokes
+import requests
 
 class Joke(c.Cog):
 	def __init__(self,client):
 		self.client = client
-    
-    
- #joke
-	"""@c.command()
-	async def joke(self,ctx):
-		joke = j.get_joke()
-        	await ctx.send(joke)"""
-	
+
 	@c.command()
-	async def joke(self,ctx):
-		joke = pyjokes.get_joke()
-		msg = discord.Embed(title = "Joke" ,description = joke, color = 0xffdf08 , timestamp = time.now())
-		#msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
+	async def joke(self,ctx,*,type=None):
+		if type==None:
+			url="https://official-joke-api.appspot.com/random_joke"
+			get_joke = requests.get(url).json()
+			msg = discord.Embed(title="Joke", description=f"{get_joke['setup']}\n{get_joke['punchline']}")
+			msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
 		msg.set_footer(text = "Programming Hero ")
 		await ctx.send(embed = msg)
+	else:
+			try:
+				url = f"https://official-joke-api.appspot.com/jokes/{type}/random"
+				get_joke = requests.get(url).json()[0]
+				msg = discord.Embed(title="Joke", description=f"{get_joke['setup']}\n{get_joke['punchline']}")
+				msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
+			msg.set_footer(text = "Programming Hero ")
+			await ctx.send(embed = msg)
+		except:
+			await ctx.send(f"{type} is not a valid type!")
+			
+#		joke = pyjokes.get_joke()
+#		msg = discord.Embed(title = "Joke" ,description = joke, color = 0xffdf08 , timestamp = time.now())
+#		#msg.set_author(name = f"{client.user.name}" , icon_url = f"{client.user.avatar_url}")
+#		msg.set_footer(text = "Programming Hero ")
+#		await ctx.send(embed = msg)
 		
 		
 def setup(bot):
