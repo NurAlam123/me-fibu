@@ -12,21 +12,7 @@ class Google(c.Cog):
 	async def go(slef,ctx):
 		if ctx.invoked_subcommand is None:
 			pass
-	"""@go.command()
-	async def search(self,ctx,*,query):
-		
-		query = query.split()
-     		search_word = "+".join(query)
-		html = urllib.request.urlopen("https://www.google.com/search?q="+search_word)
-    		goo = "https://www.google.com/search?q="+search_word
-		try:
-			
-			await ctx.message.add_reaction("📺")
-			await ctx.send(f"For viewing your results [Click here]({goo})")
-		except:
-			await ctx.message.add_reaction("❌")
-			msg = discord.Embed(title="Error", description="Oops.. Your search was not found o..\nPlease search again by typing ```!fibu go search search_word ```")
-			await ctx.send(embed=msg)"""
+
 	
 	@go.command()
 	async def search(self,ctx,*,query):
@@ -36,12 +22,12 @@ class Google(c.Cog):
 		try:
 			await ctx.message.add_reaction("✔")
 			#await ctx.send(f"For viewing your results [Click here]({goo})")
-			msg = discord.Embed(title="Google Search", description=f"For viewing your results [Click here]({goo})")
+			msg = discord.Embed(title="Google Search", description=f"For viewing your results [Click here]({goo})" , color=0xffdf08)
 			await ctx.send(embed = msg)
 			#await ctx.send(f"https://google.com/search?q={search_word}")
 		except:
 			await ctx.message.add_reaction("❌")
-			msg = discord.Embed(title="Error", description="Oops.. Your search was not found o..\nPlease search again by typing ```!fibu go search search_word ```")
+			msg = discord.Embed(title="Error", description="Oops.. Your search was not found o..\nPlease search again by typing ```!fibu go search search_word ```" , color=0xffdf08)
 			await ctx.send(embed = msg)
 
 
