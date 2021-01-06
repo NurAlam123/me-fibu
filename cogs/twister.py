@@ -10,7 +10,7 @@ class Twister(c.Cog):
 
 	@c.command()
 	async def twister(self,ctx):
-		twis = pyjokes.get_joke(language = "en" , category = "twister")
+		twis = pyjokes.get_joke(category = "twister")
 		msg = discord.Embed(title="Tongue Twister", description=f"{twis}", color=0xffdf08, timestamp=time.now())
 		msg.set_author(name = f"{self.client.user.name}" , icon_url = f"{self.client.user.avatar_url}")
 		msg.set_footer(text = "Programming Hero ")
