@@ -29,6 +29,7 @@ class Math(c.Cog):
 				await ctx.send(f"**__Your Input:__**\n```{eq}```\n**__Result:__**\n```{result}```")
 			except:
 				await ctx.send("Invalid Input")
+
 					
 		
 def setup(bot):
