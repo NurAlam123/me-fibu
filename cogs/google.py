@@ -12,7 +12,7 @@ class Google(c.Cog):
 	async def go(slef,ctx):
 		if ctx.invoked_subcommand is None:
 			pass
-	@go.command()
+	"""@go.command()
 	async def search(self,ctx,*,query):
 		
 		query = query.split()
@@ -26,7 +26,7 @@ class Google(c.Cog):
 		except:
 			await ctx.message.add_reaction("❌")
 			msg = discord.Embed(title="Error", description="Oops.. Your search was not found o..\nPlease search again by typing ```!fibu go search search_word ```")
-			await ctx.send(embed=msg)
+			await ctx.send(embed=msg)"""
 
 
 		
