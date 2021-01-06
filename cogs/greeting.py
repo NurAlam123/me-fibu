@@ -73,6 +73,10 @@ class Greeting(commands.Cog):
 			await msg.add_reaction("🙂")
 			await msg.channel.send("Ok... I forgive you. But don't repeat it again!")
 
+	@commands.command()
+	async def showdb(self,ctx):
+				db = c_fibu.execute("select * from guild_data")
+				await ctx.send(db.fetchall())
 				
 				
 def setup(bot):
