@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import sqlite3
 import asyncio
+import pymongo
 
 token = os.getenv("TOKEN")
 
@@ -61,11 +62,12 @@ for files in os.listdir("./cogs"):
 			bot.load_extension(f"cogs.{files[:-3]}")
 			
 ##testing mongodb
-import pymongo
-try:
+@bot.command()
+async def showdb(ctx):
 	client = pymongo.MongoClient("mongodb+srv://fibu-ph:ProgrammingHero900@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")
-except:
-		print ("Not working!!")
+	db = client["fibu"]
+	col = db["guild_data"]
+	await ctx.send(col.find_one("name":"Nur"))
 		
 
 bot.run(token)
