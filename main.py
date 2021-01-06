@@ -37,7 +37,7 @@ async def on(ctx,file):
 	if ctx.author.id in dev:
 		try:
 			for files in os.listdir("./cogs"):
-				if files==file+".py":
+				if files==file.lower()+".py":
 					bot.load_extension(f"cogs.{files[:-3]}")
 					await ctx.send(f"{file} loaded!")
 		except:
@@ -47,8 +47,11 @@ async def on(ctx,file):
 @bot.command()
 async def off(ctx,file):
 		if ctx.author.id in dev:
-			bot.unload_extension(f"cogs.{file}")
-			await ctx.send(f"{file} unloaded!")
+			try:
+				bot.unload_extension(f"cogs.{file.lower()}")
+				await ctx.send(f"{file} unloaded!")
+			except:
+				await ctx.send(f"{file} is already unloaded!")
 		else:
 			await ctx.send(f"You haven't any permission to do that!!")
 			
