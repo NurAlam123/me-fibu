@@ -13,7 +13,7 @@ class Joke(c.Cog):
 		if type==None:
 			url="https://official-joke-api.appspot.com/random_joke"
 			get_joke = requests.get(url).json()
-			msg = discord.Embed(title="Joke", description=f"{get_joke['setup']}\n{get_joke['punchline']}",color=0xffdf08)
+			msg = discord.Embed(title="Joke", description=f"{get_joke['setup']}\n{get_joke['punchline']}",color=0xffdf08, timestamp=time.now())
 			msg.set_author(name = f"{self.client.user.name}" , icon_url = f"{self.client.user.avatar_url}")
 			msg.set_footer(text = "Programming Hero ")
 			await ctx.send(embed = msg)
