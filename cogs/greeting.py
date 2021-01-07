@@ -42,7 +42,7 @@ class Greeting(commands.Cog):
 		con_fibu = pymongo.MongoClient(os.getenv("DB"))
 		db = con_fibu["fibu"] #database
 		tb = db["guild_data"] #table
-		welcome Channel = tb.find_one({"guild_id":ctx.guild.id})
+		welcomeChannel = tb.find_one({"guild_id":ctx.guild.id})
 		if welcomeChannel is None:
 			sys_channel = member.guild.system_channel
 			if sys_channel is None:
