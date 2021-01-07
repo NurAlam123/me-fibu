@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import asyncio
 
-'''
+
 con_fibu = sqlite3.connect("data/fibu.db")
 c_fibu = con_fibu.cursor()
 
@@ -14,7 +14,7 @@ class Abuse(commands.Cog):
   
   def __init__(self,client):
     self.client=client
-  
+'''
   warns = 0
   
   @commands.Cog.listener("on_message")
