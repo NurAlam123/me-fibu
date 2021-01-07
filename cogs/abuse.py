@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import asyncio
 
+'''
 con_fibu = sqlite3.connect("data/fibu.db")
 c_fibu = con_fibu.cursor()
 
@@ -62,7 +63,7 @@ class Abuse(commands.Cog):
         await ctx.send("Words added!!")
     else:
       await ctx.send("Sorry... You haven't any permission to fo this!")
-
+'''
 
 def setup(bot):
   bot.add_cog(Abuse(bot))
