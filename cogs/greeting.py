@@ -22,6 +22,7 @@ class Greeting(commands.Cog):
 		else:
 			data = {"guild_id":ctx.guild.id,"welcome_channel":channel.id}
 			tb.insert_one(data)
+			await ctx.send(f"Greeting channel has been set to {channel}")
 			
 		
 #		get_guild = c_fibu.execute("select welcome_channel from guild_data where guild_id=?",(ctx.guild.id,)).fetchone()
@@ -42,7 +43,7 @@ class Greeting(commands.Cog):
 		con_fibu = pymongo.MongoClient(os.getenv("DB"))
 		db = con_fibu["fibu"] #database
 		tb = db["guild_data"] #table
-		welcomeChannel = tb.find_one({"guild_id":ctx.guild.id})
+		welcomeChannel = tb.find_one({"guild_id":member.guild.id})
 		if welcomeChannel is None:
 			sys_channel = member.guild.system_channel
 			if sys_channel is None:
