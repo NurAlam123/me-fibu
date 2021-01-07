@@ -68,7 +68,12 @@ async def showmdb(ctx,*,name):
 	db = client["fibu"]
 	col = db["guild_data"]
 	data = {"name":f"{name}"}
-	await ctx.send(col.find_one(data))
+	show_data = col.find_one(data)
+	print(show_data)
+	try:
+		await ctx.send(show_data)
+	except:
+		pass
 		
 
 bot.run(token)
