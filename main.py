@@ -69,9 +69,9 @@ async def showmdb(ctx,*,name):
 	col = db["guild_data"]
 	data = {"name":f"{name}"}
 	show_data = col.find_one(data)
-	print(show_data)
+#	print(show_data)
 	try:
-		await ctx.send(show_data)
+		await ctx.send(f"{show_data['name']}\n{show_data['dev']}")
 	except:
 		pass
 		
