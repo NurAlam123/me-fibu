@@ -23,18 +23,12 @@ class Greeting(commands.Cog):
 			data = {"guild_id":ctx.guild.id,"welcome_channel":channel.id}
 			tb.insert_one(data)
 			await ctx.send(f"Greeting channel has been set to {channel}")
-			
-		
-#		get_guild = c_fibu.execute("select welcome_channel from guild_data where guild_id=?",(ctx.guild.id,)).fetchone()
-#		if get_guild!=None:
-#			c_fibu.execute("update guild_data set welcome_channel=? where guild_id=?",(channel.id,ctx.guild.id,))
-#			con_fibu.commit()
-#			await ctx.send(f"Greeting channel has been updated to {channel}")
-#		else:
-#			c_fibu.execute("insert into guild_data(guild_id,welcome_channel) values (?,?)",(ctx.guild.id,channel.id,))
-#			con_fibu.commit()
-#			await ctx.send(f"Greeting channel has been set to {channel}")
-#			
+
+	#permission error handling
+	@setWelcomeChannel.error
+	async def perm_error(self,ctx,error):
+		if isinstance(error,commands.MissingPermissions):
+			await ctx.send(f"Hey {ctx.author.mention}, you don't have the permissions to do that!")
 
 	@commands.Cog.listener()
 	async def on_member_join(self,member):
@@ -60,7 +54,6 @@ class Greeting(commands.Cog):
 				pass
 			else:
 				await welcomeChannel.send(f"Hello, {member.mention}. Welcome to **{member.guild}**")
-
 	
 	@commands.command()
 	async def hello(self,ctx):
@@ -89,10 +82,6 @@ class Greeting(commands.Cog):
 			await msg.add_reaction("🙂")
 			await msg.channel.send("Ok... I forgive you. But don't repeat it again!")
 
-	@commands.command()
-	async def showdb(self,ctx):
-				db = c_fibu.execute("select * from guild_data")
-				await ctx.send(db.fetchall())
 				
 				
 def setup(bot):
