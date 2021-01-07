@@ -60,20 +60,36 @@ async def off(ctx,file):
 for files in os.listdir("./cogs"):
 		if files.endswith(".py"):
 			bot.load_extension(f"cogs.{files[:-3]}")
-			
+
+
+client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")			
+db = client["fibu"]
+	
 ##testing mongodb
 @bot.command()
-async def showmdb(ctx,*,name):
-	client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")
-	db = client["fibu"]
+async def show_db(ctx,*,name):
 	col = db["guild_data"]
 	data = {"name":f"{name}"}
 	show_data = col.find_one(data)
 #	print(show_data)
 	try:
-		await ctx.send(f"{show_data['name']}\n{show_data['dev']}")
+		await ctx.send(f"Name: {show_data['name']}\nDev: {show_data['dev']}")
 	except:
 		pass
+
+@bot.command()
+async def add_db(ctx,*,name):
+		col = db["guild_data"]
+		data = {"name":f"{name}"}
+		add = col.insert_one(data)
+		await ctx.send(f"{name} added to database")
+@bot.command()
+async def del_db(ctx,*,name):
+		col = db.guild_data
+		data = {"name":f"{name}"}
+		del_data = col.delete_one(data)
+		await ctx.send(f"{name} deleted!")
+		
 		
 
 bot.run(token)
