@@ -19,7 +19,7 @@ class WikiHow(commands.Cog):
 			all_step = whapi.parse_steps(article_id)
 			steps = []
 			for i, step in enumerate(all_step,1):
-				str = f"{i} - {c[step]['summary']}"
+				str = f"{i} - {all_step[step]['summary']}"
 				steps.append(str)
 			msg = discord.Embed(title=f"{search[0]['title']}", description=f"{main} ...[more info]({url})",color=0xffdf08, timestamp=time.now())
 			msg.add_field(name="Steps",value="\n".join(steps))
