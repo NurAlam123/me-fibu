@@ -51,7 +51,7 @@ class WikiHow(commands.Cog):
 					for i, step in enumerate(all_step,1):
 						str = f"{i} - {all_step[step]['summary']}"
 						steps.append(str)
-						msg.add_field(name="Steps",value="\n".join(steps))
+					msg.add_field(name="Steps",value="\n".join(steps))
 				except:
 					msg.add_field(name="Steps",value="Opps.. Not found\nClick on **more info** to get all steps and information.")
 				try:
