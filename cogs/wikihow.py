@@ -41,8 +41,8 @@ class WikiHow(commands.Cog):
 	@commands.command()
 	async def randomHow(self,ctx):
 				article_id = whapi.random_article()
-				article_title = return_details(article_id)["title"]
-				article_url = return_details(article_id)["url"]
+				article_title = whapi.return_details(article_id)["title"]
+				article_url = whapi.return_details(article_id)["url"]
 				main = whapi.parse_intro(article_id)[:500]
 				msg = discord.Embed(title=f"{article_title}", description=f"{main} ...[more info]({article_url})",color=0xffdf08, timestamp=time.now())
 				try:
