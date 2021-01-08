@@ -13,13 +13,15 @@ def com_help(client,ctx):
 			msg.add_field(name="```!fibu echo [channel] (message)```",value="To echo a message by Fibu.\n[channel] is optional but (message) is required")
 			msg.add_field(name='```!fibu yt search search_word```',
 						value='To seaech a video in youtube')
+			msg.add_field(name="```!fibu how (search_word)```",value="Get information from WikiHow")
+			msg.add_field(name="```!fibu randomHow```",value="Get a random WikiHow content.")
 			msg.add_field(name='```!fibu covid country_name```',
 						value='Get statistics of coronavirus of specific country')
 			msg.add_field(name="```!fibu joke```",value="To get a joke")
 			'''msg.add_field(name='```!fibu wiki search search_word```',
-						value='Search any details on wikipedia')
+						value='Search any details on wikipedia')'''
 			msg.add_field(name='```!fibu translate from_language|to_language text```',
-						value='Translate your text to another language. Example: **!fibu translate en|fr Hello**\If you don't know from which language you are translating then put blank the from_language value. Example: **!fibu translate |fr Hello**')'''
+						value="Translate your text to another language. Example: **!fibu translate en|fr Hello**\If you don't know from which language you are translating then put blank the from_language value. Example: **!fibu translate |fr Hello**")
 			msg.set_author(name=f'{client.user.name}',icon_url=f'{client.user.avatar_url}')
 			msg.set_footer(text='Programming Hero ')
 			return ctx.send(embed=msg)
