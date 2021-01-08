@@ -21,7 +21,8 @@ def com_help(client,ctx):
 			'''msg.add_field(name='```!fibu wiki search search_word```',
 						value='Search any details on wikipedia')'''
 			msg.add_field(name='```!fibu translate from_language|to_language text```',
-						value="Translate your text to another language. Example: **!fibu translate en|fr Hello**\nIf you don't know from which language you are translating then put blank the from_language value. Example: **!fibu translate |fr Hello**")
+						value="Translate your text to another language. Example:\n **!fibu translate en|fr Hello**\nIf you don't know from which language you are translating then put blank the from_language value. Example: **!fibu translate |fr Hello**")
+			msg.add_field(name="```!fibu google search word```",value="To get a search link")
 			msg.set_author(name=f'{client.user.name}',icon_url=f'{client.user.avatar_url}')
 			msg.set_footer(text='Programming Hero ')
 			return ctx.send(embed=msg)
