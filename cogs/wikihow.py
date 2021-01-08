@@ -20,7 +20,7 @@ class WikiHow(commands.Cog):
 			steps = []
 			for i, step in enumerate(all_step,1):
 				str = f"{i} - {step}"
-				step.append(str)
+				steps.append(str)
 			msg = discord.Embed(title=f"{search[0]['title']}", description=f"{main} ...[more info]({url})",color=0xffdf08, timestamp=time.now())
 			msg.add_field(name="Steps",value="\n".join(steps))
 			msg.set_author(name = f"{self.client.user.name}" , icon_url = f"{self.client.user.avatar_url}")
