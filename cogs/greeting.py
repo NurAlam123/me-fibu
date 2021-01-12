@@ -65,7 +65,10 @@ class Greeting(commands.Cog):
 		if member==None:
 			await ctx.send(f"Check DM {ctx.author.mention}")
 			await ctx.author.send(f"Hey {ctx.author.mention}!")
-		elif member!=None and member.id!=self.client.id:
+		else:
+			if member.id == self.client.user.id:
+				await ctx.send("Hey it's me. I can't DM myself.")
+			else:
 				await ctx.send(f"Check DM {member.mention}")
 				await member.send(f"Hey {member.mention}!")
 	
