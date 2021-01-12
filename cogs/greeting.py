@@ -68,6 +68,8 @@ class Greeting(commands.Cog):
 		else:
 			if member.id == self.client.user.id:
 				await ctx.send("Hey it's me. I can't DM myself.")
+			elif member.bot:
+				await ctx.send(f"{member} is a bot. I can't DM a bot.")
 			else:
 				await ctx.send(f"Check DM {member.mention}")
 				await member.send(f"Hey {member.mention}!")
