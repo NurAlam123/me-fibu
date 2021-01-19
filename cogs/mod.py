@@ -11,7 +11,7 @@ class Mod(c.Cog):
 
 
 	@c.command()
-	@c.has_role("Moderator")
+	@c.has_role("Admin In Command")
 	@c.cooldown(1, 86400, c.BucketType.user)
 	async def mod(self,ctx):
 		try:
