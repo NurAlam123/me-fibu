@@ -9,7 +9,17 @@ class Bug(commands.Cog):
 	def __init__(self,client):
 		self.client = client
 	
-	questions = ["Where did you find the bug? Forums, Settings, Profiles, or in the content?","If the bug is in the content, please write the Galaxy name > Module name > Lesson name (if applicable) > and the Page Name (For eg: Fundamentals > Functions > function usage > 2/9)","What we need to do to see the bug? (how to reproduce the bug/issue?)","What is the expected behaviour? What should we change?","Please take a screenshot and post it in the #🕸bugs-or-issues channel... Appreciated your support!"]
+	@commands.command()
+	async def bugFound(self,ctx):
+		questions = []
+		await ctx.message.add_reaction("🐞")
+		await ctx.author.send("Thank you for informing this bug. Please provide some extra information to make it easier for the developer to fix. Send 'Ok' to continue.")
+		ok = await self.client.wait_for("message",check=lambda msg: msg.author.id==ctx.author.id,timeout=60)
+		await asyncio.sleep(2)
+		
+	
+	
+	'''questions = ["Where did you find the bug? Forums, Settings, Profiles, or in the content?","If the bug is in the content, please write the Galaxy name > Module name > Lesson name (if applicable) > and the Page Name (For eg: Fundamentals > Functions > function usage > 2/9)","What we need to do to see the bug? (how to reproduce the bug/issue?)","What is the expected behaviour? What should we change?","Please take a screenshot and post it in the #🕸bugs-or-issues channel... Appreciated your support!"]
 	reports = []
 	channel = None
 	submit = "no"
@@ -62,7 +72,7 @@ class Bug(commands.Cog):
 	@commands.command()
 	async def setBugReportChannel(self,ctx,channel:discord.TextChannel):
 			self.channel = channel.id
-			await ctx.send("Bug reports update channel has been set!")
+			await ctx.send("Bug reports update channel has been set!")'''
 			
 def setup(bot):
 	bot.add_cog(Bug(bot))
