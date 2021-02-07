@@ -53,7 +53,6 @@ class Google(commands.Cog):
     
             page = 0
             pages = len(all_working_link)
-            await ctx.send(pages)
             
             clean_emoji = True
     
