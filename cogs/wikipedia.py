@@ -45,7 +45,7 @@ class Wiki(commands.Cog):
 			for i in emojis:
 				await msg.add_reaction(i)
 			def re_check(reaction,user):
-				return user==ctx.author and (str(reaction.emoji)) in emojis
+				return user.id == ctx.author.id and (str(reaction.emoji)) in emojis and reaction.message.id == msg.id
 			while True:
 				try:
 					reaction,user = await self.client.wait_for("reaction_add",check=re_check,timeout=60)

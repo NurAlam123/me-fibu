@@ -93,7 +93,7 @@ class Info(commands.Cog):
 				msg.set_thumbnail(url=f"{self.client.user.avatar_url}")
 				msg.add_field(name="Version",value="0.0.1")
 				msg.add_field(name="Prefix",value="```!fibu```")
-				msg.add_field(name="Released on",value="Jan 1, 2020")
+				msg.add_field(name="Released on",value="Jan 1, 2021")
 				msg.add_field(name="Website",value="[Programming Hero](https://www.programming-hero.com/)")
 				msg.add_field(name="Application",value="[Android App](https://is.gd/z11RUg)\n[Iphone Version](https://is.gd/eVH92i)")
 				msg.add_field(name="Social Media",value="[Facebook](https://m.facebook.com/programmingHero/)\n[Instagram](https://is.gd/6m3hgd)\n[Twitter](https://twitter.com/ProgrammingHero?s=09)\n[Youtube](https://is.gd/EulQLJ)\n[Pinterest](https://www.pinterest.com/programminghero1/)")
