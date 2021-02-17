@@ -86,7 +86,7 @@ class Wiki(commands.Cog):
 							from_no += need_no
 							to_no +=need_no
 							options_msg = discord.Embed(title=f"Wikipedia | Page: {page_no}/{pages}", description="\n".join(options[from_no:to_no]),color=0xffdf08, timestamp=time.now())
-							options_msg.add_field(name="Pick a number and send below command to search!",value="Example: ```!fibu wiki select 1```")
+							options_msg.add_field(name="Pick a number and send below command to search!",value="```!fibu wiki select [the number]```\nExample: ```!fibu wiki select 1```")
 							options_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
 							options_msg.set_footer(text="Programming Hero")
 							await msg.edit(embed=options_msg)
@@ -96,7 +96,7 @@ class Wiki(commands.Cog):
 							from_no -= need_no
 							to_no -= need_no
 							options_msg = discord.Embed(title=f"Wikipedia | Page: {page_no}/{pages}", description="\n".join(options[from_no:to_no]),color=0xffdf08, timestamp=time.now())
-							options_msg.add_field(name="Pick a number and send below command to select that title!",value="Example: ```!fibu wiki select 1```")
+							options_msg.add_field(name="Pick a number and send below command to select that title!",value="```!fibu wiki select [the number]```\nExample: ```!fibu wiki select 1```")
 							options_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
 							options_msg.set_footer(text="Programming Hero")
 							await msg.edit(embed=options_msg)
