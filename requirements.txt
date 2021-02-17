@@ -10,3 +10,4 @@ covid_daily
 pymongo
 dnspython
 whapi
+wikipedia-api
