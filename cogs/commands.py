@@ -23,7 +23,7 @@ class Command(c.Cog):
         await log_channel.send(log_format)
 
     @c.command()
-    async def echoin(self, ctx, guild: discord.Guild=None, channel: discord.TextChannel=None, *msg):
+    async def echoin(self, ctx, guild = None, channel = None, *msg):
         if isinstance(message.channel, discord.channel.DMChannel):
             if guild == None:
                 await ctx.send("Put a guild id..😑")
