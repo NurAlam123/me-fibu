@@ -18,9 +18,30 @@ class Command(c.Cog):
             await ctx.send(msg)
         else:
             await channel.send(msg)
-        log_format = f"==========\nUser: {ctx.author}\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nMessage: {ctx.message.content}\n=========="
+        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
         log_channel = await self.client.fetch_channel(802766376719876107)
         await log_channel.send(log_format)
+
+    @c.command()
+    async def echoin(self, ctx, guild: discord.Guild=None, channel: discord.TextChannel=None, *msg):
+        if isinstance(message.channel, discord.channel.DMChannel):
+            if guild == None:
+                await ctx.send("Put a guild id..😑")
+            elif channel == None:
+                await ctx.send("Put a channel id...😪")
+            else:
+                try:
+                    find_guild = self.bot.fetch_guild(int(guild))
+                    find_channel = find_guild.get_channel(int(channel_id))
+                    await channel.send(msg)
+                    log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                    log_channel = await self.client.fetch_channel(802766376719876107)
+                    await log_channel.send(log_format) 
+                except:
+                    await ctx.send("Type the guild id that exists...🙄")
+            
+       
+
 
 #quotes
     @c.command()
