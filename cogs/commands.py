@@ -32,7 +32,7 @@ class Command(c.Cog):
             else:
                 try:
                     find_guild = self.bot.fetch_guild(int(guild))
-                    find_channel = find_guild.get_channel(int(channel_id))
+                    find_channel = find_guild.get_channel(int(channel))
                     await channel.send(msg)
                     log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
                     log_channel = await self.client.fetch_channel(802766376719876107)
