@@ -25,7 +25,7 @@ class Command(c.Cog):
     @c.command()
     async def echoin(self, ctx, channel = None, *, msg):
         if isinstance(ctx.message.channel, discord.channel.DMChannel):
-            if guild == No
+            if guild == No:
                 await ctx.send("Put a guild id...😑")
             elif channel == None:
                 await ctx.send("Put a channel id...😪")
