@@ -10,7 +10,7 @@ class UsersDm(commands.Cog):
         self.bot = client
 
     async def cog_check(self, ctx):
-        return ctx.author.id in UserDm.DEVS
+        return ctx.author.id in UsersDm.DEVS
     
     users = []
 
@@ -20,14 +20,14 @@ class UsersDm(commands.Cog):
             if message.content.startswith("!"):
                 pass
             else:
-                if message.author.id == self.bot.user.id or message.author.id in UserDm.DEVS:
+                if message.author.id == self.bot.user.id or message.author.id in UsersDm.DEVS:
                     pass
                 else:
                     id = message.author.id
                     if id not in self.users:
                         self.users.append(id)
                     name = message.author.name
-                    for dev in UserDm.DEVS:
+                    for dev in UsersDm.DEVS:
                         receiver = await self.bot.fetch_user(dev)
                         info_format = f"----------\n**{id} - {name} > {self.users.index(id)}**\n----------"
                         await receiver.send(info_format)
@@ -44,7 +44,7 @@ class UsersDm(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
         if isinstance(before_msg.channel, discord.channel.DMChannel):
-                for dev in UserDm.DEVS:
+                for dev in UsersDm.DEVS:
                     receiver = await self.bot.fetch_user(dev)
                     id = before_msg.author.id
                     name = before_msg.author.name
@@ -57,8 +57,8 @@ class UsersDm(commands.Cog):
 
     @commands.command()
     async def msg(self, ctx, index_no: int, *, message):
-        if ctx.author.id in UserDm.DEVS:
-            receivers = [i for i in UserDm.DEVS if i != ctx.author.id]
+        if ctx.author.id in UsersDm.DEVS:
+            receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             id = self.users[index_no]
             user = await self.bot.fetch_user(id)
             await user.send(f"`{ctx.author.name}` - {message}")
@@ -68,7 +68,7 @@ class UsersDm(commands.Cog):
 
     @commands.command()
     async def show_all(self, ctx):
-        if ctx.author.id not in UserDm.DEVS:
+        if ctx.author.id not in UsersDm.DEVS:
             pass
         else:
             data = ""
@@ -82,7 +82,7 @@ class UsersDm(commands.Cog):
     
     @commands.command()
     async def new_dm(self, ctx, user_id: int, *, msg):
-        if ctx.author.id not in UserDm.DEVS:
+        if ctx.author.id not in UsersDm.DEVS:
             pass
         else:
             try:
@@ -92,7 +92,7 @@ class UsersDm(commands.Cog):
                     self.users.append(user.id)
                 else:
                     pass
-                receivers = [i for i in UserDm.DEVS if i != ctx.author.id]
+                receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 await user.send(f"`{ctx.author.name}` - {msg}")
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
@@ -102,7 +102,7 @@ class UsersDm(commands.Cog):
 
     @commands.command()
     async def clean_msg(self, ctx, index_no = None):
-        if ctx.author.id in UserDm.DEVS:
+        if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
                 self.users.pop(int(index_no))
             else:
