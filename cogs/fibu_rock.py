@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-
+import pymongo
+import os
 
 class UsersDm(commands.Cog):
     
@@ -107,6 +108,15 @@ class UsersDm(commands.Cog):
                 self.users.pop(int(index_no))
             else:
                 self.users = []
+    @commands.command()
+    async def dbtest(self, ctx):
+            con_fibu = pymongo.MongoClient(os.getenv("DB"))
+            db = con_fibu["fibu"] #database
+            tb = db["DmUsers"] #table
+            all_users = tb.find()
+            users = []
+            for user in all_users:
+                await ctx.send(user)
 
 
 def setup(bot):
