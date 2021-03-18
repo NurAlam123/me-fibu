@@ -29,7 +29,7 @@ class Challenge(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
-        guild = tb.find_one({"guild_id":ctx.guild.id})
+        guild = tb.find_one({"guild_id":message.guild.id})
         from_channel = await self.client.fetch_channel(int(guild["swap_channels"]["from_channel"]))
         to_channel = await self.client.fetch_channel(int(guild["swap_channels"]["to_channel"]))
         if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
