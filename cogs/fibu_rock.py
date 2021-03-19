@@ -13,7 +13,11 @@ class UsersDm(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
     
-    users = []
+    con_fibu = pymongo.MongoClient(os.getenv("DB"))
+    db = con_fibu["fibu"] #database
+    tb = db["DmUsers"] #table
+    all_users = tb.find()
+    users = all_users[0]["Users"]
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -25,12 +29,15 @@ class UsersDm(commands.Cog):
                     pass
                 else:
                     id = message.author.id
-                    if id not in self.users:
-                        self.users.append(id)
+                    if id not in UsersDm.users:
+                        UsersDm.users.append(id)
+                        new_value = {"Users":  UsersDm.users}
+                        UsersDm.tb.update_one({'_id': ObjectId('605376fd4144dbaad6efe802')}, {"$set": new_value})
+                        
                     name = message.author.name
                     for dev in UsersDm.DEVS:
                         receiver = await self.bot.fetch_user(dev)
-                        info_format = f"----------\n**{id} - {name} > {self.users.index(id)}**\n----------"
+                        info_format = f"----------\n**{id} - {name} > {UsersDm.users.index(id)}**\n----------"
                         await receiver.send(info_format)
                         if message.attachments:
                             attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
@@ -39,7 +46,7 @@ class UsersDm(commands.Cog):
                                 await receiver.send(attachment.url)
                             await receiver.send("------ End Attachment ------")
                         else:
-                            message_format = f"`{name}::` {message.content}\n---- End ----"
+                            message_format = f"`{name}:`: {message.content}\n---- End ----"
                             await receiver.send(message_format)
 
     @commands.Cog.listener()
@@ -50,7 +57,7 @@ class UsersDm(commands.Cog):
                     id = before_msg.author.id
                     name = before_msg.author.name
                     if id != self.bot.user.id:
-                        identity_format = f"----------\n**{id} - {name} > {self.users.index(id)}**\n----------"
+                        identity_format = f"----------\n**{id} - {name} > {UsersDm.users.index(id)}**\n----------"
                         await receiver.send(identity_format)
                         edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg}\n**To:** {after_msg}"
                         await receiver.send(edit_msg_format)
@@ -60,7 +67,7 @@ class UsersDm(commands.Cog):
     async def msg(self, ctx, index_no: int, *, message):
         if ctx.author.id in UsersDm.DEVS:
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
-            id = self.users[index_no]
+            id = UsersDm.users[index_no]
             user = await self.bot.fetch_user(id)
             await user.send(f"`{ctx.author.name}` - {message}")
             for receiver in receivers:
@@ -73,10 +80,10 @@ class UsersDm(commands.Cog):
             pass
         else:
             data = ""
-            for user_id in self.users:
+            for user_id in UsersDm.users:
                 user = await self.bot.fetch_user(user_id)
-                data += f"{self.users.index(user_id)} - {user.name} - {user_id}\n"
-            if self.users == []:
+                data += f"{UsersDm.users.index(user_id)} - {user.name} - {user_id}\n"
+            if UsersDm.users == []:
                await ctx.send("Empty List")
             else:
                 await ctx.send(data)
@@ -89,8 +96,10 @@ class UsersDm(commands.Cog):
             try:
                 await ctx.message.add_reaction("✅")
                 user = await self.bot.fetch_user(user_id)
-                if user.id not in self.users:
-                    self.users.append(user.id)
+                if user.id not in UsersDm.users:
+                    UsersDm.users.append(user.id)
+                    new_value = {"Users":  UsersDm.users}
+                    UsersDm.tb.update_one({'_id': ObjectId('605376fd4144dbaad6efe802')}, {"$set": new_value})
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
@@ -101,23 +110,13 @@ class UsersDm(commands.Cog):
             except:
                 await ctx.send("Not found this user")
 
-    @commands.command()
-    async def clean_msg(self, ctx, index_no = None):
-        if ctx.author.id in UsersDm.DEVS:
-            if index_no != None:
-                self.users.pop(int(index_no))
-            else:
-                self.users = []
-    @commands.command()
-    async def dbtest(self, ctx):
-            con_fibu = pymongo.MongoClient(os.getenv("DB"))
-            db = con_fibu["fibu"] #database
-            tb = db["DmUsers"] #table
-            all_users = tb.find()
-            users = []
-            #for user in all_users:
-#                await ctx.send(user["Users"])
-            await ctx.send(all_users[0]["Users"])
+#    @commands.command()
+#    async def clean_msg(self, ctx, index_no = None):
+#        if ctx.author.id in UsersDm.DEVS:
+#            if index_no != None:
+#                UsersDm.users.pop(int(index_no))
+#            else:
+#                UsersDm.users = []
 
 
 def setup(bot):
