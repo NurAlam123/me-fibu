@@ -115,9 +115,9 @@ class UsersDm(commands.Cog):
             tb = db["DmUsers"] #table
             all_users = tb.find()
             users = []
-            for user in all_users:
-                await ctx.send(user["Users"])
-            await ctx.send(tb["Users"])
+            #for user in all_users:
+#                await ctx.send(user["Users"])
+            await ctx.send(all_user[0]["Users"])
 
 
 def setup(bot):
