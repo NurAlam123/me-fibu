@@ -117,7 +117,7 @@ class UsersDm(commands.Cog):
             users = []
             #for user in all_users:
 #                await ctx.send(user["Users"])
-            await ctx.send(all_user[0]["Users"])
+            await ctx.send(all_users[0]["Users"])
 
 
 def setup(bot):

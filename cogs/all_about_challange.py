@@ -34,7 +34,7 @@ class Challenge(commands.Cog):
         to_channel = await self.client.fetch_channel(int(guild["swap_channels"]["to_channel"]))
         if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
             await message.delete()
-            await from_channel.send(f"{message.author.mention}, your code has been submitted!!")
+            await message.author.send(f"{message.author.mention}, your code has been submitted!!")
             if message.content.__len__() >= 1990:
                 await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n")
                 await to_channel.send(message.content)
