@@ -28,7 +28,7 @@ class Challenge(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
-        guild = tb.find_one({"guild_id":message.guild.id})
+        guild = tb.find_one({"guild_id":ctx.guild.id})
         new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
         tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
         await ctx.message.add_reaction("✅")
