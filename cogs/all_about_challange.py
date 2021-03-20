@@ -39,9 +39,11 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
         guild = tb.find_one({"guild_id":message.guild.id})
-        from_channel = await self.client.fetch_channel(int(guild["swap_channels"]["from_channel"]))
-        to_channel = await self.client.fetch_channel(int(guild["swap_channels"]["to_channel"]))
-        if from_channel is not None:
+        form_channel_id = guild["swap_channels"]["from_channel"]
+        to_channel_id = guild["swap_channels"]["to_channel"]
+        if form_channel_id is not None:
+            from_channel = await self.client.fetch_channel(int(from_channel_id))
+            to_channel = await self.client.fetch_channel(int(to_channel_id))
             if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
                 await message.delete()
                 await message.author.send(f"{message.author.mention}, your code has been submitted!!")
