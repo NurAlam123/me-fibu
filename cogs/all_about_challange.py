@@ -23,7 +23,16 @@ class Challenge(commands.Cog):
                 value = {"guild_id": ctx.guild.id, "swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
                 tb.insert_one(value)
                 await ctx.message.add_reaction("✅")
-    
+    @commands.command()
+    async def removeSwap(self, ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["guild_data"] #table
+        guild = tb.find_one({"guild_id":message.guild.id})
+        new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
+        tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
+        await ctx.message.add_reaction("✅")
+        
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
@@ -32,14 +41,17 @@ class Challenge(commands.Cog):
         guild = tb.find_one({"guild_id":message.guild.id})
         from_channel = await self.client.fetch_channel(int(guild["swap_channels"]["from_channel"]))
         to_channel = await self.client.fetch_channel(int(guild["swap_channels"]["to_channel"]))
-        if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
-            await message.delete()
-            await message.author.send(f"{message.author.mention}, your code has been submitted!!")
-            if message.content.__len__() >= 1990:
-                await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n")
-                await to_channel.send(message.content)
-            else:
-                await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
+        if from_channel is not None:
+            if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
+                await message.delete()
+                await message.author.send(f"{message.author.mention}, your code has been submitted!!")
+                if message.content.__len__() >= 1990:
+                    await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n")
+                    await to_channel.send(message.content)
+                else:
+                    await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
+        else:
+            pass
             
 
 def setup(bot):
