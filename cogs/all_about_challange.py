@@ -28,7 +28,7 @@ class Challenge(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
-        guild = tb.find_one({"guild_id":ctx.guild.id})
+        #guild = tb.find_one({"guild_id":ctx.guild.id})
         new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
         tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
         await ctx.message.add_reaction("✅")
@@ -48,7 +48,7 @@ class Challenge(commands.Cog):
                 await message.delete()
                 await message.author.send(f"{message.author.mention}, your code has been submitted!!")
                 if message.content.__len__() >= 1990:
-                    await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n")
+                    await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n")
                     await to_channel.send(message.content)
                 else:
                     await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
