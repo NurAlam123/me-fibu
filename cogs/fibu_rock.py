@@ -32,7 +32,7 @@ class UsersDm(commands.Cog):
                     if id not in UsersDm.users:
                         UsersDm.users.append(id)
                         new_value = {"Users":  UsersDm.users}
-                        UsersDm.tb.update_one({'_id': ObjectId('605376fd4144dbaad6efe802')}, {"$set": new_value})
+                        UsersDm.tb.update_one({'field_id': 1}, {"$set": new_value})
                         
                     name = message.author.name
                     for dev in UsersDm.DEVS:
