@@ -39,37 +39,18 @@ class Challenge(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
-        guild_data = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
-        if guild_data is not None:
+        guild = tb.find({"guild_id": ctx.guild.id, })
+        if guild is not None:
             for id in ids_list:
-                try:
-                    user_data = guild_data[id]
-                    old_xp = user_data["xp"]
-                    new_xp = old_xp+xp
-                   #old_ level = user_data["level"]
-                    guild_data[id]["xp"] = new_xp
-                    tb.update_one({f"{ctx.guild.id}":{"find_id": 1}}, guild_data)
-                    await ctx.send(tb.find())
-                except:
-                    guild_data[id]["xp"] = xp
-                    guild_data[id]["level"] = 1
-                    guild_data[id]["roles"]= []
-                    tb.update_one({f"{ctx.guild.id}": {"find_id": 1}}, guild_data)
-                    await ctx.send(tb.find())
+            user = guild.find_one({"user_id": id})
+            await ctx.send(user)
         else:
-                tb.insert_one({f"{ctx.guild.id}": {"find_id": 1}})
-                the_guild = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
-                for id in ids_list:
-                    the_guild[id]["xp"] = xp
-                    the_guild[id]["level"] = 1
-                    the_guild[id]["roles"] = []
-                    tb.insert_one(the_guild)
-                await ctx.send(f"Done\n{tb.find()}")
-                
-         
-    
-    
-    
+            for id in ids_list:
+                value = {"guild_id": ctx.guild.id, "user_id": id, "xp": xp}
+                tb.insert_one(value)
+                await ctx.send("Done")
+            
+            
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
