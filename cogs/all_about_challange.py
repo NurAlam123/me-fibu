@@ -50,7 +50,7 @@ class Challenge(commands.Cog):
                     guild_data[f"{int(id)}"]["xp"] = new_xp
                     tb.update_one({f"{ctx.guild.id}":{"find_id": 1}}, guild_data)
                     await ctx.send(tb.find())
-                except KeyError:
+                except:
                     guild_data[f"{int(id)}"]["xp"] = xp
                     guild_data[f"{int(id)}"]["level"] = 1
                     guild_data[f"{int(id)}"]["roles"]= []
