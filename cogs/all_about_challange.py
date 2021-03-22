@@ -38,16 +38,16 @@ class Challenge(commands.Cog):
         ids_list = [int(i) for i in members.split(",")]
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
-        tb = db["guild_data"] #table
+        tb = db["all_about_challenge"] #table
         for id in ids_list:
             user = tb.find_one({"user_id": id})
             if user is not None:
                 tb.update({"user_id": id}, {"$inc": {"xp": xp}})
-                await ctx.send("data update")
+                await ctx.send("Data Updated")
             else:
-                new_value = {"user_id": id, "xp": xp}
+                new_value = {"user_id": id, "xp": xp, "level": 0, "roles": []}
                 tb.insert(new_value)
-                await ctx.send("data insert")
+                await ctx.send("New Data Saved")
             
             
     @commands.Cog.listener("on_message")
