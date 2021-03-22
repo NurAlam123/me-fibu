@@ -43,7 +43,7 @@ class Challenge(commands.Cog):
         if guild_data is not None:
             for id in ids_list:
                 try:
-                    user_data = guild[f"{int(id)}"]
+                    user_data = guild_data[f"{int(id)}"]
                     old_xp = user_data["xp"]
                     new_xp = old_xp+xp
                    #old_ level = user_data["level"]
