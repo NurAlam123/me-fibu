@@ -39,19 +39,21 @@ class Challenge(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
-        guild_data = tb.find_one({ctx.guild.id: {"find_id":1}})
+        guild_data = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
         if guild_data is not None:
             for id in ids_list:
                 try:
-                    user_data = guild[id]
+                    user_data = guild[f"{id}"]
                     old_xp = user_data["xp"]
                     new_xp = old_xp+xp
                    #old_ level = user_data["level"]
                     new_value = {"xp": new_xp}
-                    tb.update_one({ctx.guild.id:{id:{"xp": old_xp}}}, new_value)
+                    tb.update_one({f"{ctx.guild.id}":{f"{id}":{"xp": old_xp}}}, new_value)
+                    await ctx.send(tb.find())
                 except KeyError:
                     value = {id: {"xp": xp, "level": 1, "roles": []}}
                     guild_data.insert_one(value)
+                    await ctx.send(tb.find())
                 
          
     
