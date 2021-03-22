@@ -42,8 +42,8 @@ class Challenge(commands.Cog):
         guild = tb.find({"guild_id": ctx.guild.id, })
         if guild is not None:
             for id in ids_list:
-            user = guild.find_one({"user_id": id})
-            await ctx.send(user)
+                user = guild.find_one({"user_id": id})
+                await ctx.send(user)
         else:
             for id in ids_list:
                 value = {"guild_id": ctx.guild.id, "user_id": id, "xp": xp}
