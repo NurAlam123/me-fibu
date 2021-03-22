@@ -43,26 +43,26 @@ class Challenge(commands.Cog):
         if guild_data is not None:
             for id in ids_list:
                 try:
-                    user_data = guild_data[f"{int(id)}"]
+                    user_data = guild_data[id]
                     old_xp = user_data["xp"]
                     new_xp = old_xp+xp
                    #old_ level = user_data["level"]
-                    guild_data[f"{int(id)}"]["xp"] = new_xp
+                    guild_data[id]["xp"] = new_xp
                     tb.update_one({f"{ctx.guild.id}":{"find_id": 1}}, guild_data)
                     await ctx.send(tb.find())
                 except:
-                    guild_data[f"{int(id)}"]["xp"] = xp
-                    guild_data[f"{int(id)}"]["level"] = 1
-                    guild_data[f"{int(id)}"]["roles"]= []
+                    guild_data[id]["xp"] = xp
+                    guild_data[id]["level"] = 1
+                    guild_data[id]["roles"]= []
                     tb.update_one({f"{ctx.guild.id}": {"find_id": 1}}, guild_data)
                     await ctx.send(tb.find())
         else:
                 tb.insert_one({f"{ctx.guild.id}": {"find_id": 1}})
                 the_guild = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
                 for id in ids_list:
-                    the_guild[f"{int(id)}"]["xp"] = xp
-                    the_guild[f"{int(id)}"]["level"] = 1
-                    the_guild[f"{int(id)}"]["roles"] = []
+                    the_guild[id]["xp"] = xp
+                    the_guild[id]["level"] = 1
+                    the_guild[id]["roles"] = []
                     tb.insert_one(the_guild)
                 await ctx.send(f"Done\n{tb.find()}")
                 
