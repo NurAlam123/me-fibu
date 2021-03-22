@@ -40,7 +40,7 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
         guild_data = tb.find_one({ctx.guild.id: {"find_id":1}})
-        if guild_data not None:
+        if guild_data is not None:
             for id in ids_list:
                 try:
                     user_data = guild[id]
