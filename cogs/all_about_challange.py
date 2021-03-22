@@ -47,19 +47,23 @@ class Challenge(commands.Cog):
                     old_xp = user_data["xp"]
                     new_xp = old_xp+xp
                    #old_ level = user_data["level"]
-                    new_value = {"xp": new_xp}
-                    tb.update_one({f"{ctx.guild.id}":{f"{int(id)}":{"xp": old_xp}}}, new_value)
+                    guild_data[f"{int(id)}"]["xp"] = new_xp
+                    tb.update_one({f"{ctx.guild.id}":{"find_id": 1}}, guild_data)
                     await ctx.send(tb.find())
                 except KeyError:
-                    value = {id: {"xp": xp, "level": 1, "roles": []}}
-                    guild_data.insert_one(value)
+                    guild_data[f"{int(id)}"]["xp"] = xp
+                    guild_data[f"{int(id)}"]["level"] = 1
+                    guild_data[f"{int(id)}"]["roles"]= []
+                    tb.update_one({f"{ctx.guild.id}": {"find_id": 1}}, guild_data)
                     await ctx.send(tb.find())
         else:
                 tb.insert_one({f"{ctx.guild.id}": {"find_id": 1}})
                 the_guild = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
                 for id in ids_list:
-                    value = {f"{int(id)}":{"xp": xp, "level": 1, "roles": []}}
-                    the_guild.insert_one(value)
+                    the_guild[f"{int(id)}"]["xp"] = xp
+                    the_guild[f"{int(id)}"]["level"] = 1
+                    the_guild[f"{int(id)}"]["roles"] = []
+                    tb.insert_one(the_guild)
                 await ctx.send(f"Done\n{tb.find()}")
                 
          
