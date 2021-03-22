@@ -43,17 +43,24 @@ class Challenge(commands.Cog):
         if guild_data is not None:
             for id in ids_list:
                 try:
-                    user_data = guild[f"{id}"]
+                    user_data = guild[f"{int(id)}"]
                     old_xp = user_data["xp"]
                     new_xp = old_xp+xp
                    #old_ level = user_data["level"]
                     new_value = {"xp": new_xp}
-                    tb.update_one({f"{ctx.guild.id}":{f"{id}":{"xp": old_xp}}}, new_value)
+                    tb.update_one({f"{ctx.guild.id}":{f"{int(id)}":{"xp": old_xp}}}, new_value)
                     await ctx.send(tb.find())
                 except KeyError:
                     value = {id: {"xp": xp, "level": 1, "roles": []}}
                     guild_data.insert_one(value)
                     await ctx.send(tb.find())
+        else:
+                tb.insert_one({f"{ctx.guild.id}"}: {"find_id": 1}) #inserting guild id in db
+                the_guild = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
+                for id in ids_list:
+                    value = {f"{int(id)}":{"xp": xp, "level": 1, "roles": []}}
+                    the_guild.insert_one(value)
+                await ctx.send(f"Done\n{tb.find()}")
                 
          
     
