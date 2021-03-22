@@ -32,7 +32,31 @@ class Challenge(commands.Cog):
         new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
         tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
         await ctx.message.add_reaction("✅")
-        
+    
+    @commands.command()
+    async def addXp(self, ctx, xp: int, *, members):
+        ids_list = [int(i) for i in members.split(",")]
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["guild_data"] #table
+        guild_data = tb.find_one({ctx.guild.id: {"find_id":1}})
+        if guild_data not None:
+            for id in ids_list:
+                try:
+                    user_data = guild[id]
+                    old_xp = user_data["xp"]
+                    new_xp = old_xp+xp
+                   #old_ level = user_data["level"]
+                    new_value = {"xp": new_xp}
+                    tb.update_one({ctx.guild.id:{id:{"xp": old_xp}}}, new_value)
+                except KeyError:
+                    value = {id: {"xp": xp, "level": 1, "roles": []}}
+                    guild_data.insert_one(value)
+                
+         
+    
+    
+    
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
