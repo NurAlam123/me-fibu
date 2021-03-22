@@ -55,7 +55,7 @@ class Challenge(commands.Cog):
                     guild_data.insert_one(value)
                     await ctx.send(tb.find())
         else:
-                tb.insert_one({f"{ctx.guild.id}"}: {"find_id": 1}) #inserting guild id in db
+                tb.insert_one({f"{ctx.guild.id}": {"find_id": 1}})
                 the_guild = tb.find_one({f"{ctx.guild.id}": {"find_id":1}})
                 for id in ids_list:
                     value = {f"{int(id)}":{"xp": xp, "level": 1, "roles": []}}
