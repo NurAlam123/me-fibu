@@ -42,10 +42,18 @@ class Challenge(commands.Cog):
         for id in ids_list:
             user = tb.find_one({"user_id": id})
             if user is not None:
-                tb.update({"user_id": id}, {"$inc": {"xp": xp}})
+                old_xp = user["xp"]
+                total_xp = xp + old_xp
+                new_level = int(total_xp/100)
+                new_need_xp = (new_level+1)*100
+                new_xp = total_xp - (new_level*100)
+                tb.update({"user_id": id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level}})
                 await ctx.send("Data Updated")
             else:
-                new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": xp, "level": 0}
+                level = int(xp/100)
+                need_xp = (level+1)*100
+                new_xp = xp - (level*100)
+                new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": []}
                 tb.insert(new_value)
                 await ctx.send("New Data Saved")  
             
