@@ -57,8 +57,11 @@ class Challenge(commands.Cog):
                 tb.insert(new_value)
                 await ctx.send("New Data Saved")
      
-     @commands.command()
-     async def showAllData(self, ctx):
+     
+     
+     
+    @commands.command()
+    async def showAllData(self, ctx):
             con_fibu = pymongo.MongoClient(os.getenv(" DB"))
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
