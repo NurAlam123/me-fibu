@@ -33,6 +33,15 @@ class Info(commands.Cog):
 				msg.add_field(name="Created at",value=f"{(ctx.author.created_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
 				msg.add_field(name="Joined at",value=f"{(ctx.author.joined_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
 				msg.add_field(name=f"Roles [{len(roles)}]",value=f"{', '.join(roles)}", inline= False)
+				con_fibu = pymongo.MongoClient(os.getenv("DB"))
+				db = con_fibu["fibu"]
+				tb = db["all_about_challenge"]
+				find_user = tb.find_one({"user_id": ctx.author.id})
+				if find_user is None:
+					output = f"Level: {find_user['level']}\nXP: {find_user['xp']}"
+					msg.add_field(name="Challenge", value=output)
+				else:
+				    pass
 				msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
 				msg.set_footer(text="Programming Hero ")
 				await ctx.send(embed=msg)
@@ -114,6 +123,15 @@ class Info(commands.Cog):
 		msg.add_field(name="Created at",value=f"{(member.created_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
 		msg.add_field(name="Joined at",value=f"{(member.joined_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
 		msg.add_field(name=f"Roles [{len(member.roles)-1}]",value=f"{', '.join(roles)}", inline= False)
+		con_fibu = pymongo.MongoClient(os.getenv("DB"))
+		db = con_fibu["fibu"]
+		tb = db["all_about_challenge"]
+		find_user = tb.find_one({"user_id": ctx.author.id})
+		if find_user is None:
+			output = f"Level: {find_user['level']}\nXP: {find_user['xp']}"
+			msg.add_field(name="Challenge", value=output)
+		else:
+			pass
 		msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
 		msg.set_footer(text="Programming Hero ")
 		await ctx.send(embed=msg)

@@ -47,8 +47,7 @@ class Challenge(commands.Cog):
             else:
                 new_value = {"user_id": id, "xp": xp, "level": 0, "roles": []}
                 tb.insert(new_value)
-                await ctx.send("New Data Saved")
-            
+                await ctx.send("New Data Saved")  
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
