@@ -39,7 +39,7 @@ class Info(commands.Cog):
 				db = con_fibu["fibu"]
 				tb = db["all_about_challenge"]
 				find_user = tb.find_one({"user_id": ctx.author.id})
-				if find_user is None:
+				if find_user is not None:
 					output = f"Level: {find_user['level']}\nXP: {find_user['xp']}"
 					msg.add_field(name="Challenge", value=output)
 				else:
