@@ -55,7 +55,15 @@ class Challenge(commands.Cog):
                 new_xp = xp - (level*100)
                 new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": []}
                 tb.insert(new_value)
-                await ctx.send("New Data Saved")  
+                await ctx.send("New Data Saved")
+     
+     @commands.command()
+     async def showAllData(self, ctx):
+            con_fibu = pymongo.MongoClient(os.getenv(" DB"))
+            db = con_fibu["fibu"]
+            tb = db["all_about_challenge"]
+            data = tb.find()
+            await ctx.send(data)
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
