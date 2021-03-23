@@ -1,6 +1,8 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands
+import pymongo
+import os
 
 class Info(commands.Cog):
 	def __init__(self,client):

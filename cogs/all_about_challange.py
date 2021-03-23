@@ -45,7 +45,7 @@ class Challenge(commands.Cog):
                 tb.update({"user_id": id}, {"$inc": {"xp": xp}})
                 await ctx.send("Data Updated")
             else:
-                new_value = {"user_id": id, "xp": xp, "level": 0, "roles": []}
+                new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": xp, "level": 0}
                 tb.insert(new_value)
                 await ctx.send("New Data Saved")  
             
