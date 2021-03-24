@@ -61,6 +61,16 @@ class Challenge(commands.Cog):
                 new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": []}
                 tb.insert(new_value)
                 await ctx.send("New Data Saved")
+    
+    @commands.command(alises=["rmAllData"])
+    @has_permissions(administrator=True,manage_guild=True)
+    async def removeAllData(self, ctx, member: discord.Member):
+       con_fibu = pymongo.MongoClient(os.getenv("DB"))
+       db = con_fibu["fibu"]
+       tb = db["all_about_challenge"]
+#       all_data = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
+       tb.delete_one({"user_id": member.id, "guild_id": ctx.guild.id})
+       
        
     @commands.command()
     @has_permissions(administrator=True,manage_guild=True)
