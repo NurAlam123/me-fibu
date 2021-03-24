@@ -44,11 +44,8 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
         user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
-        await ctx.send(list(user))
-        await ctx.send(user)
         if user is not None:
             challenges_list = user["challenges"]
-            print("Working 1")
             for i in challenges_name.split(","):
                 challenges_list.append(i.strip())
             old_xp = user["xp"]
@@ -56,14 +53,14 @@ class Challenge(commands.Cog):
             new_level = int(total_xp/100)
             new_need_xp = (new_level+1)*100
             new_xp = total_xp - (new_level*100)
-            tb.update({"user_id": id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": challenges_list}})
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": challenges_list}})
             await ctx.send("Data Updated")
         else:
             challenges_list = [i.strip() for i in challenges_name.split(",")]
             level = int(xp/100)
             need_xp = (level+1)*100
             new_xp = xp - (level*100)
-            new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenges_list}
+            new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenges_list}
             tb.insert(new_value)
             await ctx.send("New Data Saved")
     
