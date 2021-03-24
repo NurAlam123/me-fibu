@@ -69,14 +69,14 @@ class Challenge(commands.Cog):
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = tb.find({"guild_id": ctx.guild.id})
-            print(all_data)
+            print(list(all_data))
             if all_data == []:
                 await ctx.send("No data found of this server.")
             else:
                 for data in all_data:
                     user = ctx.guild.get_member(data["user_id"])
                     challenges = ", ".join(i for i in data["challenges"])
-                    await ctx.send(f"==========\n**User:** {user.name}\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
+                    await ctx.send(f"==========\n**User:** {user}\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
@@ -84,20 +84,23 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
         guild = tb.find_one({"guild_id":message.guild.id})
-        from_channel_id = guild["swap_channels"]["from_channel"]
-        to_channel_id = guild["swap_channels"]["to_channel"]
-        if from_channel_id is not None:
-            from_channel = await self.client.fetch_channel(int(from_channel_id))
-            to_channel = await self.client.fetch_channel(int(to_channel_id))
-            if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
-                await message.delete()
-                await message.author.send(f"{message.author.mention}, your code has been submitted!!")
-                if message.content.__len__() >= 1990:
-                    await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n")
-                    await to_channel.send(message.content)
-                else:
-                    await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
-        else:
+        try:
+            from_channel_id = guild["swap_channels"]["from_channel"]
+            to_channel_id = guild["swap_channels"]["to_channel"]
+            if from_channel_id is not None:
+                from_channel = await self.client.fetch_channel(int(from_channel_id))
+                to_channel = await self.client.fetch_channel(int(to_channel_id))
+                if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
+                    await message.delete()
+                    await message.author.send(f"{message.author.mention}, your code has been submitted!!")
+                    if message.content.__len__() >= 1990:
+                        await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n")
+                        await to_channel.send(message.content)
+                    else:
+                        await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
+            else:
+                pass
+        except:
             pass
 
     ## Permissions Handling
