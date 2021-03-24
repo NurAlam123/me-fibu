@@ -44,8 +44,11 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
         user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
+        await ctx.send(list(user))
+        await ctx.send(user)
         if user is not None:
             challenges_list = user["challenges"]
+            print("Working 1")
             for i in challenges_name.split(","):
                 challenges_list.append(i.strip())
             old_xp = user["xp"]
