@@ -75,6 +75,7 @@ class Challenge(commands.Cog):
                 await ctx.send("No data found of this server.")
             else:
                 print("working 1")
+                print(list(all_data))
                 for data in all_data:
                     print("working 2")
                     user = ctx.guild.get_member(data["user_id"])
