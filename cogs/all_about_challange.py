@@ -52,7 +52,7 @@ class Challenge(commands.Cog):
             new_level = int(total_xp/100)
             new_need_xp = (new_level+1)*100
             new_xp = total_xp - (new_level*100)
-            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": challenges_list}})
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": new_challenge}})
             await ctx.send("Data Updated")
         else:
             level = int(xp/100)
@@ -61,6 +61,21 @@ class Challenge(commands.Cog):
             new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenge}
             tb.insert(new_value)
             await ctx.send("New Data Saved")
+            
+    @commands.command()
+    async def addChallenge(self, ctx, member: discord.Member, *, challenges):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["all_about_challenge"] #table
+        user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
+        if user is not None:
+            new_challenges = user["challenges"]
+            for challenge in challenges.split(","):
+                new_challenges.append(challenge.split())
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": "challenges": new_challenges}})
+            await ctx.send("Data Successfully Added!")
+        else:
+            await ctx.send("User not found in the database.")
     
     @commands.command(aliases=["rmAllData"])
     @has_permissions(administrator=True,manage_guild=True)
@@ -127,6 +142,10 @@ class Challenge(commands.Cog):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @showAllData.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @removeAllData.error
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
