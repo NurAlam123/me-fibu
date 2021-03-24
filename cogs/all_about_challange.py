@@ -63,12 +63,13 @@ class Challenge(commands.Cog):
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = tb.find({"guild_id": ctx.guild.id})
-            if all_data is None:
+            if all_data == []:
                 await ctx.send("No data found of this server.")
             else:
                 for data in all_data:
+                    user = ctx.guild.get_member(data["user_id"])
                     challenges = ", ".join(i for i in data["challenges"])
-                    await ctx.send(f"==========\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
+                    await ctx.send(f"==========\n**User:** {user.name}\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
