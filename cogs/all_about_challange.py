@@ -68,10 +68,8 @@ class Challenge(commands.Cog):
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
-            all_data = tb.find({"guild_id": ctx.guild.id})
-            print(list(all_data))
-            print(all_data["user_id"])
-            if list(all_data) == []:
+            all_data = list(tb.find({"guild_id": ctx.guild.id}))
+            if all_data == []:
                 await ctx.send("No data found of this server.")
             else:
                 for data in all_data:
