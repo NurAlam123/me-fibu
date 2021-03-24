@@ -2,11 +2,14 @@ import discord
 import os
 import pymongo
 from discord.ext import commands
+from discord.ext.commands import has_permissions
 
 class Challenge(commands.Cog):
     def __init__(self, client):
         self.client = client
+    
     @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
     async def swap(self, ctx, from_channel: discord.TextChannel = None, to_channel: discord.TextChannel = None):
         if from_channel is None or to_channel is None:
             await ctx.send("Provide channel correctly!!")
@@ -24,6 +27,7 @@ class Challenge(commands.Cog):
                 tb.insert_one(value)
                 await ctx.message.add_reaction("✅")
     @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
     async def removeSwap(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
@@ -34,6 +38,7 @@ class Challenge(commands.Cog):
         await ctx.message.add_reaction("✅")
     
     @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
     async def addXp(self, ctx, xp: int, *, members):
         ids_list = [int(i) for i in members.split(",")]
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
@@ -58,6 +63,7 @@ class Challenge(commands.Cog):
                 await ctx.send("New Data Saved")
        
     @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
     async def showAllData(self, ctx):
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"]
@@ -92,7 +98,25 @@ class Challenge(commands.Cog):
                     await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
         else:
             pass
-            
 
+    ## Permissions Handling
+    @swap.error
+    async def _error(self,ctx,error):
+            if isinstance(error,commands.MissingPermissions):
+                await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @removeSwap.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @addXp.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @showAllData.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+            
+            
 def setup(bot):
-    bot.add_cog(Challenge(bot))   
+    bot.add_cog(Challenge(bot))
