@@ -69,6 +69,7 @@ class Challenge(commands.Cog):
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = tb.find({"guild_id": ctx.guild.id})
+            print(all_data)
             if all_data == []:
                 await ctx.send("No data found of this server.")
             else:
