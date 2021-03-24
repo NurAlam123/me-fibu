@@ -16,7 +16,7 @@ prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix= "+"'''prefixs''',
+bot = commands.Bot(command_prefix= "+",
 										intents=intents,
 										case_insensitive=True)
 bot.remove_command("help")
