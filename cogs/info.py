@@ -49,8 +49,8 @@ class Info(commands.Cog):
 					else:
 						all_challenges = ""
 						for no, challenge_name in enumerate(challenges_name, 1):
-							all_challenges += f"```{no}. {challenge_name}\n```"
-						msg.add_field(name="Solved Challenges", value = all_challenges)
+							all_challenges += f"{no}. {challenge_name}\n"
+						msg.add_field(name="Solved Challenges", value = f"```\nall_challenges```")
 					
 				else:
 					pass
@@ -148,8 +148,8 @@ class Info(commands.Cog):
 			else:
 				all_challenges = ""
 				for no, challenge_name in enumerate(challenges_name, 1):
-					all_challenges += f"```{no}. {challenge_name}\n```"
-				msg.add_field(name="Solved Challenges", value = all_challenges)			
+					all_challenges += f"{no}. {challenge_name}\n"
+				msg.add_field(name="Solved Challenges", value = f"```\nall_challenges```")			
 		else:
 			pass
 		msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
