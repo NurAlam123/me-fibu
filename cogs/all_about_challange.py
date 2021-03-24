@@ -68,14 +68,21 @@ class Challenge(commands.Cog):
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
+            print("data 1")
             all_data = tb.find({"guild_id": ctx.guild.id})
+            print("data 2")
             if list(all_data) == []:
                 await ctx.send("No data found of this server.")
             else:
+                print("working 1")
                 for data in all_data:
+                    print("working 2")
                     user = ctx.guild.get_member(data["user_id"])
+                    print("working 3")
                     challenges = ", ".join(i for i in data["challenges"])
+                    print("working 4")
                     await ctx.send(f"==========\n**User:** {user}\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
+                    print("worked")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
