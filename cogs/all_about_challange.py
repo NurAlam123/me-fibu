@@ -72,7 +72,7 @@ class Challenge(commands.Cog):
             new_challenges = user["challenges"]
             for challenge in challenges.split(","):
                 new_challenges.append(challenge.split())
-            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": "challenges": new_challenges}})
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"challenges": new_challenges}})
             await ctx.send("Data Successfully Added!")
         else:
             await ctx.send("User not found in the database.")
