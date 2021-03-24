@@ -82,8 +82,8 @@ class Challenge(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["guild_data"] #table
-        guild = tb.find_one({"guild_id":message.guild.id})
         try:
+            guild = tb.find_one({"guild_id":message.guild.id})
             from_channel_id = guild["swap_channels"]["from_channel"]
             to_channel_id = guild["swap_channels"]["to_channel"]
             if from_channel_id is not None:
@@ -96,7 +96,7 @@ class Challenge(commands.Cog):
                         await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n")
                         await to_channel.send(message.content)
                     else:
-                        await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
+                        await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n{message.content}")
             else:
                 pass
         except Exception as e:
