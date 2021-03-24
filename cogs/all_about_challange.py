@@ -52,6 +52,7 @@ class Challenge(commands.Cog):
             new_level = int(total_xp/100)
             new_need_xp = (new_level+1)*100
             new_xp = total_xp - (new_level*100)
+            await ctx.send(f"{old_xp}\n{new_xp}\n{total_xp}\n{new_level}\n{new_need_xp}")
             tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": new_challenge}})
             await ctx.send("Data Updated")
         else:
