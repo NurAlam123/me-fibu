@@ -39,21 +39,18 @@ class Info(commands.Cog):
 				con_fibu = pymongo.MongoClient(os.getenv("DB"))
 				db = con_fibu["fibu"]
 				tb = db["all_about_challenge"]
-				find_user = tb.find_one({"user_id": ctx.author.id})
+				find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
 				if find_user is not None:
-					if find_user["guild_id"] != ctx.guild.id:
+					output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
+					msg.add_field(name="Challenge Profile", value=output)
+					challenges_name = find_user["challenges"]
+					if challenges_name == []:
 						pass
 					else:
-						output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-						msg.add_field(name="Challenge Profile", value=output)
-						challenges_name = find_user["challenges"]
-						if challenges_name == []:
-							pass
-						else:
-							all_challenges = ""
-							for no, challenge_name in enumerate(challenges_name, 1):
-								all_challenges += f"```{no}. {challenge_name}\n```"
-							msg.add_field(name="Solved Challenges", value = all_challenges)
+						all_challenges = ""
+						for no, challenge_name in enumerate(challenges_name, 1):
+							all_challenges += f"```{no}. {challenge_name}\n```"
+						msg.add_field(name="Solved Challenges", value = all_challenges)
 					
 				else:
 					pass
@@ -141,22 +138,18 @@ class Info(commands.Cog):
 		con_fibu = pymongo.MongoClient(os.getenv("DB"))
 		db = con_fibu["fibu"]
 		tb = db["all_about_challenge"]
-		find_user = tb.find_one({"user_id": ctx.author.id})
+		find_user = tb.find_one({"user_id": ctx.author.id}, "guild_id": ctx.guild.id)
 		if find_user is not None:
-			if find_user["guild_id"] != ctx.guild.id:
+			output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
+			msg.add_field(name="Challenge Profile", value=output)
+			challenges_name = find_user["challenges"]
+			if challenges_name == []:
 				pass
 			else:
-				output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-				msg.add_field(name="Challenge Profile", value=output)
-				challenges_name = find_user["challenges"]
-				if challenges_name == []:
-					pass
-				else:
-					all_challenges = ""
-					for no, challenge_name in enumerate(challenges_name, 1):
-						all_challenges += f"```{no}. {challenge_name}\n```"
-					msg.add_field(name="Solved Challenges", value = all_challenges)
-					
+				all_challenges = ""
+				for no, challenge_name in enumerate(challenges_name, 1):
+					all_challenges += f"```{no}. {challenge_name}\n```"
+				msg.add_field(name="Solved Challenges", value = all_challenges)			
 		else:
 			pass
 		msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
