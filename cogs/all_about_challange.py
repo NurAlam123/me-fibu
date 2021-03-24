@@ -57,18 +57,15 @@ class Challenge(commands.Cog):
                 new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": []}
                 tb.insert(new_value)
                 await ctx.send("New Data Saved")
-     
-     
-     
-     
+       
     @commands.command()
     async def showAllData(self, ctx):
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
-            all_data = tb.find()
+            all_data = tb.find({"guild_id": ctx.guild.id})
             for data in all_data:
-                await ctx.send(f"User Id: {data['user_id']}\nXP: {data['xp']}\nLevel: {data['level']}\nChallenges: ```{data['challenges']}```")
+                await ctx.send(f"==========\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{', '.join(i for i in data['challenges'])}```\n==========")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
