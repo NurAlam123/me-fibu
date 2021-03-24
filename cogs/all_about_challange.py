@@ -40,9 +40,8 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
         for id in ids_list:
-            user = tb.find_one({"user_id": id})
-            guild = user["guild_id"]
-            if user is not None and guild == ctx.guild.id:
+            user = tb.find_one({"user_id": id, "guild_id": ctx.guild.id})
+            if user is not None:
                 old_xp = user["xp"]
                 total_xp = xp + old_xp
                 new_level = int(total_xp/100)
@@ -64,9 +63,12 @@ class Challenge(commands.Cog):
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = tb.find({"guild_id": ctx.guild.id})
-            for data in all_data:
-                challenges = ", ".join(i for i in data["challenges"])
-                await ctx.send(f"==========\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
+            if all_data is None:
+                await ctx.send("No data found of this server.")
+            else:
+                for data in all_data:
+                    challenges = ", ".join(i for i in data["challenges"])
+                    await ctx.send(f"==========\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
