@@ -69,8 +69,7 @@ class Challenge(commands.Cog):
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = tb.find({"guild_id": ctx.guild.id})
-            print(list(all_data))
-            if all_data == []:
+            if list(all_data) == []:
                 await ctx.send("No data found of this server.")
             else:
                 for data in all_data:
@@ -102,7 +101,7 @@ class Challenge(commands.Cog):
                 pass
         except Exception as e:
             print(e)
-            await ctx.send(e)
+            await message.channel.send(e)
 
     ## Permissions Handling
     @swap.error
