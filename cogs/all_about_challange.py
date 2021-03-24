@@ -39,15 +39,14 @@ class Challenge(commands.Cog):
     
     @commands.command()
     @has_permissions(administrator=True,manage_guild=True)
-    async def addXp(self, ctx, xp: int, member: discord.Member, *, challenges_name):
+    async def addXp(self, ctx, xp: int, member: discord.Member, *, challenge):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
         user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
         if user is not None:
-            challenges_list = user["challenges"]
-            for i in challenges_name.split(","):
-                challenges_list.append(i.strip())
+            new_challenge = user["challenges"]
+            new_challenge.append(challenge)
             old_xp = user["xp"]
             total_xp = xp + old_xp
             new_level = int(total_xp/100)
@@ -56,11 +55,10 @@ class Challenge(commands.Cog):
             tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": challenges_list}})
             await ctx.send("Data Updated")
         else:
-            challenges_list = [i.strip() for i in challenges_name.split(",")]
             level = int(xp/100)
             need_xp = (level+1)*100
             new_xp = xp - (level*100)
-            new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenges_list}
+            new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenge}
             tb.insert(new_value)
             await ctx.send("New Data Saved")
     
