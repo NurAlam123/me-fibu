@@ -20,8 +20,8 @@ def com_help(client,ctx):
 			msg.add_field(name="```!fibu joke```",value="To get a random joke", inline = False)
 			msg.add_field(name='```!fibu wiki search <search_word>```',
 						value='Search any details on wikipedia', inline = False)
-			msg.add_field(name='```!fibu translate <from_language|to_language> <text>```',
-						value="Translate your text to another language. Example:\n **!fibu translate en|fr Hello**\nIf you don't know from which language you are translating then put blank the from_language value. Example: **!fibu translate |fr Hello**", inline = False)
+			msg.add_field(name='```!fibu translate <from_language>|<to_language> <text>```',
+						value="Translate your text to another language. Example:\n **!fibu translate en|fr Hello**", inline = False)
 			msg.add_field(name="```\n!fibu google search <query>```",value="To get a search link", inline = False)
 			msg.set_author(name=f'{client.user.name}',icon_url=f'{client.user.avatar_url}')
 			msg.set_footer(text='Programming Hero ')
