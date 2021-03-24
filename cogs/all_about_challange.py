@@ -100,8 +100,9 @@ class Challenge(commands.Cog):
                         await to_channel.send(f"**Submitted By:** `{message.author}`\n**__Code:__**\n{message.content}")
             else:
                 pass
-        except:
-            pass
+        except Exception as e:
+            print(e)
+            await ctx.send(e)
 
     ## Permissions Handling
     @swap.error
