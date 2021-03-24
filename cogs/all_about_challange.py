@@ -63,14 +63,12 @@ class Challenge(commands.Cog):
      
     @commands.command()
     async def showAllData(self, ctx):
-            await ctx.send("Running")
-            con_fibu = pymongo.MongoClient(os.getenv(" DB"))
+            con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = tb.find()
             for data in all_data:
                 await ctx.send(f"User Id: {data['user_id']}\nXP: {data['xp']}\nLevel: {data['level']}\nChallenges: ```{data['challenges']}```")
-            await ctx.send("Done")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
