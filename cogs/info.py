@@ -138,7 +138,7 @@ class Info(commands.Cog):
 		con_fibu = pymongo.MongoClient(os.getenv("DB"))
 		db = con_fibu["fibu"]
 		tb = db["all_about_challenge"]
-		find_user = tb.find_one({"user_id": ctx.author.id}, "guild_id": ctx.guild.id)
+		find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
 		if find_user is not None:
 			output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
 			msg.add_field(name="Challenge Profile", value=output)
