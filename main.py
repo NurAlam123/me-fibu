@@ -10,13 +10,13 @@ token = os.getenv("TOKEN")
 
 dev = [680360098836906004,728260210464129075,664550550527803405,693375549686415381,555452986885668886]
 
-#prefix_file = open("prefix.txt","r")
-#prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
+prefix_file = open("prefix.txt","r")
+prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
 
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix="+",
+bot = commands.Bot(command_prefix=prefixs,
 										intents=intents,
 										case_insensitive=True)
 bot.remove_command("help")
