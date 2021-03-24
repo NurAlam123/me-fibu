@@ -73,13 +73,9 @@ class Challenge(commands.Cog):
                 await ctx.send("No data found of this server.")
             else:
                 for data in all_data:
-                    print("working 2")
                     user = ctx.guild.get_member(data["user_id"])
-                    print("working 3")
                     challenges = ", ".join(i for i in data["challenges"])
-                    print("working 4")
                     await ctx.send(f"==========\n**User:** {user}\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
-                    print("worked")
             
     @commands.Cog.listener("on_message")
     async def _msg(self, message):
