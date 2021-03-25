@@ -49,11 +49,18 @@ class Challenge(commands.Cog):
             new_challenge.append(challenge)
             old_xp = user["xp"]
             total_xp = xp + old_xp
-            new_level = int(total_xp/100)
-            new_need_xp = (new_level+1)*100
-            new_xp = total_xp - (new_level*100)
+            old_need_xp = user["need_xp"]
+            old_level = user["level"]
+            if total_xp >= need_xp:
+                level = old_level + 1
+                need_xp = old_need_xp + 100
+                _xp = total_xp - old_need_xp
+            else:
+                _xp = total_xp
+                need_xp = old_need_xp
+                level = old_level
             await ctx.send(f"{old_xp}\n{new_xp}\n{total_xp}\n{new_level}\n{new_need_xp}")
-            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level, "challenges": new_challenge}})
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": _xp, "need_xp": need_xp, "level": level, "challenges": new_challenge}})
             await ctx.send("Data Updated")
         else:
             level = int(xp/100)
@@ -64,6 +71,7 @@ class Challenge(commands.Cog):
             await ctx.send("New Data Saved")
             
     @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
     async def addChallenge(self, ctx, member: discord.Member, *, challenges):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
@@ -150,6 +158,10 @@ class Challenge(commands.Cog):
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @addChallenge.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")       
             
             
 def setup(bot):
