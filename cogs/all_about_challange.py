@@ -45,29 +45,50 @@ class Challenge(commands.Cog):
         tb = db["all_about_challenge"] #table
         user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
         if user is not None:
+            print(1)
             new_challenge = user["challenges"]
+            print(2)
             new_challenge.append(challenge)
+            print(3)
             old_xp = user["xp"]
+            print(4)
             total_xp = xp + old_xp
+            print(5)
             old_need_xp = user["need_xp"]
+            print(6)
             old_level = user["level"]
+            print(7)
             if total_xp >= need_xp:
+                print(8)
                 level = old_level + 1
+                print(9)
                 need_xp = old_need_xp + 100
+                print(10)
                 _xp = total_xp - old_need_xp
+                print(11)
             else:
+                print(12)
                 _xp = total_xp
+                print(13)
                 need_xp = old_need_xp
+                print(14)
                 level = old_level
-            await ctx.send(f"{old_xp}\n{new_xp}\n{total_xp}\n{new_level}\n{new_need_xp}")
+                print(16)
             tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": _xp, "need_xp": need_xp, "level": level, "challenges": new_challenge}})
+            print(17)
             await ctx.send("Data Updated")
         else:
+            print(18)
             level = int(xp/100)
+            print(19)
             need_xp = (level+1)*100
+            print (20)
             new_xp = xp - (level*100)
+            print(21)
             new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenge}
+            print(22)
             tb.insert(new_value)
+            print(23)
             await ctx.send("New Data Saved")
             
     @commands.command()
