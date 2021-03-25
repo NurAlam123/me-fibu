@@ -42,7 +42,7 @@ class Info(commands.Cog):
 				find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
 				if find_user is not None:
 					output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-					msg.add_field(name="Challenge Profile", value=output)
+					msg.add_field(name="Challenge Profile", value=output, inline=False)
 					challenges_name = find_user["challenges"]
 					if challenges_name == []:
 						pass
@@ -50,7 +50,7 @@ class Info(commands.Cog):
 						all_challenges = ""
 						for no, challenge_name in enumerate(challenges_name, 1):
 							all_challenges += f"{no}. {challenge_name}\n"
-						msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}```")
+						msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}```", inline=False)
 					
 				else:
 					pass
@@ -141,7 +141,7 @@ class Info(commands.Cog):
 		find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
 		if find_user is not None:
 			output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-			msg.add_field(name="Challenge Profile", value=output)
+			msg.add_field(name="Challenge Profile", value=output, inline=False)
 			challenges_name = find_user["challenges"]
 			if challenges_name == []:
 				pass
@@ -149,7 +149,7 @@ class Info(commands.Cog):
 				all_challenges = ""
 				for no, challenge_name in enumerate(challenges_name, 1):
 					all_challenges += f"{no}. {challenge_name}\n"
-				msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}```")			
+				msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}```", inline=False)			
 		else:
 			pass
 		msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
