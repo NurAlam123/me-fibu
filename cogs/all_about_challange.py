@@ -45,9 +45,9 @@ class Challenge(commands.Cog):
         tb = db["all_about_challenge"] #table
         user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
         if user is not None:
-            print(1)
             new_challenge = user["challenges"]
-            print(2)
+            print(new_challenge)
+            print(challenge)
             new_challenge.append(challenge)
             print(3)
             old_xp = user["xp"]
