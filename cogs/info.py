@@ -42,15 +42,15 @@ class Info(commands.Cog):
 				find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
 				if find_user is not None:
 					output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-					msg.add_field(name="Challenge Profile", value=output)
+					msg.add_field(name="Challenge Profile", value=output, inline=False)
 					challenges_name = find_user["challenges"]
 					if challenges_name == []:
 						pass
 					else:
 						all_challenges = ""
 						for no, challenge_name in enumerate(challenges_name, 1):
-							all_challenges += f"```{no}. {challenge_name}\n```"
-						msg.add_field(name="Solved Challenges", value = all_challenges)
+							all_challenges += f"{no}. {challenge_name}\n"
+						msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}```", inline=False)
 					
 				else:
 					pass
@@ -112,7 +112,7 @@ class Info(commands.Cog):
 							color=0xffdf08,
 							timestamp=time.now())
 				msg.set_thumbnail(url=f"{self.client.user.avatar_url}")
-				msg.add_field(name="Version",value="0.0.5", inline= False)
+				msg.add_field(name="Version",value="0.0.6", inline= False)
 				msg.add_field(name="Prefix",value="```!fibu```", inline= False)
 				msg.add_field(name="Released on",value="Jan 1, 2021", inline= False)
 				msg.add_field(name="Website",value="[Programming Hero](https://www.programming-hero.com/)", inline= False)
@@ -141,15 +141,15 @@ class Info(commands.Cog):
 		find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
 		if find_user is not None:
 			output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-			msg.add_field(name="Challenge Profile", value=output)
+			msg.add_field(name="Challenge Profile", value=output, inline=False)
 			challenges_name = find_user["challenges"]
 			if challenges_name == []:
 				pass
 			else:
 				all_challenges = ""
 				for no, challenge_name in enumerate(challenges_name, 1):
-					all_challenges += f"```{no}. {challenge_name}\n```"
-				msg.add_field(name="Solved Challenges", value = all_challenges)			
+					all_challenges += f"{no}. {challenge_name}\n"
+				msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}```", inline=False)			
 		else:
 			pass
 		msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")

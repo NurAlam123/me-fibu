@@ -39,28 +39,62 @@ class Challenge(commands.Cog):
     
     @commands.command()
     @has_permissions(administrator=True,manage_guild=True)
-    async def addXp(self, ctx, xp: int, *, members):
-        ids_list = [int(i) for i in members.split(",")]
+    async def addXp(self, ctx, xp: int, member: discord.Member, *, challenge):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
-        for id in ids_list:
-            user = tb.find_one({"user_id": id, "guild_id": ctx.guild.id})
-            if user is not None:
-                old_xp = user["xp"]
-                total_xp = xp + old_xp
-                new_level = int(total_xp/100)
-                new_need_xp = (new_level+1)*100
-                new_xp = total_xp - (new_level*100)
-                tb.update({"user_id": id, "guild_id": ctx.guild.id}, {"$set": {"xp": new_xp, "need_xp": new_need_xp, "level": new_level}})
-                await ctx.send("Data Updated")
+        user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
+        if user is not None:
+            new_challenge = list(user["challenges"])
+            new_challenge.append(challenge)
+            old_xp = user["xp"]
+            total_xp = xp + old_xp
+            old_need_xp = user["need_xp"]
+            old_level = user["level"]
+            if total_xp >= old_need_xp:
+                level = old_level + 1
+                need_xp = old_need_xp + 100
+                _xp = total_xp - old_need_xp
             else:
-                level = int(xp/100)
-                need_xp = (level+1)*100
-                new_xp = xp - (level*100)
-                new_value = {"user_id": id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": []}
-                tb.insert(new_value)
-                await ctx.send("New Data Saved")
+                _xp = total_xp
+                need_xp = old_need_xp
+                level = old_level
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": _xp, "need_xp": need_xp, "level": level, "challenges": new_challenge}})
+            await ctx.send("Data Updated")
+        else:
+            level = int(xp/100)
+            need_xp = (level+1)*100
+            new_xp = xp - (level*100)
+            new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": [challenge]}
+            tb.insert(new_value)
+            await ctx.send("New Data Saved")
+            
+    @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
+    async def addChallenge(self, ctx, member: discord.Member, *, challenges):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["all_about_challenge"] #table
+        user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
+        if user is not None:
+            new_challenges = user["challenges"]
+            for challenge in challenges.split(","):
+                new_challenges.append(challenge.split())
+            tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"challenges": new_challenges}})
+            await ctx.send("Data Successfully Added!")
+        else:
+            await ctx.send("User not found in the database.")
+    
+    @commands.command(aliases=["rmAllData"])
+    @has_permissions(administrator=True,manage_guild=True)
+    async def removeAllData(self, ctx, member: discord.Member):
+       con_fibu = pymongo.MongoClient(os.getenv("DB"))
+       db = con_fibu["fibu"]
+       tb = db["all_about_challenge"]
+#       all_data = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
+       tb.delete_one({"user_id": member.id, "guild_id": ctx.guild.id})
+       await ctx.send("Data Deleted")
+       
        
     @commands.command()
     @has_permissions(administrator=True,manage_guild=True)
@@ -119,6 +153,14 @@ class Challenge(commands.Cog):
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @removeAllData.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @addChallenge.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")       
             
             
 def setup(bot):

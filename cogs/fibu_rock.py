@@ -5,7 +5,7 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [680360098836906004,728260210464129075,664550550527803405,693375549686415381,555452986885668886]
+    DEVS = [680360098836906004,728260210464129075,664550550527803405,693375549686415381]
     
     def __init__(self, client):
         self.bot = client
@@ -44,10 +44,8 @@ class UsersDm(commands.Cog):
                             await receiver.send(attach_format)
                             for attachment in message.attachments:
                                 await receiver.send(attachment.url)
-                            await receiver.send("------ End Attachment ------")
                         else:
-                            message_format = f"`{name}:`: {message.content}\n---- End ----"
-                            await receiver.send(message_format)
+                            pass
 
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
@@ -59,7 +57,7 @@ class UsersDm(commands.Cog):
                     if id != self.bot.user.id:
                         identity_format = f"----------\n**{id} - {name} > {UsersDm.users.index(id)}**\n----------"
                         await receiver.send(identity_format)
-                        edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg}\n**To:** {after_msg}"
+                        edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg.content}\n**To:** {after_msg.content}"
                         await receiver.send(edit_msg_format)
                     else: pass
 
@@ -69,7 +67,7 @@ class UsersDm(commands.Cog):
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             id = UsersDm.users[index_no]
             user = await self.bot.fetch_user(id)
-            await user.send(f"`{ctx.author.name}` - {message}")
+            await user.send(f"{message}")
             for receiver in receivers:
                 receiver = await self.bot.fetch_user(receiver)
                 await receiver.send(f"`{ctx.author.name}`:: {message}")
@@ -105,7 +103,7 @@ class UsersDm(commands.Cog):
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
-                await user.send(f"`{ctx.author.name}` - {msg}")
+                await user.send(f"{msg}")
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name}`:: {msg}")
