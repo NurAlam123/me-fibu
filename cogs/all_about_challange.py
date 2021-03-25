@@ -46,19 +46,12 @@ class Challenge(commands.Cog):
         user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
         if user is not None:
             new_challenge = list(user["challenges"])
-            print(new_challenge)
-            print(challenge)
             new_challenge.append(challenge)
-            print(3)
             old_xp = user["xp"]
-            print(4)
             total_xp = xp + old_xp
-            print(5)
             old_need_xp = user["need_xp"]
-            print(6)
             old_level = user["level"]
-            print(7)
-            if total_xp >= need_xp:
+            if total_xp >= old_need_xp:
                 print(8)
                 level = old_level + 1
                 print(9)
@@ -85,7 +78,7 @@ class Challenge(commands.Cog):
             print (20)
             new_xp = xp - (level*100)
             print(21)
-            new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": challenge}
+            new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": [challenge]}
             print(22)
             tb.insert(new_value)
             print(23)
