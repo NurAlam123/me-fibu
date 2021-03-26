@@ -125,7 +125,6 @@ class Info(commands.Cog):
 #user info
 	@show.command()
 	async def info(self,ctx,member: discord.Member):
-		print(member)
 		roles = [i.mention for i in member.roles if i.name!="@everyone"]
 		if roles==[]:
 			roles =["No roles!"]
@@ -138,7 +137,7 @@ class Info(commands.Cog):
 		con_fibu = pymongo.MongoClient(os.getenv("DB"))
 		db = con_fibu["fibu"]
 		tb = db["all_about_challenge"]
-		find_user = tb.find_one({"user_id": ctx.author.id, "guild_id": ctx.guild.id})
+		find_user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
 		if find_user is not None:
 			output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
 			msg.add_field(name="Challenge Profile", value=output, inline=False)
