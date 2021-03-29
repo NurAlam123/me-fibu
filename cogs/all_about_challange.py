@@ -71,7 +71,7 @@ class Challenge(commands.Cog):
             if challenge != None:
                 new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": [challenge]}
             else:
-                new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level}
+                new_value = {"user_id": member.id, "guild_id": ctx.guild.id, "xp": new_xp, "need_xp": need_xp, "level": level, "challenges": []}
             
             tb.insert(new_value)
             await ctx.send("New Data Saved")
