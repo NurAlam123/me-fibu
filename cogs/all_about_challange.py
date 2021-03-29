@@ -115,7 +115,7 @@ class Challenge(commands.Cog):
             old_need_xp = user["need_xp"]
             old_level = user["level"]
             if xp > old_xp:
-                remain_xp = old_xp - xp
+                remain_xp = xp - old_xp
                 level = old_level-1
                 need_xp = level*100
                 _xp = need_xp - remain_xp
