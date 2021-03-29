@@ -117,7 +117,7 @@ class Challenge(commands.Cog):
             if xp > old_xp:
                 remain_xp = xp - old_xp
                 level = old_level-1
-                need_xp = level*100
+                need_xp = (level+1)*100
                 _xp = need_xp - remain_xp
                 tb.update({"user_id": member.id, "guild_id": ctx.guild.id}, {"$set": {"xp": _xp, "need_xp": need_xp, "level": level}})
             elif xp == old_xp:
