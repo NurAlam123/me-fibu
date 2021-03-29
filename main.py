@@ -17,8 +17,9 @@ intents = discord.Intents.default()
 intents.members = True
 
 bot = commands.Bot(command_prefix=prefixes,
-										intents=intents,
-										case_insensitive=True)
+
+				    intents=intents,
+					case_insensitive=True)
 bot.remove_command("help")
 
 @bot.event
