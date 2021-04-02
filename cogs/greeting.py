@@ -30,6 +30,27 @@ class Greeting(commands.Cog):
                 tb.insert_one(data)
                 await ctx.send(f"Greeting channel has been set to {channel}")
 
+    @commands.command(aliese=["setWelcomeMsg"])
+    async def setWelcomeMessage(self, ctx, *, welcome_msg=None):
+        if welcome_msg==None:
+            await ctx.send("Give a welcome message!!")
+        else:
+            con_fibu = pymongo.MongoClient(os.getenv("DB"))
+            db = con_fibu["fibu"]
+            tb = db["guild_data"]
+            get_guild = tb.find_one({"guild_id":ctx.guild.id})
+            if get_guild != None:
+                old_welcome_msg = get_guild["welcome_msg"]
+                if old_welcome_msg != None:
+                    tb.update_one({"guild_id": ctx.guild.id}, {"$set": {"welcome_msg": welcome_msg}})
+                    await ctx.send("Welcome message updated!")
+                else:
+                    tb.update_one({"guild_id": ctx.guild.id}, {"$set": {"welcome_msg": welcome_msg}})
+                    await ctx.send("Welcome message updated!")
+            else:
+                tb.insert_one("guild_id": ctx.guild.id, "welcome_msg": welcome_msg)
+                await ctx.send("Welcome message updated!")
+    
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await member.send(f"Hello {member.mention}! Welcome to **{member.guild}** server.\nI am Fibu. Your friend and a friendly bot. I am from **Programming Hero**.🙂\nMy prefix is ```!fibu ```\nFor help type ```!fibu help```")
@@ -61,10 +82,6 @@ class Greeting(commands.Cog):
                         welcome_msg = welcome_msg.replace("{"+first+".name}", member.guild.name)
                     elif last == "id":
                         welcome_msg = welcome_msg.replace("{"+first+".id}", member.guild.id)
-                    elif last == "mention":
-                        welcome_msg = welcome_msg.replace("{"+first+".mention}", member.guild)
-                    #elif last == "user":
-#                        welcome_msg = welcome_msg.replace("{"+first+".user}", member)
         ## End
         else:
             welcome_msg = "Hello, {member.mention}. Welcome to **{member.guild}**"
