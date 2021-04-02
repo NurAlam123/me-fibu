@@ -78,6 +78,8 @@ class Greeting(commands.Cog):
                         welcome_msg = welcome_msg.replace("{"+first+".mention}", member.mention)
                     elif last == "user":
                         welcome_msg = welcome_msg.replace("{"+first+".user}", member)
+                    elif last == "guild":
+                        welcome_msg = welcome_msg.replace("{"+first+".guild}", member.guild.name)
                 #server
                 elif first == "server" or first == "guild":
                     if last == "name":
