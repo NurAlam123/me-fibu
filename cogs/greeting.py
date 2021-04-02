@@ -48,7 +48,7 @@ class Greeting(commands.Cog):
                     tb.update_one({"guild_id": ctx.guild.id}, {"$set": {"welcome_msg": welcome_msg}})
                     await ctx.send("Welcome message updated!")
             else:
-                tb.insert_one("guild_id": ctx.guild.id, "welcome_msg": welcome_msg)
+                tb.insert_one({"guild_id": ctx.guild.id, "welcome_msg": welcome_msg})
                 await ctx.send("Welcome message updated!")
     
     @commands.Cog.listener()
