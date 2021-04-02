@@ -68,6 +68,7 @@ class Greeting(commands.Cog):
                 split_attribute = attribute.split(".")
                 first = split_attribute[0]. lower()
                 last = split_attribute[1].lower()
+                #user
                 if first == "user" or first == "member":
                     if last == "name":
                         welcome_msg = welcome_msg.replace("{"+first+".name}", member.name)
@@ -77,6 +78,7 @@ class Greeting(commands.Cog):
                         welcome_msg = welcome_msg.replace("{"+first+".mention}", member.mention)
                     elif last == "user":
                         welcome_msg = welcome_msg.replace("{"+first+".user}", member)
+                #server
                 elif first == "server" or first == "guild":
                     if last == "name":
                         welcome_msg = welcome_msg.replace("{"+first+".name}", member.guild.name)
