@@ -30,7 +30,7 @@ class Greeting(commands.Cog):
                 tb.insert_one(data)
                 await ctx.send(f"Greeting channel has been set to {channel}")
 
-    @commands.command(aliese=["setWelcomeMsg"])
+    @commands.command(aliases=["setWelcomeMsg"])
     async def setWelcomeMessage(self, ctx, *, welcome_msg=None):
         if welcome_msg==None:
             await ctx.send("Give a welcome message!!")
