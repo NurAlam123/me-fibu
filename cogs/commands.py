@@ -1,6 +1,7 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands as c
+from discord.ext.commands import has_permissions
 import wikiquote as q
 import asyncio
 import typing
