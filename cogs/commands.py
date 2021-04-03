@@ -57,6 +57,27 @@ class Command(c.Cog):
                 await ctx.send(f">>> {quote}\n	- *{search}*")
             except:
                 pass
+    @c.command()
+    @has_permissions(administrator=True,manage_roles=True, manage_messages=True)
+    async def clean(self, ctx, limit: typing.Optional[int]=100, member: discord.Member=None):
+        await ctx.message.delete()
+        if member==None:
+            count = 1
+            async for message for message.history(limit=limit):
+                await message.delete()
+                count+=1
+            msg = await ctx.send("{count} message deleted!!")
+            await asyncio.sleep(3)
+            await msg.delete()
+        else:
+            count = 1
+            async for message for message.history(limit=limit):
+                if message.author.id == member.id:
+                    await message.delete()
+                    count+=1
+            msg = await ctx.send("{count} message deleted!!")
+            await asyncio.sleep(3)
+            await msg.delete()
 
 
 
