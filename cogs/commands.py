@@ -61,9 +61,9 @@ class Command(c.Cog):
     
     @c.command()
     @has_permissions(administrator=True,manage_roles=True, manage_messages=True)
-    async def clean(self, ctx, limit: int):
+    async def clean(self, ctx, limit: int=100):
         await ctx.message.delete()
-        if limit > 100 and limit < 0:
+        if limit > 100 or limit < 0:
             await ctx.send(f"Can't delete {limit} messages! My limit is from 1 to 100.")
         else:
             count = 0
