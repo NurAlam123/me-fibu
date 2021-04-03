@@ -67,7 +67,7 @@ class Command(c.Cog):
             async for message in ctx.channel.history(limit=limit):
                 await message.delete()
                 count+=1
-            msg = await ctx.send("{count} message deleted!!")
+            msg = await ctx.send(f"{count} message deleted!!")
             await asyncio.sleep(3)
             await msg.delete()
         else:
@@ -76,7 +76,7 @@ class Command(c.Cog):
                 if message.author.id == member.id:
                     await message.delete()
                     count+=1
-            msg = await ctx.send("{count} message deleted!!")
+            msg = await ctx.send(f"{count} message deleted!!")
             await asyncio.sleep(3)
             await msg.delete()
 
