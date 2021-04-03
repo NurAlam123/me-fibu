@@ -63,7 +63,7 @@ class Command(c.Cog):
         await ctx.message.delete()
         if member==None:
             count = 1
-            async for message for message.history(limit=limit):
+            async for message in message.history(limit=limit):
                 await message.delete()
                 count+=1
             msg = await ctx.send("{count} message deleted!!")
@@ -71,7 +71,7 @@ class Command(c.Cog):
             await msg.delete()
         else:
             count = 1
-            async for message for message.history(limit=limit):
+            async for message in message.history(limit=limit):
                 if message.author.id == member.id:
                     await message.delete()
                     count+=1
