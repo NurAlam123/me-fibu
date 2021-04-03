@@ -5,7 +5,7 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [680360098836906004,728260210464129075,664550550527803405,693375549686415381]
+    DEVS = [680360098836906004]
     
     def __init__(self, client):
         self.bot = client
