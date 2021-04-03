@@ -61,51 +61,53 @@ class Greeting(commands.Cog):
         welcomeChannel = tb.find_one({"guild_id":member.guild.id})
         
         ## message customization part
-        welcome_msg = welcomeChannel["welcome_msg"]
-        if welcome_msg != None:
-            find_attributes = re.findall("{[a-z]+\.[a-z]+}"[1:-1], welcome_msg) # finding all attributes that are between { and } and removing the curly braces
-            for attribute in find_attributes:
-                split_attribute = attribute.split(".")
-                first = split_attribute[0]. lower()
-                last = split_attribute[1].lower()
-                #user
-                if first == "user" or first == "member":
-                    if last == "name":
-                        welcome_msg = welcome_msg.replace("{"+first+".name}", member.name)
-                    elif last == "id":
-                        welcome_msg = welcome_msg.replace("{"+first+".id}", member.id)
-                    elif last == "mention":
-                        welcome_msg = welcome_msg.replace("{"+first+".mention}", member.mention)
-                    elif last == "user":
-                        welcome_msg = welcome_msg.replace("{"+first+".user}", member)
-                    elif last == "guild":
-                        welcome_msg = welcome_msg.replace("{"+first+".guild}", member.guild.name)
-                #server
-                elif first == "server" or first == "guild":
-                    if last == "name":
-                        welcome_msg = welcome_msg.replace("{"+first+".name}", member.guild.name)
-                    elif last == "id":
-                        welcome_msg = welcome_msg.replace("{"+first+".id}", member.guild.id)
-        ## End
-        else:
-            welcome_msg = "Hello, {member.mention}. Welcome to **{member.guild}**"
-        if welcomeChannel is None:
-            sys_channel = member.guild.system_channel
-            if sys_channel is None:
-                channel = get(member.guild.channels,name="general")
-                if channel is None:
+        try:
+            welcome_msg = welcomeChannel["welcome_msg"]
+            if welcome_msg != None:
+                find_attributes = re.findall("{[a-z]+\.[a-z]+}"[1:-1], welcome_msg) # finding all attributes that are between { and } and removing the curly braces
+                for attribute in find_attributes:
+                    split_attribute = attribute.split(".")
+                    first = split_attribute[0]. lower()
+                    last = split_attribute[1].lower()
+                    #user
+                    if first == "user" or first == "member":
+                        if last == "name":
+                            welcome_msg = welcome_msg.replace("{"+first+".name}", member.name)
+                        elif last == "id":
+                            welcome_msg = welcome_msg.replace("{"+first+".id}", member.id)
+                        elif last == "mention":
+                            welcome_msg = welcome_msg.replace("{"+first+".mention}", member.mention)
+                        elif last == "user":
+                            welcome_msg = welcome_msg.replace("{"+first+".user}", member)
+                        elif last == "guild":
+                            welcome_msg = welcome_msg.replace("{"+first+".guild}", member.guild.name)
+                    #server
+                    elif first == "server" or first == "guild":
+                        if last == "name":
+                            welcome_msg = welcome_msg.replace("{"+first+".name}", member.guild.name)
+                        elif last == "id":
+                            welcome_msg = welcome_msg.replace("{"+first+".id}", member.guild.id)
+            ## End
+            else:
+                welcome_msg = "Hello, {member.mention}. Welcome to **{member.guild}**"
+            if welcomeChannel is None:
+                sys_channel = member.guild.system_channel
+                if sys_channel is None:
+                    channel = get(member.guild.channels,name="general")
+                    if channel is None:
+                        pass
+                    else:
+                        await channel.send(welcome_msg)
+                else:
+                    await sys_channel.send(welcome_mag)
+            else:
+                welcomeChannel = get(member.guild.channels,id=welcomeChannel["welcome_channel"])
+                if welcomeChannel is None:
                     pass
                 else:
-                    await channel.send(welcome_msg)
-            else:
-                await sys_channel.send(welcome_mag)
-        else:
-            welcomeChannel = get(member.guild.channels,id=welcomeChannel["welcome_channel"])
-            if welcomeChannel is None:
-                pass
-            else:
-                await welcomeChannel.send(welcome_msg)
-    
+                    await welcomeChannel.send(welcome_msg)
+        except:
+            pass
     @commands.command()
     async def hello(self,ctx):
         await ctx.message.add_reaction("🙂")
