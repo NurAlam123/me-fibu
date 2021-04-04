@@ -99,7 +99,7 @@ class UsersDm(commands.Cog):
                 if user.id not in UsersDm.users:
                     UsersDm.users.append(user.id)
                     new_value = {"Users":  UsersDm.users}
-                    UsersDm.tb.update_one({'_id': ObjectId('605376fd4144dbaad6efe802')}, {"$set": new_value})
+                    UsersDm.tb.update_one({'field_id': "1")}, {"$set": new_value})
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
@@ -107,8 +107,7 @@ class UsersDm(commands.Cog):
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name}`:: {msg}")
-            except Exception as e:
-                print (e)
+            except:
                 await ctx.send("Not found this user")
 
 #    @commands.command()
