@@ -45,7 +45,8 @@ class UsersDm(commands.Cog):
                             for attachment in message.attachments:
                                 await receiver.send(attachment.url)
                         else:
-                            pass
+                            message_format = f"`{name}::` {message.content}\n"
+                            await receiver.send(message_format)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
