@@ -99,7 +99,7 @@ class UsersDm(commands.Cog):
                 if user.id not in UsersDm.users:
                     UsersDm.users.append(user.id)
                     new_value = {"Users":  UsersDm.users}
-                    UsersDm.tb.update_one({'field_id': "1"}, {"$set": new_value})
+                    UsersDm.tb.UsersDm.tb.update_one({'field_id': "1"}, {"$set": new_value})
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
