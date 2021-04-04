@@ -107,7 +107,8 @@ class UsersDm(commands.Cog):
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name}`:: {msg}")
-            except:
+            except Exception as e:
+                print (e)
                 await ctx.send("Not found this user")
 
 #    @commands.command()
