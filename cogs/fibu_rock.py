@@ -68,9 +68,9 @@ class UsersDm(commands.Cog):
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             id = UsersDm.users[index_no]
             user = await self.bot.fetch_user(id)
-            async with ctx.channel.typing():
-                await user.send(f"{message}")
-                await ctx.message.add_reaction("✅")
+           # async with ctx.channel.typing():
+            await user.send(f"{message}")
+            await ctx.message.add_reaction("✅")
             for receiver in receivers:
                 receiver = await self.bot.fetch_user(receiver)
                 await receiver.send(f"`{ctx.author.name} to {user}`:: {message}")
