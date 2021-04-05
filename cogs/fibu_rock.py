@@ -45,7 +45,8 @@ class UsersDm(commands.Cog):
                             for attachment in message.attachments:
                                 await receiver.send(attachment.url)
                         else:
-                            pass
+                            message_format = f"`{name}::` {message.content}\n"
+                            await receiver.send(message_format)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
@@ -100,7 +101,7 @@ class UsersDm(commands.Cog):
                 if user.id not in UsersDm.users:
                     UsersDm.users.append(user.id)
                     new_value = {"Users":  UsersDm.users}
-                    UsersDm.tb.update_one({'field_id': "1")}, {"$set": new_value})
+                    UsersDm.tb.UsersDm.tb.update_one({'field_id': "1"}, {"$set": new_value})
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
