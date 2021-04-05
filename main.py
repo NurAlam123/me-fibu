@@ -59,7 +59,8 @@ async def off(ctx,file):
 			
 
 for files in os.listdir("./cogs"):
-	bot.load_extension(f"cogs.{files[:-3]}")
+	#	if files.endswith(".py") and files != "fibu_rock.py":
+		bot.load_extension(f"cogs.{files[:-3]}")
 
 
 #client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")			
