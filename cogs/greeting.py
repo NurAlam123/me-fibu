@@ -109,10 +109,6 @@ class Greeting(commands.Cog):
         except:
             pass
     @commands.command()
-    async def hello(self,ctx):
-        await ctx.message.add_reaction("🙂")
-        await ctx.send(f"Hello {ctx.author.mention}! How are you?")
-    @commands.command()
     async def dm(self,ctx,member: discord.Member=None):
         await ctx.message.add_reaction("👍")
         if member==None:
@@ -129,11 +125,14 @@ class Greeting(commands.Cog):
 	
     @commands.Cog.listener("on_message")
     async def message(self,msg):
-        if msg.content.lower() == "!fibu thank you" or msg.content.lower() == "!fibu thanks" or msg.content.lower() == "!fibu thnx" or msg.content.lower() == "!fibu tnx" or msg.content.lower() == "!fibu tnq":
+        if msg.content.lower() in ["!fibu hello", "!fibu hi", "!fibu hola", "!fibu hlw", "!fibu hlo", "!fibu hey"]:
+            await msg.add_reaction("🙂")
+            await msg.channel.send(f"Hello {msg.author.mention}! How are you?")
+        if msg.content.lower() in ["!fibu thank you", "!fibu thanks", "!fibu thnx", "!fibu tnx", "!fibu tnq"]:
             await msg.add_reaction("❤️")
-        if msg.content.lower()=="!fibu ok":
+        if msg.content.lower() in ["!fibu ok", "!fibu okay", "!fibu okhey", "!fibu oky"]:
             await msg.add_reaction("👌")
-        if msg.content.lower() == "!fibu sorry" or msg.content.lower() == "!fibu sry" or msg.content.lower() == "!fibu forgive me" or msg.content.lower() == "!fibu forgive":
+        if msg.content.lower() in ["!fibu sorry","!fibu sry", "!fibu forgive me", "!fibu forgive"]:
             await msg.add_reaction("🙂")
             await msg.channel.send("Ok... I forgive you. But don't repeat it again!")
 
