@@ -1,6 +1,7 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands as c
+from discord.ext.commands import has_permissions
 import wikiquote as q
 import asyncio
 import typing
@@ -57,6 +58,21 @@ class Command(c.Cog):
                 await ctx.send(f">>> {quote}\n	- *{search}*")
             except:
                 pass
+    
+    @c.command()
+    @has_permissions(administrator=True,manage_roles=True, manage_messages=True)
+    async def clean(self, ctx, limit: int=100):
+        await ctx.message.delete()
+        if limit > 100 or limit < 0:
+            await ctx.send(f"Can't delete {limit} messages! My limit is from 1 to 100.")
+        else:
+            count = 0
+            async for message in ctx.channel.history(limit=limit):
+                await message.delete()
+                count+=1
+            msg = await ctx.send(f"{count} messages deleted!!")
+            await asyncio.sleep(3)
+            await msg.delete()
 
 
 

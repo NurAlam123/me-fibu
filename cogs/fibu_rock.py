@@ -5,7 +5,7 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [680360098836906004,728260210464129075,664550550527803405,693375549686415381]
+    DEVS = [680360098836906004]
     
     def __init__(self, client):
         self.bot = client
@@ -68,10 +68,13 @@ class UsersDm(commands.Cog):
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             id = UsersDm.users[index_no]
             user = await self.bot.fetch_user(id)
-            await user.send(f"{message}")
+            async with ctx.channel.typing():
+                await user.send(f"{message}")
+                await ctx.message.add_reaction("✅")
             for receiver in receivers:
                 receiver = await self.bot.fetch_user(receiver)
-                await receiver.send(f"`{ctx.author.name}`:: {message}")
+                await receiver.send(f"`{ctx.author.name} to {user}`:: {message}")
+                
 
     @commands.command()
     async def show_all(self, ctx):
@@ -95,7 +98,6 @@ class UsersDm(commands.Cog):
             pass
         else:
             try:
-                await ctx.message.add_reaction("✅")
                 user = await self.bot.fetch_user(user_id)
                 if user.id not in UsersDm.users:
                     UsersDm.users.append(user.id)
@@ -108,6 +110,7 @@ class UsersDm(commands.Cog):
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name}`:: {msg}")
+                    await ctx.message.add_reaction("✅")
             except:
                 await ctx.send("Not found this user")
 
