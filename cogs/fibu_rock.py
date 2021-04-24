@@ -124,8 +124,7 @@ class UsersDm(commands.Cog):
                 await ctx.send("{user.name} removed!!")
                 
             else:
-                UsersDm.users = []
-                UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
+                UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": []}})
                 await ctx.send("Data Successfully Deleted!!")
 
 
