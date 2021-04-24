@@ -8,7 +8,7 @@ import typing
 import random
 import pymongo
 
-class Command(c.Cog):
+class Command(commands.Cog):
     def __init__(self,client):
         self.client = client
 
