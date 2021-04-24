@@ -118,12 +118,15 @@ class UsersDm(commands.Cog):
     async def clean_dm(self, ctx, index_no = None):
         if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
+                user = await self.bot.fetch_user(user_id)
                 UsersDm.users.pop(int(index_no))
                 UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
+                await ctx.send("{user.name} removed!!")
                 
             else:
                 UsersDm.users = []
                 UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
+                await ctx.send("Data Successfully Deleted!!")
 
 
 def setup(bot):
