@@ -5,7 +5,7 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [680360098836906004]
+    DEVS = [680360098836906004,728260210464129075,664550550527803405,693375549686415381]
     
     def __init__(self, client):
         self.bot = client
@@ -77,7 +77,7 @@ class UsersDm(commands.Cog):
                 
 
     @commands.command()
-    async def show_all(self, ctx):
+    async def show_all_dm(self, ctx):
         if ctx.author.id not in UsersDm.DEVS:
             pass
         else:
@@ -114,13 +114,13 @@ class UsersDm(commands.Cog):
             except:
                 await ctx.send("Not found this user")
 
-#    @commands.command()
-#    async def clean_msg(self, ctx, index_no = None):
-#        if ctx.author.id in UsersDm.DEVS:
-#            if index_no != None:
-#                UsersDm.users.pop(int(index_no))
-#            else:
-#                UsersDm.users = []
+    @commands.command()
+    async def clean_dm(self, ctx, index_no = None):
+        if ctx.author.id in UsersDm.DEVS:
+            if index_no != None:
+                UsersDm.users.pop(int(index_no))
+            else:
+                UsersDm.users = []
 
 
 def setup(bot):

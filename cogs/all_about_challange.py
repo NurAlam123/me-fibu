@@ -7,36 +7,7 @@ from discord.ext.commands import has_permissions
 class Challenge(commands.Cog):
     def __init__(self, client):
         self.client = client
-    
-    @commands.command()
-    @has_permissions(administrator=True,manage_guild=True)
-    async def swap(self, ctx, from_channel: discord.TextChannel = None, to_channel: discord.TextChannel = None):
-        if from_channel is None or to_channel is None:
-            await ctx.send("Provide channel correctly!!")
-        else:
-            con_fibu = pymongo.MongoClient(os.getenv("DB"))
-            db = con_fibu["fibu"] #database
-            tb = db["guild_data"] #table
-            get_guild = tb.find_one({"guild_id":ctx.guild.id})
-            if get_guild!=None:
-                new_value = {"swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
-                tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
-                await ctx.message.add_reaction("✅")
-            else:
-                value = {"guild_id": ctx.guild.id, "swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
-                tb.insert_one(value)
-                await ctx.message.add_reaction("✅")
-    @commands.command()
-    @has_permissions(administrator=True,manage_guild=True)
-    async def removeSwap(self, ctx):
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["guild_data"] #table
-        #guild = tb.find_one({"guild_id":ctx.guild.id})
-        new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
-        tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
-        await ctx.message.add_reaction("✅")
-    
+
     @commands.command()
     @has_permissions(administrator=True,manage_guild=True)
     async def addXp(self, ctx, xp: int, member: discord.Member, *, challenge = None):
@@ -92,14 +63,22 @@ class Challenge(commands.Cog):
         else:
             await ctx.send("User not found in the database.")
     
-    @commands.command(aliases=["rmAllData"])
+    @commands.command(aliases=["rmData"])
     @has_permissions(administrator=True,manage_guild=True)
-    async def removeAllData(self, ctx, member: discord.Member):
+    async def removeData(self, ctx, member: discord.Member):
        con_fibu = pymongo.MongoClient(os.getenv("DB"))
        db = con_fibu["fibu"]
        tb = db["all_about_challenge"]
-#       all_data = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
        tb.delete_one({"user_id": member.id, "guild_id": ctx.guild.id})
+       await ctx.send("Data Deleted")
+    
+    @commands.command(aliases=["rmAllData"])
+    @has_permissions(administrator=True,manage_guild=True)
+    async def removeAllData(self, ctx):
+       con_fibu = pymongo.MongoClient(os.getenv("DB"))
+       db = con_fibu["fibu"]
+       tb = db["all_about_challenge"]
+       tb.delete_one({"guild_id": ctx.guild.id})
        await ctx.send("Data Deleted")
      
     @commands.command(aliases=["rmxp"])
@@ -142,41 +121,22 @@ class Challenge(commands.Cog):
                     user = ctx.guild.get_member(data["user_id"])
                     challenges = ", ".join(i for i in data["challenges"])
                     await ctx.send(f"==========\n**User:** {user}\n**User Id:** {data['user_id']}\n**XP:** {data['xp']}\n**Level:** {data['level']}\n**Challenges:** ```{challenges}```\n==========")
-            
-    @commands.Cog.listener("on_message")
-    async def _msg(self, message):
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["guild_data"] #table
-        try:
-            guild = tb.find_one({"guild_id":message.guild.id})
-            from_channel_id = guild["swap_channels"]["from_channel"]
-            to_channel_id = guild["swap_channels"]["to_channel"]
-            if from_channel_id is not None:
-                from_channel = await self.client.fetch_channel(int(from_channel_id))
-                to_channel = await self.client.fetch_channel(int(to_channel_id))
-                if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
-                    await message.delete()
-                    await message.author.send(f"{message.author.mention}, your code has been submitted!!")
-                    if message.content.__len__() >= 1990:
-                        await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n")
-                        await to_channel.send(message.content)
-                    else:
-                        await to_channel.send(f"**Submitted By:** `{message.author}`\n**ID:** {message.author.id}\n**__Code:__**\n{message.content}")
+    
+    @commands.command()
+    @has_permissions(administrator=True,manage_guild=True)
+    async def showData(self, ctx, member: discord.Member):
+            con_fibu = pymongo.MongoClient(os.getenv("DB"))
+            db = con_fibu["fibu"]
+            tb = db["all_about_challenge"]
+            member_data = tb.find_one({"guild_id": ctx.guild.id, "user_id": member.id})
+            if member_data is None:
+                await ctx.send("No data found!!")
             else:
-                pass
-        except:
-            pass
+                user = ctx.guild.get_member(member_data["user_id"])
+                challenges = ", ".join(i for i in member_data["challenges"])
+                await ctx.send(f"==========\n**User:** {user}\n**User Id:** {member_data['user_id']}\n**XP:** {member_data['xp']}\n**Level:** {member_data['level']}\n**Challenges:** ```{challenges}```\n==========")
 
     ## Permissions Handling
-    @swap.error
-    async def _error(self,ctx,error):
-            if isinstance(error,commands.MissingPermissions):
-                await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-    @removeSwap.error
-    async def _error(self,ctx,error):
-        if isinstance(error,commands.MissingPermissions):
-            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @addXp.error
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
@@ -189,11 +149,19 @@ class Challenge(commands.Cog):
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @removeData.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @addChallenge.error
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @removeXp.error
+    async def _error(self,ctx,error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+    @showData.error
     async def _error(self,ctx,error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")

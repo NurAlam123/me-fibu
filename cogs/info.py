@@ -34,7 +34,7 @@ class Info(commands.Cog):
 				msg.set_thumbnail(url=ctx.author.avatar_url)
 				msg.add_field(name="Created at",value=f"{(ctx.author.created_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
 				msg.add_field(name="Joined at",value=f"{(ctx.author.joined_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
-				msg.add_field(name=f"Roles [{len(roles)}]",value=f"{', '.join(roles)}", inline= False)
+				msg.add_field(name=f"Roles [{len(roles)-1}]",value=f"{', '.join(roles)}", inline= False)
 				# challenge's information
 				con_fibu = pymongo.MongoClient(os.getenv("DB"))
 				db = con_fibu["fibu"]
