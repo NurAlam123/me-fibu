@@ -124,17 +124,20 @@ class Challenge(commands.Cog):
     
     @commands.command()
     @has_permissions(administrator=True,manage_guild=True)
-    async def showData(self, ctx, member: discord.Member):
-            con_fibu = pymongo.MongoClient(os.getenv("DB"))
-            db = con_fibu["fibu"]
-            tb = db["all_about_challenge"]
-            member_data = tb.find_one({"guild_id": ctx.guild.id, "user_id": member.id})
-            if member_data is None:
-                await ctx.send("No data found!!")
+    async def showData(self, ctx, member: discord.Member=None):
+            if member != None:
+                con_fibu = pymongo.MongoClient(os.getenv("DB"))
+                db = con_fibu["fibu"]
+                tb = db["all_about_challenge"]
+                member_data = tb.find_one({"guild_id": ctx.guild.id, "user_id": member.id})
+                if member_data is None:
+                    await ctx.send("No data found!!")
+                else:
+                    user = ctx.guild.get_member(member_data["user_id"])
+                    challenges = ", ".join(i for i in member_data["challenges"])
+                    await ctx.send(f"==========\n**User:** {user}\n**User Id:** {member_data['user_id']}\n**XP:** {member_data['xp']}\n**Level:** {member_data['level']}\n**Challenges:** ```{challenges}```\n==========")
             else:
-                user = ctx.guild.get_member(member_data["user_id"])
-                challenges = ", ".join(i for i in member_data["challenges"])
-                await ctx.send(f"==========\n**User:** {user}\n**User Id:** {member_data['user_id']}\n**XP:** {member_data['xp']}\n**Level:** {member_data['level']}\n**Challenges:** ```{challenges}```\n==========")
+                await ctx.send("Provide user id or mention a user")
 
     ## Permissions Handling
     @addXp.error

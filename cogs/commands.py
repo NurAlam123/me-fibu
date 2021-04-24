@@ -7,6 +7,7 @@ import asyncio
 import typing
 import random
 import pymongo
+import os
 
 class Command(commands.Cog):
     def __init__(self,client):
