@@ -102,7 +102,7 @@ class UsersDm(commands.Cog):
                 if user.id not in UsersDm.users:
                     UsersDm.users.append(user.id)
                     new_value = {"Users":  UsersDm.users}
-                    UsersDm.tb.update_one({'field_id': "1"}, {"$set": new_value})
+                    UsersDm.tb.update_one({'field_id': 1}, {"$set": new_value})
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
@@ -123,11 +123,11 @@ class UsersDm(commands.Cog):
             if index_no != None:
                 user = await self.bot.fetch_user(user_id)
                 users.pop(int(index_no))
-                tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
+                tb.update_one({"field_id": 1}, {"$set": {"Users": UsersDm.users}})
                 await ctx.send("{user.name} removed!!")
                 
             else:
-                tb.update_one({"field_id":"1"}, {"$set": {"Users": []}})
+                tb.update_one({"field_id": 1}, {"$set": {"Users": []}})
                 await ctx.send("Data Successfully Deleted!!")
 
 
