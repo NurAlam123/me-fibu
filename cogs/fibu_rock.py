@@ -116,15 +116,18 @@ class UsersDm(commands.Cog):
 
     @commands.command()
     async def clean_dm(self, ctx, index_no = None):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["DmUsers"] #table
         if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
                 user = await self.bot.fetch_user(user_id)
-                UsersDm.users.pop(int(index_no))
-                UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
+                users.pop(int(index_no))
+                tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
                 await ctx.send("{user.name} removed!!")
                 
             else:
-                UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": []}})
+                tb.update_one({"field_id":"1"}, {"$set": {"Users": []}})
                 await ctx.send("Data Successfully Deleted!!")
 
 
