@@ -102,7 +102,7 @@ class UsersDm(commands.Cog):
                 if user.id not in UsersDm.users:
                     UsersDm.users.append(user.id)
                     new_value = {"Users":  UsersDm.users}
-                    UsersDm.tb.UsersDm.tb.update_one({'field_id': "1"}, {"$set": new_value})
+                    UsersDm.tb.update_one({'field_id': "1"}, {"$set": new_value})
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
@@ -119,8 +119,11 @@ class UsersDm(commands.Cog):
         if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
                 UsersDm.users.pop(int(index_no))
+                UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
+                
             else:
                 UsersDm.users = []
+                UsersDm.tb.update_one({"field_id":"1"}, {"$set": {"Users": UsersDm.users}})
 
 
 def setup(bot):
