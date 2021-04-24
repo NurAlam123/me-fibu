@@ -8,7 +8,7 @@ class Google(commands.Cog):
     def __init__(self, client):
         self.bot = client
     
-    @commands.command(description = "Search anything.. Example: @google Elon Musk", aliese=["g","search","srch","go"])
+    @commands.command(aliese=["g","search","srch","go"])
     async def google(self, ctx, *, query = None):
         if query is None:
             await ctx.send("You haven’t enter any word or sentence to search") # if user didn't send any word or sentence to search
