@@ -11,10 +11,12 @@ class Translate(c.Cog):
 	@c.command(aliases=["translate"])
 	async def ts(self,ctx,lang,*,text):
 			lang = lang.split("|")
-			if lang[0]=="":
-				translation = trans.bing(text,to_language=lang[1])
+			form = lang[0].strip()
+			to = lang[1].strip()
+			if form == "":
+				translation = trans.google(text,to_language=to)
 			else:
-					translation = trans.bing(text,from_language=lang[0],to_language=lang[1])
+					translation = trans.google(text,from_language=form,to_language=to)
 					msg = discord.Embed(title="Translator", color=0xffdf08)
 					msg.add_field(name="Word",value=f"{text.capitalize()}")
 					msg.add_field(name="Translation",value=f"{translation}")
