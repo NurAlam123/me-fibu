@@ -2,7 +2,7 @@ discord.py==1.7.1
 python-youtube
 translators
 wikipedia
-covid19-data
+covid_daily
 wikiquote
 pyjokes
 pymongo
