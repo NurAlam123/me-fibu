@@ -1,13 +1,12 @@
-discord
-urllib3
+discord.py==1.7.1
+python-youtube
 translators
 wikipedia
 covid19-data
-textblob
 wikiquote
 pyjokes
-covid_daily
 pymongo
 dnspython
 whapi
 wikipedia-api
+beautifulsoup4
