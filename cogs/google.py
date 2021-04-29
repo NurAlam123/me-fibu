@@ -25,8 +25,9 @@ class Google(commands.Cog):
                 link = a["href"]
                 if link.startswith("/url?q="):
     				# omitting /url?q= from link to get working link
-                    link = link.split("/url?q=")[1] # working link
+                    link = link.split("/url?q=")[1].split("&")[0] # working link
                     if "https://" in link and ".google" not in link: #finding perfect link
+                        link = link.split("&")[0]
                         links.append(link)
                     else:
                         split_link = link.split("&")[0] # splitted the exact link. which is in index 0
