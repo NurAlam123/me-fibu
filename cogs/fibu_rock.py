@@ -37,7 +37,7 @@ class UsersDm(commands.Cog):
                         self.Msg[id] = [message.id]
                         new_value = {"user_id":  id, "msg_ids": [message.id]}
                         UsersDm.tb.insert_one(new_value)
-                    elif message.id not in Msg[id]:
+                    elif message.id not in self.Msg[id]:
                         msg_id = message.id
                         self.Msg[id].append(msg_id)
                         new_value = {"msg_ids": self.Msg[id]}
