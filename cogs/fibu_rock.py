@@ -17,7 +17,8 @@ class UsersDm(commands.Cog):
             self.users = [user["user_id"] for user in all_users]
             self.Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
         else:
-            pass
+            self.users = []
+            self.Msg = {}
 
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
@@ -38,12 +39,15 @@ class UsersDm(commands.Cog):
                         self.Msg[id] = [message.id]
                         new_value = {"user_id":  id, "msg_ids": [message.id]}
                         UsersDm.tb.insert_one(new_value)
-                    elif message.id not in self.Msg[id]:
-                        msg_id = message.id
-                        self.Msg[id].append(msg_id)
-                        new_value = {"msg_ids": self.Msg[id]}
-                        tb.update_one({"user_id": id}, {"$set": new_value})
-                        
+                    elif id not in self.Msg and id in self.users:
+                        self.Msg[id] = [message.id]
+                        new_value = {"msg_ids": message.id}
+                        UsersDm.tb.update_one({"user_id": id}, {"$set": new_value})
+                    elif id in self.Msg:
+                        if message.id not in self.Msg[id]:
+                            self.Msg[id].append(message.id)
+                            UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": self.Msg[id]}})
+                       
                     name = message.author.name
                     for dev in UsersDm.DEVS:
                         receiver = await self.bot.fetch_user(dev)
@@ -59,9 +63,16 @@ class UsersDm(commands.Cog):
                             await receiver.send(message_format)
 
  ###################
+            receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             if len(self.users) >= 20:
                 removed_user_id = self.users.pop(0)
+                user = await self.bot.fetch_user(removed_user_id)
                 tb.delete_one({"user_id": removed_user_id})
+                for receiver in receivers:
+                        receiver = await self.bot.fetch_user(receiver)
+                        await receiver.send(f"{user} remove from list.")
+                    
+                    
             elif self.Msg.get(message.author.id):
                 all_msg_id = self.Msg[message.author.id]
                 if len(all_msg_id) >= 5:
@@ -158,7 +169,7 @@ class UsersDm(commands.Cog):
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name}`:: {msg}")
-                    await ctx.message.add_reaction("✅")
+                await ctx.message.add_reaction("✅")
             except:
                 await ctx.send("Not found this user")
 
@@ -170,12 +181,20 @@ class UsersDm(commands.Cog):
         if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
                 user = await self.bot.fetch_user(user_id)
-                users.pop(int(index_no))
-                tb.update_one({"field_id": 1}, {"$set": {"Users": self.users}})
+                self.users.pop(int(index_no))
+                tb.delete_one({"user_id": user.id})
+                receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+                for receiver in receivers:
+                        receiver = await self.bot.fetch_user(receiver)
+                        await receiver.send(f"{user} removed from list.")
                 await ctx.send("{user.name} removed!!")
                 
             else:
-                tb.update_one({"field_id": 1}, {"$set": {"Users": []}})
+                tb.delete()
+                receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+                for receiver in receivers:
+                        receiver = await self.bot.fetch_user(receiver)
+                        await receiver.send(f"Users list fully cleared by `{ctx.author.name}`")
                 await ctx.send("Data Successfully Deleted!!")
 
 
