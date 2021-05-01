@@ -6,13 +6,13 @@ import os
 class UsersDm(commands.Cog):
     
     DEVS = [680360098836906004]#,728260210464129075,664550550527803405,693375549686415381]
+    con_fibu = pymongo.MongoClient(os.getenv("DB"))
+    db = con_fibu["fibu"] #database
+    tb = db["DmUsers"] #table
     
     def __init__(self, client):
         self.bot = client
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["DmUsers"] #table
-        all_users = tb.find()
+        all_users = UsersDm.tb.find()
         if all_users != None:
             self.users = [user["user_id"] for user in all_users]
             self.Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
