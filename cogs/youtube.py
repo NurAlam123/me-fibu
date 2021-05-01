@@ -1,7 +1,7 @@
 import discord
 from datetime import datetime as time
 from discord.ext import commands
-import urllib.parse,urllib.request
+from pyyoutube import Api
 import re
 
 class Youtube(commands.Cog):
