@@ -9,16 +9,20 @@ class UsersDm(commands.Cog):
     
     def __init__(self, client):
         self.bot = client
+        self.database()
 
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
     
-    con_fibu = pymongo.MongoClient(os.getenv("DB"))
-    db = con_fibu["fibu"] #database
-    tb = db["DmUsers"] #table
-    all_users = tb.find()
-    users = [user["user_id"] for user in all_users]
-    Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
+    def database(self):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["DmUsers"] #table
+        all_users = tb.find()
+        if all_user != None:
+            users = [user["user_id"] for user in all_users]
+            Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
+        else: pass
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -30,21 +34,21 @@ class UsersDm(commands.Cog):
                     pass
                 else:
                     id = message.author.id
-                    if id not in UsersDm.users:
-                        UsersDm.users.append(id)
-                        UsersDm.Msg[id] = [message.id]
+                    if id not in self.users:
+                        self.users.append(id)
+                        self.Msg[id] = [message.id]
                         new_value = {"user_id":  id, "msg_ids": [message.id]}
                         UsersDm.tb.insert_one(new_value)
                     elif message.id not in Msg[id]:
                         msg_id = message.id
-                        UsersDm.Msg[id].append(msg_id)
-                        new_value = {"msg_ids": UsersDm.Msg[id]}
+                        self.Msg[id].append(msg_id)
+                        new_value = {"msg_ids": self.Msg[id]}
                         tb.update_one({"user_id": id}, {"$set": new_value})
                         
                     name = message.author.name
                     for dev in UsersDm.DEVS:
                         receiver = await self.bot.fetch_user(dev)
-                        info_format = f"----------\n**Username:** {name}\n**UserIndex:** {UsersDm.users.index(id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n**MessageIndex**: {UsersDm.Msg.index(after_msg.id)}\n----------"
+                        info_format = f"----------\n**Username:** {name}\n**UserIndex:** {self.users.index(id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n**MessageIndex**: {self.Msg.index(after_msg.id)}\n----------"
                         await receiver.send(info_format)
                         if message.attachments:
                             attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
@@ -56,14 +60,14 @@ class UsersDm(commands.Cog):
                             await receiver.send(message_format)
 
  ###################
-            if len(UsersDm.users) >= 20:
-                removed_user_id = UsersDm.users.pop(0)
+            if len(self.users) >= 20:
+                removed_user_id = self.users.pop(0)
                 tb.delete_one({"user_id": removed_user_id})
-            elif UsersDm.Msg.get(message.author.id):
-                all_msg_id = UsersDm.Msg[message.author.id]
+            elif self.Msg.get(message.author.id):
+                all_msg_id = self.Msg[message.author.id]
                 if len(all_msg_id) >= 5:
                     all_msg_id.pop(0)
-                    UsersDm.Msg[message.author.id] = all_msg_id
+                    self.Msg[message.author.id] = all_msg_id
                     new_value = {"msg_ids": all_msg_id}
                     tb.update_one({"user_id": message.author.id}, {"$set":new_value})
                 else: pass
@@ -78,7 +82,7 @@ class UsersDm(commands.Cog):
                     id = before_msg.author.id
                     name = before_msg.author.name
                     if id != self.bot.user.id:
-                        identity_format = f"----------\n**Username:** {name}\n**UserIndex:** {UsersDm.users.index(id)}\n**UserId:** {id}\n**MessageId:** {after_msg.id}\n**MessageIndex**: {UsersDm.Msg.index(after_msg.id)}\n----------"
+                        identity_format = f"----------\n**Username:** {name}\n**UserIndex:** {self.users.index(id)}\n**UserId:** {id}\n**MessageId:** {after_msg.id}\n**MessageIndex**: {self.Msg.index(after_msg.id)}\n----------"
                         await receiver.send(identity_format)
                         edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg.content}\n**To:** {after_msg.content}"
                         await receiver.send(edit_msg_format)
@@ -94,7 +98,7 @@ class UsersDm(commands.Cog):
 
             try:
 
-                id = UsersDm.users[index_no]
+                id = self.users[index_no]
 
                 user = await self.bot.fetch_user(id)
 
@@ -124,11 +128,11 @@ class UsersDm(commands.Cog):
 
             try:
 
-                user_id = UsersDm.users[index_no]
+                user_id = self.users[index_no]
 
                 try:
 
-                    msg_id = UsersDm.Msg[user_id][msg_index]
+                    msg_id = self.Msg[user_id][msg_index]
 
                     user = await self.bot.fetch_user(user_id)
 
@@ -160,10 +164,10 @@ class UsersDm(commands.Cog):
             pass
         else:
             data = ""
-            for user_id in UsersDm.users:
+            for user_id in self.users:
                 user = await self.bot.fetch_user(user_id)
-                data += f"{UsersDm.users.index(user_id)} - {user.name} - {user_id}\n"
-            if UsersDm.users == []:
+                data += f"{self.users.index(user_id)} - {user.name} - {user_id}\n"
+            if self.users == []:
                await ctx.send("Empty List")
             else:
                 await ctx.send(data)
@@ -177,8 +181,8 @@ class UsersDm(commands.Cog):
         else:
             try:
                 user = await self.bot.fetch_user(user_id)
-                if user.id not in UsersDm.users:
-                    UsersDm.users.append(user.id)
+                if user.id not in self.users:
+                    self.users.append(user.id)
                     new_value = {"user_id": user.id, "msg_ids": []}
                     UsersDm.tb.insert_one(new_value)
                 else:
@@ -201,7 +205,7 @@ class UsersDm(commands.Cog):
             if index_no != None:
                 user = await self.bot.fetch_user(user_id)
                 users.pop(int(index_no))
-                tb.update_one({"field_id": 1}, {"$set": {"Users": UsersDm.users}})
+                tb.update_one({"field_id": 1}, {"$set": {"Users": self.users}})
                 await ctx.send("{user.name} removed!!")
                 
             else:
