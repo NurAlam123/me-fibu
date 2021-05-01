@@ -24,6 +24,7 @@ class UsersDm(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        print(self.Msg)
         if isinstance(message.channel, discord.channel.DMChannel):
             if message.content.startswith("!"):
                 pass
@@ -88,7 +89,6 @@ class UsersDm(commands.Cog):
 
     @commands.command()
     async def msg(self, ctx, index_no: int, *, message):
-        print(self.Msg)
         if ctx.author.id in UsersDm.DEVS:
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             try:
