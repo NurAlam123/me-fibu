@@ -32,7 +32,7 @@ class UsersDm(commands.Cog):
                     id = message.author.id
                     if id not in UsersDm.users:
                         UsersDm.users.append(id)
-                        UsersDm.Msg[id] = [message.id]]
+                        UsersDm.Msg[id] = [message.id]
                         new_value = {"user_id":  id, "msg_ids": [message.id]}
                         UsersDm.tb.insert_one(new_value)
                     elif message.id not in Msg[id]:
