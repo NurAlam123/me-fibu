@@ -18,7 +18,7 @@ class UsersDm(commands.Cog):
     tb = db["DmUsers"] #table
     all_users = tb.find()
     users = [user["user_id"] for user in all_users]
-    Msg = {user["user_id"]: user["msg_ids"] for user in all_user}
+    Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
 
     @commands.Cog.listener()
     async def on_message(self, message):
