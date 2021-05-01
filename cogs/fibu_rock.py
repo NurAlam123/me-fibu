@@ -9,20 +9,18 @@ class UsersDm(commands.Cog):
     
     def __init__(self, client):
         self.bot = client
-        self.database()
-
-    async def cog_check(self, ctx):
-        return ctx.author.id in UsersDm.DEVS
-    
-    def database(self):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["DmUsers"] #table
         all_users = tb.find()
-        if all_user != None:
-            users = [user["user_id"] for user in all_users]
-            Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
-        else: pass
+        if all_users != None:
+            self.users = [user["user_id"] for user in all_users]
+            self.Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
+        else:
+            pass
+
+    async def cog_check(self, ctx):
+        return ctx.author.id in UsersDm.DEVS
 
     @commands.Cog.listener()
     async def on_message(self, message):
