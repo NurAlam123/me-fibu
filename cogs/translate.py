@@ -86,9 +86,8 @@ class Translate(commands.Cog):
                         last_page = False
             
             try:
-                reaction, user = await self.client.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == msg.id and re.emoji in emojis)
-            except Exception as e:
-                #print (e)
+                reaction, user = await self.client.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == msg.id and re.emoji in emojis, timeout=60)
+            except asyncio.TimeoutError:
                 await msg.clear_reactions()
                 break
             if reaction.emoji == emojis[1]:

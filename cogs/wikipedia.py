@@ -36,6 +36,8 @@ class Wiki(commands.Cog):
                 
                 show = discord.Embed(title=f"Wikipedia | Page: {page_no}/{pages}", description="**Not found the page you are looking for. See the below list.**\n"+"\n".join(options[from_no:to_no]),color=0xffdf08, timestamp=time.now())
                 show.add_field(name="Pick a number and send below command to search!",value="Example: ```!fibu wiki select 1```")
+                show.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
+                show.set_footer(text="Programming Hero")
                 msg = await ctx.send(embed = show)
                 # reaction check 
                 def re_check(reaction,user):
@@ -100,9 +102,9 @@ class Wiki(commands.Cog):
                 wiki_msg.add_field(name=page.title,value=f"{result} ... [Read More]({page.fullurl})")
             except:
                 wiki_msg.add_field(name=page.title,value=f"{result} ... [Read More]({page.canonicalurl})")
-                wiki_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
-                wiki_msg.set_footer(text="Programming Hero")
-                await ctx.send(embed=wiki_msg)
+            wiki_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
+            wiki_msg.set_footer(text="Programming Hero")
+            await ctx.send(embed=wiki_msg)
 
 
 
