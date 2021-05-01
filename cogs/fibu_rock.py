@@ -85,42 +85,74 @@ class UsersDm(commands.Cog):
                     else: pass
 
     @commands.command()
+
     async def msg(self, ctx, index_no: int, *, message):
+
         if ctx.author.id in UsersDm.DEVS:
+
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+
             try:
-            	id = UsersDm.users[index_no]
-	            user = await self.bot.fetch_user(id)
-	           # async with ctx.channel.typing():
-	            await user.send(f"{message}")
-	            await ctx.message.add_reaction("✅")
-	            for receiver in receivers:
-	                receiver = await self.bot.fetch_user(receiver)
-	                await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
-	        except:
-	        	await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
-    
+
+                id = UsersDm.users[index_no]
+
+                user = await self.bot.fetch_user(id)
+
+                 # async with ctx.channel.typing():
+
+                await user.send(f"{message}")
+
+                await ctx.message.add_reaction("✅")
+
+                for receiver in receivers:
+
+                    receiver = await self.bot.fetch_user(receiver)
+
+                    await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
+
+            except:
+
+                await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
+
     @commands.command()
+
     async def reply(self, ctx, user_index: int, msg_index: int, *, message):
+
         if ctx.author.id in UsersDm.DEVS:
+
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+
             try:
-	            user_id = UsersDm.users[index_no]
-	            try:
-	            	msg_id = UsersDm.Msg[user_id][msg_index]
-		            user = await self.bot.fetch_user(user_id)
-		            msg = await user.fetch_message(msg_id)
-		           # async with ctx.channel.typing():
-		            await msg.reply(f"{message}")
-		            await ctx.message.add_reaction("✅")
-		            for receiver in receivers:
-		                receiver = await self.bot.fetch_user(receiver)
-		                await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
-		    	except:
-		    	  await ctx.send("Oops!! Message not found..\nTry `msg` command!!")
-	        except:
-	        	await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
-                
+
+                user_id = UsersDm.users[index_no]
+
+                try:
+
+                    msg_id = UsersDm.Msg[user_id][msg_index]
+
+                    user = await self.bot.fetch_user(user_id)
+
+                    msg = await user.fetch_message(msg_id)
+
+                    # async with ctx.channel.typing():
+
+                    await msg.reply(f"{message}")
+
+                    await ctx.message.add_reaction("✅")
+
+                    for receiver in receivers:
+
+                        receiver = await self.bot.fetch_user(receiver)
+
+                        await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
+
+                except:
+
+                    await ctx.send("Oops!! Message not found..\nTry `msg` command!!")
+
+            except:
+
+                await ctx.send("User not in list.\nTry `new_dm` command to continue!!")                
 
     @commands.command()
     async def show_all_dm(self, ctx):
