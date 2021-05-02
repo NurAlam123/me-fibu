@@ -9,6 +9,7 @@ class UsersDm(commands.Cog):
     con_fibu = pymongo.MongoClient(os.getenv("DB"))
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
+    all_users = UsersDm.tb.find()
     if all_users != None:
         users = []
         Msg = {}
@@ -24,7 +25,7 @@ class UsersDm(commands.Cog):
     
     def __init__(self, client):
         self.bot = client
-        all_users = UsersDm.tb.find()
+        
         '''
         if all_users != None:
             self.users = []
