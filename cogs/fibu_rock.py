@@ -25,7 +25,7 @@ class UsersDm(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        print(self.Msg)
+        #print(self.Msg)
         if isinstance(message.channel, discord.channel.DMChannel):
             if message.content.startswith("!"):
                 pass
@@ -37,6 +37,7 @@ class UsersDm(commands.Cog):
                     if id not in self.users:
                         self.users.append(id)
                         self.Msg[id] = [message.id]
+                        print(1)
                         new_value = {"user_id":  id, "msg_ids": [message.id]}
                         UsersDm.tb.insert_one(new_value)
                     elif id not in self.Msg and id in self.users:
@@ -46,6 +47,7 @@ class UsersDm(commands.Cog):
                     elif id in self.Msg:
                         if message.id not in self.Msg[id]:
                             self.Msg[id].append(message.id)
+                            print(2)
                             UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": self.Msg[id]}})
                        
                     name = message.author.name
