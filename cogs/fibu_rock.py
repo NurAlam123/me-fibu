@@ -51,7 +51,7 @@ class UsersDm(commands.Cog):
                     name = message.author.name
                     for dev in UsersDm.DEVS:
                         receiver = await self.bot.fetch_user(dev)
-                        info_format = f"----------\n**Username:** {name}\n**UserIndex:** {self.users.index(id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n**MessageIndex**: {self.Msg.index(after_msg.id)}\n----------"
+                        info_format = f"----------\n**Username:** {name}\n**UserIndex:** {self.users.index(id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n**MessageIndex**: {self.Msg[id].index(message.id)}\n----------"
                         await receiver.send(info_format)
                         if message.attachments:
                             attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
@@ -92,7 +92,7 @@ class UsersDm(commands.Cog):
                     id = before_msg.author.id
                     name = before_msg.author.name
                     if id != self.bot.user.id:
-                        identity_format = f"----------\n**Username:** {name}\n**UserIndex:** {self.users.index(id)}\n**UserId:** {id}\n**MessageId:** {after_msg.id}\n**MessageIndex**: {self.Msg.index(after_msg.id)}\n----------"
+                        identity_format = f"----------\n**Username:** {name}\n**UserIndex:** {self.users.index(id)}\n**UserId:** {id}\n**MessageId:** {after_msg.id}\n**MessageIndex**: {self.Msg[id].index(after_msg.id)}\n----------"
                         await receiver.send(identity_format)
                         edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg.content}\n**To:** {after_msg.content}"
                         await receiver.send(edit_msg_format)
