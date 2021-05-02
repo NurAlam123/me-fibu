@@ -63,7 +63,7 @@ class UsersDm(commands.Cog):
                             await receiver.send(message_format)
 
  ###################
-            receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+            receivers = [i for i in UsersDm.DEVS if i != message.author.id]
             if len(self.users) >= 20:
                 removed_user_id = self.users.pop(0)
                 user = await self.bot.fetch_user(removed_user_id)
@@ -119,7 +119,7 @@ class UsersDm(commands.Cog):
         if ctx.author.id in UsersDm.DEVS:
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             try:
-                user_id = self.users[index_no]
+                user_id = self.users[user_index]
                 try:
                     msg_id = self.Msg[user_id][msg_index]
                     user = await self.bot.fetch_user(user_id)
