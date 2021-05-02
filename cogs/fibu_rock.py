@@ -20,7 +20,7 @@ class UsersDm(commands.Cog):
             for user in all_users:
                 user_id = user['user_id']
                 user_msg_ids = user['msg_ids']
-                self.Msg[f'{user_id}'] = user_msg_ids
+                self.Msg[user_id] = user_msg_ids
                 print(user_msg_ids)
                 self.users.append(user_id)
                 
