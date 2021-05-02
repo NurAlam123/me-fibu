@@ -46,6 +46,27 @@ class UsersDm(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if isinstance(message.channel, discord.channel.DMChannel):
+        ###################
+            receivers = [i for i in UsersDm.DEVS if i != message.author.id]
+            if len(self.users) >= 20:
+                removed_user_id = self.users.pop(0)
+                user = await self.bot.fetch_user(removed_user_id)
+                UsersDm.tb.delete_one({"user_id": removed_user_id})
+                for receiver in receivers:
+                        receiver = await self.bot.fetch_user(receiver)
+                        await receiver.send(f"{user} remove from list.")
+                    
+                    
+            elif self.Msg.get(message.author.id):
+                all_msg_id = self.Msg[message.author.id]
+                if len(all_msg_id) >= 5:
+                    all_msg_id.pop(0)
+                    self.Msg[message.author.id] = all_msg_id
+                    new_value = {"msg_ids": all_msg_id}
+                    UsersDm.tb.update_one({"user_id": message.author.id}, {"$set":new_value})
+                else: pass
+            else: pass
+        ##################
             if message.content.startswith("!"):
                 pass
             else:
@@ -81,28 +102,6 @@ class UsersDm(commands.Cog):
                             message_format = f"`{name}::` {message.content}\n"
                             await receiver.send(message_format)
 
- ###################
-            receivers = [i for i in UsersDm.DEVS if i != message.author.id]
-            if len(self.users) >= 20:
-                removed_user_id = self.users.pop(0)
-                user = await self.bot.fetch_user(removed_user_id)
-                UsersDm.tb.delete_one({"user_id": removed_user_id})
-                for receiver in receivers:
-                        receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f"{user} remove from list.")
-                    
-                    
-            elif self.Msg.get(message.author.id):
-                all_msg_id = self.Msg[message.author.id]
-                if len(all_msg_id) >= 5:
-                    all_msg_id.pop(0)
-                    self.Msg[message.author.id] = all_msg_id
-                    new_value = {"msg_ids": all_msg_id}
-                    UsersDm.tb.update_one({"user_id": message.author.id}, {"$set":new_value})
-                else: pass
-            else: pass
- ##################
-    		
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
         if isinstance(before_msg.channel, discord.channel.DMChannel):
