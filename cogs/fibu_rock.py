@@ -21,13 +21,11 @@ class UsersDm(commands.Cog):
                 user_id = user['user_id']
                 user_msg_ids = user['msg_ids']
                 self.Msg[user_id] = user_msg_ids
-                print(user_msg_ids)
                 self.users.append(user_id)
                 
         else:
             self.users = []
             self.Msg = {}
-        print(self.Msg)
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
 
@@ -46,17 +44,14 @@ class UsersDm(commands.Cog):
                         self.Msg[id] = [message.id]
                         new_value = {"user_id":  id, "msg_ids": [message.id]}
                         UsersDm.tb.insert_one(new_value)
-                        print(1)
                     elif id not in self.Msg and id in self.users:
                         self.Msg[id] = [message.id]
                         new_value = {"msg_ids": message.id}
                         UsersDm.tb.update_one({"user_id": id}, {"$set": new_value})
-                        print(2)
                     elif id in self.Msg:
                         if message.id not in self.Msg[id]:
                             self.Msg[id].append(message.id)
                             UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": self.Msg[id]}})
-                            print(3)
                         
                     name = message.author.name
                     for dev in UsersDm.DEVS:
@@ -190,6 +185,7 @@ class UsersDm(commands.Cog):
         tb = db["DmUsers"] #table
         if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
+                user_id = self.users[index_no]
                 user = await self.bot.fetch_user(user_id)
                 self.users.pop(int(index_no))
                 tb.delete_one({"user_id": user.id})
@@ -197,10 +193,10 @@ class UsersDm(commands.Cog):
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
                         await receiver.send(f"{user} removed from list.")
-                await ctx.send("{user.name} removed!!")
+                await ctx.send("{user.name} removed from db!!")
                 
             else:
-                tb.delete()
+                tb.delete({})
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
