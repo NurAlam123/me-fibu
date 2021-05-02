@@ -16,9 +16,13 @@ class UsersDm(commands.Cog):
         if all_users != None:
             self.users = [user["user_id"] for user in all_users]
             self.Msg = {user["user_id"]: user["msg_ids"] for user in all_users}
+            print(3)
         else:
             self.users = []
             self.Msg = {}
+            print(4)
+        print(self.users)
+        print(self.Msg)
 
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
