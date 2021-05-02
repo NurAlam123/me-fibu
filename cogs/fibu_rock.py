@@ -9,7 +9,7 @@ class UsersDm(commands.Cog):
     con_fibu = pymongo.MongoClient(os.getenv("DB"))
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
-    all_users = UsersDm.tb.find()
+    all_users = tb.find()
     if all_users != None:
         users = []
         Msg = {}
