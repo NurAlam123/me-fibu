@@ -13,11 +13,11 @@ class UsersDm(commands.Cog):
     def __init__(self, client):
         self.bot = client
         all_users = UsersDm.tb.find()
+        
         if all_users != None:
+            print(all_user['msg_ids'])
             self.users = [user["user_id"] for user in all_users]
-            Msg = {user['user_id']: user['msg_ids'] for user in all_users}
-            self.Msg = Msg
-            print(Msg)
+            self.Msg = {user['user_id']: user['msg_ids'] for user in all_users}
             print(self.Msg)
         else:
             self.users = []
