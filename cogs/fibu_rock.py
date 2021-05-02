@@ -23,6 +23,7 @@ class UsersDm(commands.Cog):
             print(4)
         print(self.users)
         print(self.Msg)
+        print(all_users['user_id'], all_users['msg_ids'])
 
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
