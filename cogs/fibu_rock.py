@@ -67,7 +67,7 @@ class UsersDm(commands.Cog):
             if len(self.users) >= 20:
                 removed_user_id = self.users.pop(0)
                 user = await self.bot.fetch_user(removed_user_id)
-                tb.delete_one({"user_id": removed_user_id})
+                UsersDm.tb.delete_one({"user_id": removed_user_id})
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
                         await receiver.send(f"{user} remove from list.")
@@ -79,7 +79,7 @@ class UsersDm(commands.Cog):
                     all_msg_id.pop(0)
                     self.Msg[message.author.id] = all_msg_id
                     new_value = {"msg_ids": all_msg_id}
-                    tb.update_one({"user_id": message.author.id}, {"$set":new_value})
+                    UsersDm.tb.update_one({"user_id": message.author.id}, {"$set":new_value})
                 else: pass
             else: pass
  ##################
