@@ -27,7 +27,7 @@ class UsersDm(commands.Cog):
             Msg = {}
         '''
     def db(self):
-        all_users = tb.find()
+        all_users = UsersDm.tb.find()
         if all_users != None:
             users = []
             Msg = {}
