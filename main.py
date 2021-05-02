@@ -59,7 +59,7 @@ async def off(ctx,file):
 			
 
 for files in os.listdir("./cogs"):
-	#	if files.endswith(".py") and files != "fibu_rock.py":
+	if files.endswith(".py") and files != "fibu_rock.py":
 		bot.load_extension(f"cogs.{files[:-3]}")
 
 
