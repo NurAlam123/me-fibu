@@ -15,7 +15,9 @@ class UsersDm(commands.Cog):
         all_users = UsersDm.tb.find()
         if all_users != None:
             self.users = [user["user_id"] for user in all_users]
-            self.Msg = {user['user_id']: user['msg_ids'] for user in all_users}
+            Msg = {user['user_id']: user['msg_ids'] for user in all_users}
+            self.Msg = Msg
+            print(Msg)
             print(self.Msg)
         else:
             self.users = []
