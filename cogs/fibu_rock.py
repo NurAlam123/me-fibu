@@ -13,20 +13,17 @@ class UsersDm(commands.Cog):
     def __init__(self, client):
         self.bot = client
         all_users = UsersDm.tb.find()
+        for i in all_users:
+            print(i['user_id'])
+            print(i['msg_ids'])
         if all_users != None:
             self.users = [user["user_id"] for user in all_users]
-            self.Msg = {}
-            for user in all_users:
-                user_id = user['user_id']
-                msg_ids = user['msg_ids']
-                self.Msg[user_id] = [msg_ids]
-                print(user_id)
-                print(msg_ids)
+            self.Msg = {user['user_id']: user['msg_ids'] for user in all_users}
         else:
             self.users = []
             self.Msg = {}
-        print(self.users)
-        print(self.Msg)
+#        print(self.users)
+ #       print(self.Msg)
         
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
