@@ -185,7 +185,7 @@ class UsersDm(commands.Cog):
         tb = db["DmUsers"] #table
         if ctx.author.id in UsersDm.DEVS:
             if index_no != None:
-                user_id = self.users[index_no]
+                user_id = self.users[int(index_no)]
                 user = await self.bot.fetch_user(user_id)
                 self.users.pop(int(index_no))
                 tb.delete_one({"user_id": user.id})
@@ -196,7 +196,7 @@ class UsersDm(commands.Cog):
                 await ctx.send("{user.name} removed from db!!")
                 
             else:
-                tb.delete({})
+                tb.delete_many({})
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
