@@ -9,11 +9,23 @@ class UsersDm(commands.Cog):
     con_fibu = pymongo.MongoClient(os.getenv("DB"))
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
+    if all_users != None:
+        users = []
+        Msg = {}
+        for user in all_users:
+            user_id = user['user_id']
+            user_msg_ids = user['msg_ids']
+            Msg[user_id] = user_msg_ids
+            users.append(user_id)
+                
+    else:
+        users = []
+        Msg = {}
     
     def __init__(self, client):
         self.bot = client
         all_users = UsersDm.tb.find()
-        
+        '''
         if all_users != None:
             self.users = []
             self.Msg = {}
@@ -26,6 +38,7 @@ class UsersDm(commands.Cog):
         else:
             self.users = []
             self.Msg = {}
+        '''
     async def cog_check(self, ctx):
         return ctx.author.id in UsersDm.DEVS
 
