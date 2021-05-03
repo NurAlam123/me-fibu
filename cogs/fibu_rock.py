@@ -198,7 +198,7 @@ class UsersDm(commands.Cog):
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
                         await receiver.send(f"{user} removed from list.")
-                await ctx.send("{user.name} removed from db!!")
+                await ctx.send(f"{user.name} removed from db!!")
                 
             else:
                 UsersDm.tb.delete_many({})
