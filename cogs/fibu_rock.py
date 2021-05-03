@@ -5,27 +5,13 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [680360098836906004]#,728260210464129075,664550550527803405,693375549686415381]
+    DEVS = [680360098836906004,728260210464129075,664550550527803405,693375549686415381]
     con_fibu = pymongo.MongoClient(os.getenv("DB"))
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
     def __init__(self, client):
         self.bot = client
         
-        '''
-        if all_users != None:
-            users = []
-            Msg = {}
-            for user in all_users:
-                user_id = user['user_id']
-                user_msg_ids = user['msg_ids']
-                Msg[user_id] = user_msg_ids
-                users.append(user_id)
-                
-        else:
-            users = []
-            Msg = {}
-        '''
     def db(self):
         all_users = UsersDm.tb.find()
         if all_users != None:
@@ -201,15 +187,13 @@ class UsersDm(commands.Cog):
 
     @commands.command()
     async def clean_dm(self, ctx, index_no = None):
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["DmUsers"] #table
         if ctx.author.id in UsersDm.DEVS:
+            users, Msg = self.db()
             if index_no != None:
                 user_id = users[int(index_no)]
                 user = await self.bot.fetch_user(user_id)
                 users.pop(int(index_no))
-                tb.delete_one({"user_id": user.id})
+                UsersDm.tb.delete_one({"user_id": user.id})
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
@@ -217,7 +201,7 @@ class UsersDm(commands.Cog):
                 await ctx.send("{user.name} removed from db!!")
                 
             else:
-                tb.delete_many({})
+                UsersDm.tb.delete_many({})
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
