@@ -41,7 +41,7 @@ class Compiler(commands.Cog):
             lang = short_names[lang]
 
         if lang in self.all_compilers:
-            compiler = compilers[lang][0]
+            compiler = self.all_compilers[lang][0]
             return compiler
         else:
             is_compiler = self.check_compiler(lang)
@@ -102,7 +102,7 @@ class Compiler(commands.Cog):
 
 ## compile command
     @commands.command()
-    async def compile(self, ctx, lang, *, msg):
+    async def compile(self, ctx, lang, *, msg= None):
         lang_com = ["lang", "langs", "language", "languages"]
         lang = self.get_compiler(lang)
         
@@ -117,7 +117,12 @@ class Compiler(commands.Cog):
                 code = self.get_code(code)
                 compile_code = self.compiler(lang, code)
             
-            compile_embed = discord.Embed(title= "Compiler", color= 0xdbca32, timestamp= time.now())
+            status_code = compile_code.json()["status"]
+            compile_output = compile_code.json()["compiler_message"]
+            compile_embed = discord.Embed(title= "Result", color= 0xdbca32, timestamp= time.now())
+            compile_embed.add_field(name= "Status", value= f"Program finished with exit code: {status}")
+            compile_embed.add_field(name= "Program Output", value= f"```\n{compile_output}\n```")
+            await ctx.send(embed= compile_embed)
             
             
         elif lang in lang_com:
@@ -126,6 +131,7 @@ class Compiler(commands.Cog):
             msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Unsupported programming language.\nType ```!fibu compile languages``` to see all supported programming languages.", color= 0xC70039)
             await ctx.send(embed= msg)
 
+## all supported programming language
     @commands.command()
     async def _lang(self, ctx):
         all_langs = [f"{i}. {j}" for i, j in enumerate(self.all_compilers, 1)]
