@@ -71,6 +71,6 @@ async def off(ctx,file):
 
 for files in os.listdir("./cogs"):
     if files.endswith(".py") and files != "fibu_dm.py":
-    bot.load_extension(f"cogs.{files[:-3]}")
+        bot.load_extension(f"cogs.{files[:-3]}")
 
 bot.run(token)
