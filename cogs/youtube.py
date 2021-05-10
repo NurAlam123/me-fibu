@@ -13,10 +13,10 @@ class Youtube(commands.Cog):
         self.client = client
 #youtube
     @commands.group(aliases=["youtube","utube"],case_insensitive=True)
-    async def yt(slef,ctx):
+    async def yt(self,ctx):
         if ctx.invoked_subcommand is None:
             pass
-    @yt.command(aliases=["video", "vdo", "v", "srch", "search"])
+    @yt.command(aliases=["vdo", "v"])
     async def video(self,ctx,*,query):
         yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "video")
         if yt_video != []:
@@ -75,8 +75,8 @@ class Youtube(commands.Cog):
 
     @yt.command(aliases=["chnl", "c"])
     async def channel(self,ctx,*,query):
-        yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
-        if yt_video != []:
+        yt_channel = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
+        if yt_channel != []:
             limit = 10
             yt_url = "https://youtube.com/channel/"
             videos_urls = [yt_url+video["id"]["channelId"] for video in yt_video.items[:limit]]
