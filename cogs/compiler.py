@@ -79,7 +79,7 @@ class Compiler(commands.Cog):
             try:
                 user_input = split_input[0]. replace("|", "", 1)
                 code = split_input[1]
-                    return user_input, code
+                return user_input, code
             except:
                 return False
         elif stdin.strip().startswith("`"):
