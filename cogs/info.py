@@ -12,6 +12,7 @@ class Info(commands.Cog):
 	async def show(self,ctx):
 		if ctx.invoked_subcommand is None:
 			pass
+	
 	@show.command()
 	async def my(self,ctx,arg):
 #my av

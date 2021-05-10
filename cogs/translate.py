@@ -61,7 +61,7 @@ class Translate(commands.Cog):
         em_msg = discord.Embed(title = "Supported Languages", description = the_table, color = 0xffdf08, timestamp = time.now()) # the embed message
         em_msg.set_footer(text="Programming Hero")
         em_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
-        em_msg.set_footer(text="Programming Hero")
+        
         msg = await ctx.send(embed = em_msg)
         emojis = ["⬅️", "➡️"]
         last_page = False # to control last page emoji reaction
@@ -117,7 +117,7 @@ class Translate(commands.Cog):
             else:
                 pass
 
-
+## make the table
     def make_table(self, lang_list):
         
         sl_space = len(str(len(self.supp_langs)))+2

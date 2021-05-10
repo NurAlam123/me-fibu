@@ -31,6 +31,7 @@ class Greeting(commands.Cog):
                 await ctx.send(f"Greeting channel has been set to {channel}")
 
     @commands.command(aliases=["setWelcomeMsg"])
+    @has_permissions(administrator=True,manage_roles=True,manage_messages=True)
     async def setWelcomeMessage(self, ctx, *, welcome_msg=None):
         if welcome_msg==None:
             await ctx.send("Give a welcome message!!")
