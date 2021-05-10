@@ -16,8 +16,8 @@ class Youtube(commands.Cog):
     async def yt(slef,ctx):
         if ctx.invoked_subcommand is None:
             pass
-    @yt.command(aliases=["video", "vdo", "v", "srch"])
-    async def search(self,ctx,*,query):
+    @yt.command(aliases=["video", "vdo", "v", "srch", "search"])
+    async def video(self,ctx,*,query):
         yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "video")
         if yt_video != []:
             limit = 10
@@ -73,9 +73,9 @@ class Youtube(commands.Cog):
                 await ctx.send(embed=msg)
 
 
-    @yt.command(aliases=["video", "vdo", "v", "srch"])
-    async def search(self,ctx,*,query):
-        yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "video")
+    @yt.command(aliases=["chnl", "c"]
+    async def channel(self,ctx,*,query):
+        yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
         if yt_video != []:
             limit = 10
             yt_url = "https://youtube.com/channel/"
