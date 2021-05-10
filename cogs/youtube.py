@@ -11,7 +11,8 @@ yt_api = Api(api_key=API_KEY)
 class Youtube(commands.Cog):
     def __init__(self,client):
         self.client = client
-#youtube
+
+## YouTube video search
     @commands.group(aliases=["youtube","utube"],case_insensitive=True)
     async def yt(self,ctx):
         if ctx.invoked_subcommand is None:
@@ -22,7 +23,11 @@ class Youtube(commands.Cog):
         if yt_video != []:
             limit = 10
             yt_url = "https://youtube.com/watch?v="
-            videos_urls = [yt_url+video["id"]["videoId"] for video in yt_video.items[:limit]]
+            videos_urls = []
+            for i in range(limit):
+                video_id = yt_video.items[i]['id']['videoId']
+                video_url = yt_url+video_id
+                videos_urls.append(video_url)
             await ctx.message.add_reaction("📺")
             page = 0
             url_msg = await ctx.send(video_urls[0])
@@ -72,17 +77,17 @@ class Youtube(commands.Cog):
                 msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search <video name>```")
                 await ctx.send(embed=msg)
 
-
+## YouTube channel search
     @yt.command(aliases=["chnl", "c"])
     async def channel(self,ctx,*,query):
         yt_channel = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
         if yt_channel != []:
             limit = 10
             yt_url = "https://youtube.com/channel/"
-            videos_urls = [yt_url+video["id"]["channelId"] for video in yt_video.items[:limit]]
+            channel_urls = [yt_url+yt_channel.items[i]["id"]["channelId"] for i in range(limit)]
             await ctx.message.add_reaction("✅")
             page = 0
-            url_msg = await ctx.send(video_urls[0])
+            url_msg = await ctx.send(channel_urls[0])
             pages = limit
             emojis = ["⏪","⏩️"]
             last_page = False
@@ -113,13 +118,13 @@ class Youtube(commands.Cog):
             				
                 if user_react.emoji == emojis[1] and page != pages-1:
                     page += 1
-                    await url_msg.edit(content = video_urls[page])
+                    await url_msg.edit(content = channel_urls[page])
                     await url_msg.remove_reaction(user_react, user)	
                 elif user_react.emoji == emojis[0] and page > 0:
                     page -= 1
                     if page==pages-1:
                         last_page = True
-                        await url_msg.edit(content = video_urls[page])
+                        await url_msg.edit(content = channel_urls[page])
                         await url_msg.remove_reaction(user_react, user)
             				
                     else:
