@@ -1,14 +1,26 @@
 import discord
-import time,os
 from discord.ext import commands
 from discord.utils import get
-import sqlite3
+
+import time
+from datetime import datetime
+import os
 import asyncio
 import pymongo
+import logging
+
+
+#### logging [recommended]####
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s'))
+logger.addHandler(handler)
+########
 
 token = os.getenv("TOKEN")
 
-dev = [680360098836906004,728260210464129075,664550550527803405,693375549686415381,555452986885668886]
+dev = [680360098836906004,728260210464129075,664550550527803405,693375549686415381,555452986885668886] # our team's discord ids
 
 prefix_file = open("prefix.txt","r")
 prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
@@ -16,81 +28,49 @@ prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix=prefixes,
-
-				    intents=intents,
-					case_insensitive=True)
+bot = commands.Bot(command_prefix=prefixes, intents=intents, case_insensitive=True)
 bot.remove_command("help")
 
 @bot.event
 async def on_ready():
-	await bot.change_presence(activity=discord.Game(name="!fibu help | Fibu | Programming Hero"))
-	print(f"Logged in as {bot.user}")
+    await bot.change_presence(activity=discord.Game(name="!fibu help | Fibu | Programming Hero"))
+    print(f"Logged in as {bot.user}")
+    
 #ping
 @bot.command()
 async def ping(ctx):
-	msg = discord.Embed(title="Pong 🏓", description=f"{round(bot.latency*1000)} _ms_!",color=0xffdf08)
-	await ctx.send(embed=msg)
+    msg = discord.Embed(title="Pong 🏓", description=f"{round(bot.latency*1000)} _ms_!",color=0xffdf08)
+    await ctx.send(embed=msg)
 
-#cogs
-
+#cogs load and unload
 @bot.command()
 async def on(ctx,file):
-	if ctx.author.id in dev:
-		try:
-			for files in os.listdir("./cogs"):
-				if files==file.lower()+".py":
-					bot.load_extension(f"cogs.{files[:-3]}")
-					await ctx.send(f"{file} loaded!")
-		except:
-			await ctx.send(f"{file} is already loaded!")
-	else:
-		await ctx.send(f"You don't have the permission to do that!!")
+    if ctx.author.id in dev:
+        try:
+            for files in os.listdir("./cogs"):
+                if files==file.lower()+".py":
+                    bot.load_extension(f"cogs.{files[:-3]}")
+                    await ctx.send(f"{file} loaded!")
+        except:
+            await ctx.send(f"{file} is already loaded!")
+    else:
+        await ctx.send(f"You don't have the permission to do that!!")
 @bot.command()
 async def off(ctx,file):
-		if ctx.author.id in dev:
-			try:
-				bot.unload_extension(f"cogs.{file.lower()}")
-				await ctx.send(f"{file} unloaded!")
-			except:
-				await ctx.send(f"{file} is already unloaded!")
-		else:
-			await ctx.send("You don't have the permission to do that!!")
-			
+        if ctx.author.id in dev:
+            try:
+                bot.unload_extension(f"cogs.{file.lower()}")
+                await ctx.send(f"{file} unloaded!")
+            except:
+                await ctx.send(f"{file} is already unloaded!")
+        else:
+            await ctx.send("You don't have the permission to do that!!")
+            
+            
+            
 
 for files in os.listdir("./cogs"):
-	#	if files.endswith(".py") and files != "fibu_rock.py":
-		bot.load_extension(f"cogs.{files[:-3]}")
-
-
-#client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")			
-#db = client["fibu"]
-	
-##testing mongodb
-#@bot.command()
-#async def show_db(ctx,*,name):
-#	col = db["guild_data"]
-#	data = {"name":f"{name}"}
-#	show_data = col.find_one(data)
-#	print(show_data)
-#	try:
-#		await ctx.send(f"Name: {show_data['name']}\n")
-#	except:
-#		pass
-
-#@bot.command()
-#async def add_db(ctx,*,name):
-#		col = db["guild_data"]
-#		data = {"name":f"{name}"}
-#		add = col.insert_one(data)
-#		await ctx.send(f"{name} added to database")
-#@bot.command()
-#async def del_db(ctx,*,name):
-#		col = db.guild_data
-#		data = {"name":f"{name}"}
-#		del_data = col.delete_one(data)
-#		await ctx.send(f"{name} deleted!")
-		
-		
+    #if files.endswith(".py") and files != "fibu_rock.py":
+    bot.load_extension(f"cogs.{files[:-3]}")
 
 bot.run(token)
