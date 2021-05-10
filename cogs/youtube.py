@@ -48,29 +48,29 @@ class Youtube(commands.Cog):
                             await url_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
-            try:
-                user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
-            except asyncio.TimeoutError:
-                    await url_msg.clear_reactions()
-                    break
-        				
-            if user_react.emoji == emojis[1] and page != pages-1:
-                page += 1
-                await url_msg.edit(content = video_urls[page])
-                await url_msg.remove_reaction(user_react, user)	
-            elif user_react.emoji == emojis[0] and page > 0:
-                page -= 1
-                if page==pages-1:
-                    last_page = True
+                try:
+                    user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
+                except asyncio.TimeoutError:
+                        await url_msg.clear_reactions()
+                        break
+            				
+                if user_react.emoji == emojis[1] and page != pages-1:
+                    page += 1
                     await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(user_react, user)
-        				
-                else:
-                    await url_msg.remove_reaction(user_react,user)
-        else:
-            await ctx.message.add_reaction("❌")
-            msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search <video name>```")
-            await ctx.send(embed=msg)
+                    await url_msg.remove_reaction(user_react, user)	
+                elif user_react.emoji == emojis[0] and page > 0:
+                    page -= 1
+                    if page==pages-1:
+                        last_page = True
+                        await url_msg.edit(content = video_urls[page])
+                        await url_msg.remove_reaction(user_react, user)
+            				
+                    else:
+                        await url_msg.remove_reaction(user_react,user)
+            else:
+                await ctx.message.add_reaction("❌")
+                msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search <video name>```")
+                await ctx.send(embed=msg)
 
 
     @yt.command(aliases=["video", "vdo", "v", "srch"])
@@ -105,29 +105,29 @@ class Youtube(commands.Cog):
                             await url_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
-            try:
-                user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
-            except asyncio.TimeoutError:
-                    await url_msg.clear_reactions()
-                    break
-        				
-            if user_react.emoji == emojis[1] and page != pages-1:
-                page += 1
-                await url_msg.edit(content = video_urls[page])
-                await url_msg.remove_reaction(user_react, user)	
-            elif user_react.emoji == emojis[0] and page > 0:
-                page -= 1
-                if page==pages-1:
-                    last_page = True
+                try:
+                    user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
+                except asyncio.TimeoutError:
+                        await url_msg.clear_reactions()
+                        break
+            				
+                if user_react.emoji == emojis[1] and page != pages-1:
+                    page += 1
                     await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(user_react, user)
-        				
-                else:
-                    await url_msg.remove_reaction(user_react,user)
-        else:
-            await ctx.message.add_reaction("❌")
-            msg = discord.Embed(title="Error", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
-            await ctx.send(embed=msg)
+                    await url_msg.remove_reaction(user_react, user)	
+                elif user_react.emoji == emojis[0] and page > 0:
+                    page -= 1
+                    if page==pages-1:
+                        last_page = True
+                        await url_msg.edit(content = video_urls[page])
+                        await url_msg.remove_reaction(user_react, user)
+            				
+                    else:
+                        await url_msg.remove_reaction(user_react,user)
+            else:
+                await ctx.message.add_reaction("❌")
+                msg = discord.Embed(title="Error", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
+                await ctx.send(embed=msg)
 
 
 
