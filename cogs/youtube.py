@@ -73,7 +73,7 @@ class Youtube(commands.Cog):
                 await ctx.send(embed=msg)
 
 
-    @yt.command(aliases=["chnl", "c"]
+    @yt.command(aliases=["chnl", "c"])
     async def channel(self,ctx,*,query):
         yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
         if yt_video != []:
