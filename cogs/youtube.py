@@ -3,6 +3,7 @@ from datetime import datetime as time
 from discord.ext import commands
 from pyyoutube import Api
 import os
+import asyncio
 
 API_KEY = os.getenv("YT_API")
 
@@ -32,18 +33,18 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(video_urls[0])
             pages = limit
-            emojis = ["⬅️","➡️️"]
+            emojis = ["⏪","⏩️"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
                     pass
                 elif page <= 0:
                     await url_msg.clear_reactions()
-                    await url_msg.add_reaction(emojis[1])     
+                    await url_msg.add_reaction("⏩")     
                 elif page >= pages-1:
                     await url_msg.clear_reactions()
     
-                    await url_msg.add_reaction(emojis[0])
+                    await url_msg.add_reaction("⏪")
                         
                 else:
                     if page-1<=0 or last_page:
@@ -53,17 +54,19 @@ class Youtube(commands.Cog):
                             await url_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
+                def react_check(reaction, user): #reaction check function
+                    return user.id == ctx.author.id and reaction.message.id == url_msg.id and str(reaction.emoji) in emojis
                 try:
                     user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
                 except asyncio.TimeoutError:
                         await url_msg.clear_reactions()
                         break
             				
-                if user_react.emoji == emojis[1] and page != pages-1:
+                if user_react.emoji == "⏩" and page != pages-1:
                     page += 1
                     await url_msg.edit(content = video_urls[page])
                     await url_msg.remove_reaction(user_react, user)	
-                elif user_react.emoji == emojis[0] and page > 0:
+                elif user_react.emoji == "⏪" and page > 0:
                     page -= 1
                     if page==pages-1:
                         last_page = True
@@ -89,18 +92,18 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(channel_urls[0])
             pages = limit
-            emojis = ["⬅️","➡️️"]
+            emojis = ["⏪","⏩️"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
                     pass
                 elif page <= 0:
                     await url_msg.clear_reactions()
-                    await url_msg.add_reaction(emojis[1])     
+                    await url_msg.add_reaction("⏩")     
                 elif page >= pages-1:
                     await url_msg.clear_reactions()
     
-                    await url_msg.add_reaction(emojis[0])
+                    await url_msg.add_reaction("⏪")
                         
                 else:
                     if page-1<=0 or last_page:
@@ -110,17 +113,19 @@ class Youtube(commands.Cog):
                             await url_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
+                def react_check(reaction, user): #reaction check function
+                    return user.id == ctx.author.id and reaction.message.id == url_msg.id and str(reaction.emoji) in emojis
                 try:
                     user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
                 except asyncio.TimeoutError:
                         await url_msg.clear_reactions()
                         break
             				
-                if user_react.emoji == emojis[1] and page != pages-1:
+                if user_react.emoji == "⏩" and page != pages-1:
                     page += 1
                     await url_msg.edit(content = channel_urls[page])
                     await url_msg.remove_reaction(user_react, user)	
-                elif user_react.emoji == emojis[0] and page > 0:
+                elif user_react.emoji == "⏪" and page > 0:
                     page -= 1
                     if page==pages-1:
                         last_page = True

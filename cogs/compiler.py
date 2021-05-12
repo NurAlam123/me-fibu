@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import requests
 import os
+import asyncio
 from datetime import datetime as time
 
 API = os.getenv("WANDBOX_API")
@@ -148,7 +149,7 @@ class Compiler(commands.Cog):
 ## all supported programming language
     @commands.command()
     async def _lang(self, ctx):
-        all_langs = [f"{i}. {j}" for i, j in enumerate(self.all_compilers, 1) if j!="cpp"]
+        all_langs = [f"{i}. {j}" for i, j in enumerate(self.all_compilers, 1)]
         n = 10
         start = 0
         end = n
@@ -168,10 +169,10 @@ class Compiler(commands.Cog):
                 pass
             elif page <= 1:
                 await msg.clear_reactions()
-                await msg.add_reaction(emojis[1])
+                await msg.add_reaction("➡️")
             elif page >= pages:
                 await msg.clear_reactions()
-                await msg.add_reaction(emojis[0])
+                await msg.add_reaction("⬅️")
             else:
                 if page - 1 <=1 or last_page:
                     await msg.clear_reactions()
@@ -179,13 +180,13 @@ class Compiler(commands.Cog):
                         await msg.add_reaction(i)
                     if last_page:
                         last_page = False
-            
+
             try:
                 reaction, user = await self.bot.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == msg.id and re.emoji in emojis, timeout= 60)
             except asyncio.TimeoutError:
                 await msg.clear_reactions()
                 break
-            if reaction.emoji == emojis[1]:
+            if reaction.emoji == "➡️":
                 page += 1
                 start = end
                 end += n
@@ -195,7 +196,7 @@ class Compiler(commands.Cog):
                 await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
                 
-            elif reaction.emoji == emojis[0]:
+            elif reaction.emoji == "⬅️":
                 page -= 1
                 end = start
                 start -= n
@@ -252,10 +253,10 @@ class Compiler(commands.Cog):
                         pass
                     elif page <= 1:
                         await msg.clear_reactions()
-                        await msg.add_reaction(emojis[1])
+                        await msg.add_reaction("➡️")
                     elif page >= pages:
                         await msg.clear_reactions()
-                        await msg.add_reaction(emojis[0])
+                        await msg.add_reaction("⬅️")
                     else:
                         if page - 1 <=1 or last_page:
                             await msg.clear_reactions()
@@ -269,7 +270,7 @@ class Compiler(commands.Cog):
                     except asyncio.TimeoutError:
                         await msg.clear_reactions()
                         break
-                    if reaction.emoji == emojis[1]:
+                    if reaction.emoji == "➡️":
                         page += 1
                         start = end
                         end += n
@@ -279,7 +280,7 @@ class Compiler(commands.Cog):
                         await msg.edit(embed= edit_em_msg)
                         await msg.remove_reaction(reaction, user)
                         
-                    elif reaction.emoji == emojis[0]:
+                    elif reaction.emoji == "⬅️":
                         page -= 1
                         end = start
                         start -= n
