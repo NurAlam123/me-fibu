@@ -2,9 +2,8 @@ import discord
 from datetime import datetime as time
 from discord.ext import commands
 from pyyoutube import Api
-import re
 
-API_KEY = "AIzaSyD-a3dlY_KYsKOiv1pIvQV44yPTQqKoJZk"
+API_KEY = os.getenv("YT_API")
 
 yt_api = Api(api_key=API_KEY)
 
@@ -32,7 +31,7 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(video_urls[0])
             pages = limit
-            emojis = ["⏪","⏩️"]
+            emojis = ["⬅️","➡️️"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
@@ -89,7 +88,7 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(channel_urls[0])
             pages = limit
-            emojis = ["⏪","⏩️"]
+            emojis = ["⬅️","➡️️"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:

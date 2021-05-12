@@ -5,6 +5,7 @@ import requests
 import os
 from datetime import datetime as time
 
+API = os.getenv("WANDBOX_API")
 
 class Compiler(commands.Cog):
     def __init__(self, client):
@@ -13,7 +14,7 @@ class Compiler(commands.Cog):
 
 ### get compiler data
     def get_data(self):
-        res = requests.get("https://wandbox.org/api/list.json")
+        res = requests.get(f"{API}/list.json")
         json_data = res.json()
         compilers = {}
         for data in json_data:
@@ -52,7 +53,7 @@ class Compiler(commands.Cog):
         
 ## the compiler   
     def compiler(self, lang, code, user_input=""): 
-        url = "https://wandbox.org/api/compile.json"
+        url = f"{API}/compile.json"
         data = {
             'code': code,
             'compiler': lang,
@@ -132,9 +133,11 @@ class Compiler(commands.Cog):
                 compile_embed.add_field(name= "Signal", value= compile_code.get("signal")) if "signal" in json_keys else None
                 compile_embed.add_field(name= "Compiler Message", value= f"```\n{compile_code.get('compiler_message')}\n```") if "compiler_message" in json_keys else None
                 compile_embed.add_field(name= "Program Message", value= f"```\n{compile_code.get('program_message')}\n```") if "program_message" in json_keys else None
+                compile_embed.set_footer(text=f"Requested by {ctx.author} | Programming Hero")
                 await ctx.send(embed= compile_embed)
             else:
-                await ctx.send("Provide code!")    
+                msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Code is a required argument which isn't provided. Provide code and try again", color= 0xC70039)
+                await ctx.send(embed= msg)   
            
         elif lang in lang_com:
             await ctx.invoke(self.bot.get_command("_lang"))
@@ -154,7 +157,7 @@ class Compiler(commands.Cog):
         em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
         
         msg = await ctx.send(embed = em_msg)
-        emojis = ["◀️", "▶️️️"]
+        emojis = ["⬅️", "➡️️️"]
         last_page = False # to control last page emoji reaction
         
         page = 1
@@ -238,7 +241,7 @@ class Compiler(commands.Cog):
                 em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
                 
                 msg = await ctx.send(embed = em_msg)
-                emojis = ["◀️", "▶️️️"]
+                emojis = ["⬅️", "➡️️️"]
                 last_page = False # to control last page emoji reaction
                 
                 page = 1
