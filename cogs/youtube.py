@@ -23,11 +23,11 @@ class Youtube(commands.Cog):
         if yt_video != []:
             limit = 10
             yt_url = "https://youtube.com/watch?v="
-            videos_urls = []
+            video_urls = []
             for i in range(limit):
-                video_id = yt_video.items[i]['id']['videoId']
+                video_id = yt_video.items[i].to_dict()['id']['videoId']
                 video_url = yt_url+video_id
-                videos_urls.append(video_url)
+                video_urls.append(video_url)
             await ctx.message.add_reaction("📺")
             page = 0
             url_msg = await ctx.send(video_urls[0])
@@ -84,7 +84,7 @@ class Youtube(commands.Cog):
         if yt_channel != []:
             limit = 10
             yt_url = "https://youtube.com/channel/"
-            channel_urls = [yt_url+yt_channel.items[i]["id"]["channelId"] for i in range(limit)]
+            channel_urls = [yt_url+yt_channel.items[i].to_dict()["id"]["channelId"] for i in range(limit)]
             await ctx.message.add_reaction("✅")
             page = 0
             url_msg = await ctx.send(channel_urls[0])
@@ -139,4 +139,3 @@ class Youtube(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Youtube(bot))
-    
