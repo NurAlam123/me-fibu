@@ -2,6 +2,7 @@ import discord
 from datetime import datetime as time
 from discord.ext import commands
 from pyyoutube import Api
+import os
 
 API_KEY = os.getenv("YT_API")
 
