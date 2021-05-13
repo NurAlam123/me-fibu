@@ -169,10 +169,10 @@ class Compiler(commands.Cog):
                 pass
             elif page <= 1:
                 await msg.clear_reactions()
-                await msg.add_reaction("➡️")
+                await msg.add_reaction(emojis[1])
             elif page >= pages:
                 await msg.clear_reactions()
-                await msg.add_reaction("⬅️")
+                await msg.add_reaction(emojis[0])
             else:
                 if page - 1 <=1 or last_page:
                     await msg.clear_reactions()
@@ -186,7 +186,7 @@ class Compiler(commands.Cog):
             except asyncio.TimeoutError:
                 await msg.clear_reactions()
                 break
-            if reaction.emoji == "➡️":
+            if reaction.emoji == emojis[1]:
                 page += 1
                 start = end
                 end += n
@@ -196,7 +196,7 @@ class Compiler(commands.Cog):
                 await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
                 
-            elif reaction.emoji == "⬅️":
+            elif reaction.emoji == emojis[0]:
                 page -= 1
                 end = start
                 start -= n
@@ -253,10 +253,10 @@ class Compiler(commands.Cog):
                         pass
                     elif page <= 1:
                         await msg.clear_reactions()
-                        await msg.add_reaction("➡️")
+                        await msg.add_reaction(emojis[1])
                     elif page >= pages:
                         await msg.clear_reactions()
-                        await msg.add_reaction("⬅️")
+                        await msg.add_reaction(emojis[0])
                     else:
                         if page - 1 <=1 or last_page:
                             await msg.clear_reactions()
@@ -270,7 +270,7 @@ class Compiler(commands.Cog):
                     except asyncio.TimeoutError:
                         await msg.clear_reactions()
                         break
-                    if reaction.emoji == "➡️":
+                    if reaction.emoji == emojis[1]:
                         page += 1
                         start = end
                         end += n
@@ -280,7 +280,7 @@ class Compiler(commands.Cog):
                         await msg.edit(embed= edit_em_msg)
                         await msg.remove_reaction(reaction, user)
                         
-                    elif reaction.emoji == "⬅️":
+                    elif reaction.emoji == emojis[0]:
                         page -= 1
                         end = start
                         start -= n
