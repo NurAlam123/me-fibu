@@ -29,11 +29,11 @@ class Youtube(commands.Cog):
                 video_id = yt_video.items[i].to_dict()['id']['videoId']
                 video_url = yt_url+video_id
                 video_urls.append(video_url)
-            await ctx.message.add_reaction("N{TELEVISION}")
+            await ctx.message.add_reaction("\N{TELEVISION}")
             page = 0
             url_msg = await ctx.send(video_urls[0])
             pages = limit
-            emojis = ["N{Black Left-Pointing Triangle}", "N{Black Right-Pointing Triangle}"]
+            emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
@@ -76,7 +76,7 @@ class Youtube(commands.Cog):
                     else:
                         await url_msg.remove_reaction(user_react,user)
             else:
-                await ctx.message.add_reaction("N{CROSS MARK}")
+                await ctx.message.add_reaction("\N{CROSS MARK}")
                 msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search <video name>```")
                 await ctx.send(embed=msg)
 
@@ -92,7 +92,7 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(channel_urls[0])
             pages = limit
-            emojis = ["N{Black Left-Pointing Triangle}", "N{Black Right-Pointing Triangle}"]
+            emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
@@ -135,7 +135,7 @@ class Youtube(commands.Cog):
                     else:
                         await url_msg.remove_reaction(user_react,user)
             else:
-                await ctx.message.add_reaction("N{CROSS MARK}")
+                await ctx.message.add_reaction("\N{CROSS MARK}")
                 msg = discord.Embed(title="Error", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
                 await ctx.send(embed=msg)
 
