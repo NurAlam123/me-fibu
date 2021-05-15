@@ -33,7 +33,7 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(video_urls[0])
             pages = limit
-            emojis = ["\N{PLAY BUTTON}","\N{REVERSE BUTTON}"]
+            emojis = ["\N{REVERSE BUTTON}", "\N{PLAY BUTTON}"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
@@ -92,7 +92,7 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(channel_urls[0])
             pages = limit
-            emojis = ["\N{PLAY BUTTON}","\N{REVERSE BUTTON}"]
+            emojis = ["\N{REVERSE BUTTON}", "\N{PLAY BUTTON}"]
             last_page = False
             while True:
                 if page == 0 and pages == 1:
