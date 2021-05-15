@@ -88,7 +88,7 @@ class Youtube(commands.Cog):
             limit = 10
             yt_url = "https://youtube.com/channel/"
             channel_urls = [yt_url+yt_channel.items[i].to_dict()["id"]["channelId"] for i in range(limit)]
-            await ctx.message.add_reaction("\N{CHECK MARK BUTTON}")
+            await ctx.message.add_reaction("\N{White Heavy Check Mark}")
             page = 0
             url_msg = await ctx.send(channel_urls[0])
             pages = limit
