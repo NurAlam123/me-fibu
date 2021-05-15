@@ -3,6 +3,8 @@ from discord import utils
 import discord
 import re
 
+
+### only server animated emojis
 class emoji(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,12 +23,9 @@ class emoji(commands.Cog):
                 emoji = utils.get(self.bot.emojis, name= emote.strip(":"))
                 if emoji:
                     if emoji.animated:
-                        add = "a"
-                    else:
-                        add = ""
-                    server_emoji = f"<{add}:{emoji.name}:{emoji.id}>"
-                    user_message = user_message.replace(emote, server_emoji)
-                    em = True
+                        server_emoji = f"<a:{emoji.name}:{emoji.id}>"
+                        user_message = user_message.replace(emote, server_emoji)
+                        em = True
             if em:
                 webhooks = await message.channel.webhooks()
                 webhook = utils.get(webhooks, name = "Server Emoji")
