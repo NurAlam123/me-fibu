@@ -158,7 +158,7 @@ class Compiler(commands.Cog):
         em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
         
         msg = await ctx.send(embed = em_msg)
-        emojis = ["N{REVERSE BUTTON}", "N{PLAY BUTTON}"]
+        emojis = ["\N{REVERSE BUTTON}", "\N{PLAY BUTTON}"]
         last_page = False # to control last page emoji reaction
         
         page = 1
@@ -242,7 +242,7 @@ class Compiler(commands.Cog):
                 em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
                 
                 msg = await ctx.send(embed = em_msg)
-                emojis = ["N{REVERSE BUTTON}", "N{PLAY BUTTON}"️️]
+                emojis = ["\N{REVERSE BUTTON}", "\N{PLAY BUTTON}"️️]
                 last_page = False # to control last page emoji reaction
                 
                 page = 1
