@@ -2,6 +2,7 @@ import discord
 from datetime import datetime as time
 from discord.ext import commands
 import translators as trans
+import asyncio
 
 class Translate(commands.Cog):
     def __init__(self,client):

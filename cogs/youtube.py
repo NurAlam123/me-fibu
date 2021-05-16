@@ -79,8 +79,8 @@ class Youtube(commands.Cog):
                     await url_msg.edit(content = video_urls[page])
                     await url_msg.remove_reaction(user_react, user)
             				
-                    else:
-                        await url_msg.remove_reaction(user_react, user)
+                else:
+                    await url_msg.remove_reaction(user_react, user)
             else:
                 await ctx.message.add_reaction("\N{CROSS MARK}")
                 msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search <video name>```")
@@ -143,8 +143,8 @@ class Youtube(commands.Cog):
                     await url_msg.edit(content = channel_urls[page])
                     await url_msg.remove_reaction(user_react, user)
             				
-                    else:
-                        await url_msg.remove_reaction(user_react,user)
+                else:
+                    await url_msg.remove_reaction(user_react,user)
             else:
                 await ctx.message.add_reaction("\N{CROSS MARK}")
                 msg = discord.Embed(title="Error", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
