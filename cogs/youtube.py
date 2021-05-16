@@ -33,6 +33,7 @@ class Youtube(commands.Cog):
             page = 0
             url_msg = await ctx.send(video_urls[0])
             pages = limit
+            
             emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
             last_page = False
             while True:
@@ -62,19 +63,24 @@ class Youtube(commands.Cog):
                         await url_msg.clear_reactions()
                         break
             				
-                if user_react.emoji == emojis[1] and page != pages-1:
+                if page <= 0 and user_react.emoji == emojis[0]:
+                    await url_msg.remove_reaction(user_react, user)
+                elif page >= pages and user_react.emoji == emojis[1]:
+                    await url_msg.remove_reaction(user_react, user)
+                    
+                elif user_react.emoji == emojis[1]:
                     page += 1
                     await url_msg.edit(content = video_urls[page])
                     await url_msg.remove_reaction(user_react, user)	
-                elif user_react.emoji == emojis[0] and page > 0:
+                elif user_react.emoji == emojis[0]:
                     page -= 1
                     if page==pages-1:
                         last_page = True
-                        await url_msg.edit(content = video_urls[page])
-                        await url_msg.remove_reaction(user_react, user)
+                    await url_msg.edit(content = video_urls[page])
+                    await url_msg.remove_reaction(user_react, user)
             				
                     else:
-                        await url_msg.remove_reaction(user_react,user)
+                        await url_msg.remove_reaction(user_react, user)
             else:
                 await ctx.message.add_reaction("\N{CROSS MARK}")
                 msg = discord.Embed(title="Error", description="Oops.. Not found the video..\nPlease search again by typing ```!fibu yt search <video name>```")
@@ -121,16 +127,21 @@ class Youtube(commands.Cog):
                         await url_msg.clear_reactions()
                         break
             				
-                if user_react.emoji == emojis[1] and page != pages-1:
+                if page <= 0 and user_react.emoji == emojis[0]:
+                    await url_msg.remove_reaction(user_react, user)
+                elif page >= pages and user_react.emoji == emojis[1]:
+                    await url_msg.remove_reaction(user_react, user)
+                    
+                elif user_react.emoji == emojis[1]:
                     page += 1
                     await url_msg.edit(content = channel_urls[page])
                     await url_msg.remove_reaction(user_react, user)	
-                elif user_react.emoji == emojis[0] and page > 0:
+                elif user_react.emoji == emojis[0]:
                     page -= 1
                     if page==pages-1:
                         last_page = True
-                        await url_msg.edit(content = channel_urls[page])
-                        await url_msg.remove_reaction(user_react, user)
+                    await url_msg.edit(content = channel_urls[page])
+                    await url_msg.remove_reaction(user_react, user)
             				
                     else:
                         await url_msg.remove_reaction(user_react,user)
