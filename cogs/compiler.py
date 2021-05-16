@@ -130,6 +130,7 @@ class Compiler(commands.Cog):
                 json_keys = compile_code.keys()
                 compile_embed = discord.Embed(title= "Result", color= 0xdbca32, timestamp= time.now())
                 ######### Embed Part ########
+                await ctx.add_reaction("\N{White Heavy Check Mark}")
                 compile_embed.add_field(name= "Status", value= f"Program finished with exit code: {compile_code.get('status')}") if 'status' in json_keys else None
                 compile_embed.add_field(name= "Signal", value= compile_code.get("signal")) if "signal" in json_keys else None
                 compile_embed.add_field(name= "Compiler Message", value= f"```\n{compile_code.get('compiler_message')}\n```") if "compiler_message" in json_keys else None
@@ -154,11 +155,11 @@ class Compiler(commands.Cog):
         start = 0
         end = n
         em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in all_langs[start: end]), timestamp= time.now(), color= 0xffdf08)
-        em_msg.set_footer(text= "Programming Hero")
+        em_msg.set_footer(text= f"1/{n} | Programming Hero")
         em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
         
         msg = await ctx.send(embed = em_msg)
-        emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
+        emojis = ["\N{Black Left-Pointing Triangle}\ufe0f", "\N{Black Right-Pointing Triangle}\ufe0f"]
         last_page = False # to control last page emoji reaction
         
         page = 1
@@ -186,13 +187,14 @@ class Compiler(commands.Cog):
             except asyncio.TimeoutError:
                 await msg.clear_reactions()
                 break
+            
             if reaction.emoji == emojis[1]:
                 page += 1
                 start = end
                 end += n
                 edit_em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in all_langs[start: end]), timestamp= time.now(), color= 0xffdf08)
                 edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
-                edit_em_msg.set_footer(text="Programming Hero")
+                edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
                 await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
                 
@@ -203,7 +205,7 @@ class Compiler(commands.Cog):
                 if page == pages-1:
                     last_page = True
                 edit_em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in all_langs[start: end]), timestamp= time.now(), color= 0xffdf08)
-                edit_em_msg.set_footer(text= "Programming Hero")
+                edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
                 edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
 
                 await msg.edit(embed= edit_em_msg)
@@ -238,11 +240,11 @@ class Compiler(commands.Cog):
                 start = 0
                 end = n
                 em_msg = discord.Embed(title= f"{lang.capitalize()} Compilers", description= '\n'.join(i for i in format_compilers[start: end]), timestamp= time.now(), color= 0xffdf08)
-                em_msg.set_footer(text= "Programming Hero")
+                em_msg.set_footer(text= f"1/{n} | Programming Hero")
                 em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
                 
                 msg = await ctx.send(embed = em_msg)
-                emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
+                emojis = ["\N{Black Left-Pointing Triangle}\ufe0f", "\N{Black Right-Pointing Triangle}\ufe0f"]
                 last_page = False # to control last page emoji reaction
                 
                 page = 1
@@ -270,24 +272,24 @@ class Compiler(commands.Cog):
                     except asyncio.TimeoutError:
                         await msg.clear_reactions()
                         break
-                    if reaction.emoji == emojis[1]:
+                    if str(reaction.emoji) == emojis[1]:
                         page += 1
                         start = end
                         end += n
                         edit_em_msg = discord.Embed(title= f"{lang.capitalize()} Compilers", description= '\n'.join(i for i in format_compilers[start: end]), timestamp= time.now(), color= 0xffdf08)
                         edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
-                        edit_em_msg.set_footer(text="Programming Hero")
+                        edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
                         await msg.edit(embed= edit_em_msg)
                         await msg.remove_reaction(reaction, user)
                         
-                    elif reaction.emoji == emojis[0]:
+                    elif str(reaction.emoji) == emojis[0]:
                         page -= 1
                         end = start
                         start -= n
                         if page == pages-1:
                             last_page = True
                         edit_em_msg = discord.Embed(title= f"{lang.capitalize()} Compilers", description= '\n'.join(i for i in format_compilers[start: end]), timestamp= time.now(), color= 0xffdf08)
-                        edit_em_msg.set_footer(text= "Programming Hero")
+                        edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
                         edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
         
                         await msg.edit(embed= edit_em_msg)
