@@ -99,22 +99,19 @@ class Youtube(commands.Cog):
             emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
             last_page = False
             while True:
-                if page == 0 and pages == 1:
+                if pages == 1 and page == 1:
                     pass
-                elif page <= 0:
-                    await url_msg.clear_reactions()
-                    await url_msg.add_reaction(emojis[1])     
-                elif page >= pages-1:
-                    await url_msg.clear_reactions()
-    
-                    await url_msg.add_reaction(emojis[0])
-                        
+                elif page <= 1:
+                    await msg.clear_reactions()
+                    await msg.add_reaction(emojis[1])
+                elif page >= pages:
+                    await msg.clear_reactions()
+                    await msg.add_reaction(emojis[0])
                 else:
-                    if page-1<=0 or last_page:
-                        await url_msg.clear_reactions()   
-                        
-                        for emoji in emojis:
-                            await url_msg.add_reaction(emoji)
+                    if page - 1 <=1 or last_page:
+                        await msg.clear_reactions()
+                        for i in emojis:
+                            await msg.add_reaction(i)
                         if last_page:
                             last_page = False
                 try:
@@ -123,24 +120,19 @@ class Youtube(commands.Cog):
                         await url_msg.clear_reactions()
                         break
             				
-                if page <= 0 and user_react.emoji == emojis[0] and user.id!=self.bot.user.id:
-                    await url_msg.remove_reaction(user_react, user)
-                elif page >= pages and user_react.emoji == emojis[1] and user.id!=self.bot.user.id:
-                    await url_msg.remove_reaction(user_react, user)
-                    
-                elif user_react.emoji == emojis[1]:
+                if user_react.emoji == emojis[1]:
                     page += 1
-                    await url_msg.edit(content = channel_urls[page])
-                    await url_msg.remove_reaction(user_react, user)	
-                elif user_react.emoji == emojis[0]:
+                    await msg.edit(content= channel_urls[page])
+                    await msg.remove_reaction(reaction, user)
+                    
+                elif reaction.emoji == emojis[0]:
                     page -= 1
-                    if page==pages-1:
+                    if page == pages-1:
                         last_page = True
-                    await url_msg.edit(content = channel_urls[page])
-                    await url_msg.remove_reaction(user_react, user)
-            				
+                    await msg.edit(content= channel_urls[page])
+                    await msg.remove_reaction(reaction, user)
                 else:
-                    await url_msg.remove_reaction(user_react,user)
+                    pass
             else:
                 await ctx.message.add_reaction("\N{CROSS MARK}")
                 msg = discord.Embed(title="Error", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
