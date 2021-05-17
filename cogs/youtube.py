@@ -120,12 +120,12 @@ class Youtube(commands.Cog):
                         await url_msg.clear_reactions()
                         break
             				
-                if user_react.emoji == emojis[1] and page_no!=pages:
+                if user_react.emoji == emojis[1] and page!=pages:
                     page += 1
                     await url_msg.edit(content= channel_urls[page])
                     await url_msg.remove_reaction(user_react, user)
                     
-                elif reaction.emoji == emojis[0] and page_no > 1:
+                elif reaction.emoji == emojis[0] and page > 1:
                     page -= 1
                     if page == pages-1:
                         last_page = True
