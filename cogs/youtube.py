@@ -55,17 +55,15 @@ class Youtube(commands.Cog):
                             await url_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
-                def react_check(reaction, user): #reaction check function
-                    return user.id == ctx.author.id and reaction.message.id == url_msg.id and str(reaction.emoji) in emojis
                 try:
-                    user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
+                    user_react, user = await self.bot.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == url_msg.id and re.emoji in emojis, timeout=60)
                 except asyncio.TimeoutError:
                         await url_msg.clear_reactions()
                         break
             				
-                if page <= 0 and user_react.emoji == emojis[0]:
+                if page <= 0 and user_react.emoji == emojis[0] and user.id!=self.bot.user.id:
                     await url_msg.remove_reaction(user_react, user)
-                elif page >= pages and user_react.emoji == emojis[1]:
+                elif page >= pages and user_react.emoji == emojis[1] and user.id!=self.bot.user.id:
                     await url_msg.remove_reaction(user_react, user)
                     
                 elif user_react.emoji == emojis[1]:
@@ -119,17 +117,15 @@ class Youtube(commands.Cog):
                             await url_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
-                def react_check(reaction, user): #reaction check function
-                    return user.id == ctx.author.id and reaction.message.id == url_msg.id and str(reaction.emoji) in emojis
                 try:
-                    user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
+                    user_react, user = await self.bot.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == url_msg.id and re.emoji in emojis, timeout=60)
                 except asyncio.TimeoutError:
                         await url_msg.clear_reactions()
                         break
             				
-                if page <= 0 and user_react.emoji == emojis[0]:
+                if page <= 0 and user_react.emoji == emojis[0] and user.id!=self.bot.user.id:
                     await url_msg.remove_reaction(user_react, user)
-                elif page >= pages and user_react.emoji == emojis[1]:
+                elif page >= pages and user_react.emoji == emojis[1] and user.id!=self.bot.user.id:
                     await url_msg.remove_reaction(user_react, user)
                     
                 elif user_react.emoji == emojis[1]:

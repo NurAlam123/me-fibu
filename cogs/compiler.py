@@ -130,7 +130,7 @@ class Compiler(commands.Cog):
                 json_keys = compile_code.keys()
                 compile_embed = discord.Embed(title= "Result", color= 0xdbca32, timestamp= time.now())
                 ######### Embed Part ########
-                await ctx.add_reaction("\N{White Heavy Check Mark}")
+                await ctx.message.add_reaction("\N{White Heavy Check Mark}")
                 compile_embed.add_field(name= "Status", value= f"Program finished with exit code: {compile_code.get('status')}") if 'status' in json_keys else None
                 compile_embed.add_field(name= "Signal", value= compile_code.get("signal")) if "signal" in json_keys else None
                 compile_embed.add_field(name= "Compiler Message", value= f"```\n{compile_code.get('compiler_message')}\n```") if "compiler_message" in json_keys else None
