@@ -99,9 +99,9 @@ class Youtube(commands.Cog):
             emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
             last_page = False
             while True:
-                if pages == 1 and page == 1:
+                if page == 0 and pages == 1:
                     pass
-                elif page <= 1:
+                elif page <= 0:
                     await url_msg.clear_reactions()
                     await url_msg.add_reaction(emojis[1])
                 elif page >= pages:
@@ -123,14 +123,14 @@ class Youtube(commands.Cog):
                 if user_react.emoji == emojis[1]:
                     page += 1
                     await url_msg.edit(content= channel_urls[page])
-                    await url_msg.remove_reaction(reaction, user)
+                    await url_msg.remove_reaction(user_react, user)
                     
                 elif reaction.emoji == emojis[0]:
                     page -= 1
                     if page == pages-1:
                         last_page = True
                     await url_msg.edit(content= channel_urls[page])
-                    await url_msg.remove_reaction(reaction, user)
+                    await url_msg.remove_reaction(user_react, user)
                 else:
                     pass
             else:
