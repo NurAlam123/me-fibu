@@ -50,7 +50,7 @@ class Wiki(commands.Cog):
                         await msg.add_reaction(emojis[1]) # adding :arrow_forword:
                     elif page_no >= pages:
                         await msg.clear_reactions() # remove reactions if exists
-                        await msg.add_reaction(emoji[0]) # adding :arrow_backword:
+                        await msg.add_reaction(emojis[0]) # adding :arrow_backword:
                     
                     else:
                         if page_no-1<=1 or last_page:
