@@ -98,7 +98,7 @@ class Google(commands.Cog):
                         await link_msg.remove_reaction(reaction, user)
                         if page == pages-1:
                             last_page = True
-                     else:
+                    else:
                         out_emoji = True
                         await msg.remove_reaction(reaction, user)
             except:
