@@ -8,8 +8,30 @@ class Translate(commands.Cog):
     def __init__(self,client):
         self.client = client
 ## Languages data
-        self.supp_langs = {'Afrikaans': 'af', 'Albanian': 'sq', 'Amharic': 'am', 'Arabic': 'ar', 'Armenian': 'hy', 'Azerbaijani': 'az', 'Basque': 'eu', 'Belarusian': 'be', 'Bengali': 'bn', 'Bangla': 'bn', 'Bosnian': 'bs', 'Bulgarian': 'bg', 'Catalan': 'ca', 'Cebuano': 'ceb', 'Chinese': 'zh-CN', 'Chinese': 'zh', 'Chinese': 'zh-TW', 'Corsican': 'co', 'Croatian': 'hr', 'Czech': 'cs', 'Danish': 'da', 'Dutch': 'nl', 'English': 'en', 'Esperanto': 'eo', 'Estonian': 'et', 'Finnish': 'fi', 'French': 'fr', 'Frisian': 'fy', 'Galician': 'gl', 'Georgian': 'ka', 'German': 'de', 'Greek': 'el', 'Gujarati': 'gu', 'Haitian Creole': 'ht', 'Hausa': 'ha', 'Hawaiian': 'haw', 'Hebrew': 'he or iw', 'Hindi': 'hi', 'Hmong': 'hmn', 'Hungarian': 'hu', 'Icelandic': 'is', 'Igbo': 'ig', 'Indonesian': 'id', 'Irish': 'ga', 'Italian': 'it', 'Japanese': 'ja', 'Javanese': 'jv', 'Kannada': 'kn', 'Kazakh': 'kk', 'Khmer': 'km', 'Kinyarwanda': 'rw', 'Korean': 'ko', 'Kurdish': 'ku', 'Kyrgyz': 'ky', 'Lao': 'lo', 'Latin': 'la', 'Latvian': 'lv', 'Lithuanian': 'lt', 'Luxembourgish': 'lb', 'Macedonian': 'mk', 'Malagasy': 'mg', 'Malay': 'ms', 'Malayalam': 'ml', 'Maltese': 'mt', 'Maori': 'mi', 'Marathi': 'mr', 'Mongolian': 'mn', 'Myanmar': 'my', 'Nepali': 'ne', 'Norwegian': 'no', 'Nyanja': 'ny', 'Odia': 'or', 'Pashto': 'ps', 'Persian': 'fa', 'Polish': 'pl', 'Portuguese': 'pt', 'Punjabi': 'pa', 'Romanian': 'ro', 'Russian': 'ru', 'Samoan': 'sm', 'Scots Gaelic': 'gd', 'Serbian': 'sr', 'Sesotho': 'st', 'Shona': 'sn', 'Sindhi': 'sd', 'Sinhala': 'si', 'Slovak': 'sk', 'Slovenian': 'sl', 'Somali': 'so', 'Spanish': 'es', 'Sundanese': 'su', 'Swahili': 'sw', 'Swedish': 'sv', 'Tagalog': 'tl', 'Tajik': 'tg', 'Tamil': 'ta', 'Tatar': 'tt', 'Telugu': 'te', 'Thai': 'th', 'Turkish': 'tr', 'Turkmen': 'tk', 'Ukrainian': 'uk', 'Urdu': 'ur', 'Uyghur': 'ug', 'Uzbek': 'uz', 'Vietnamese': 'vi', 'Welsh': 'cy', 'Xhosa': 'xh', 'Yiddish': 'yi', 'Yoruba': 'yo', 'Zulu': 'zu'}
-
+        self.supp_langs = {
+                            'Afrikaans': 'af', 'Albanian': 'sq', 'Amharic': 'am', 'Arabic': 'ar', 'Armenian': 'hy',
+                            'Azerbaijani': 'az', 'Basque': 'eu', 'Belarusian': 'be', 'Bengali': 'bn', 'Bangla': 'bn',
+                            'Bosnian': 'bs', 'Bulgarian': 'bg', 'Catalan': 'ca', 'Cebuano': 'ceb', 'Chinese': 'zh-TW',
+                            'Corsican': 'co', 'Croatian': 'hr', 'Czech': 'cs', 'Danish': 'da', 'Dutch': 'nl',
+                            'English': 'en', 'Esperanto': 'eo', 'Estonian': 'et', 'Finnish': 'fi', 'French': 'fr',
+                            'Frisian': 'fy', 'Galician': 'gl', 'Georgian': 'ka', 'German': 'de', 'Greek': 'el',
+                            'Gujarati': 'gu', 'Haitian Creole': 'ht', 'Hausa': 'ha', 'Hawaiian': 'haw', 'Hebrew': 'iw',
+                            'Hindi': 'hi', 'Hmong': 'hmn', 'Hungarian': 'hu', 'Icelandic': 'is', 'Igbo': 'ig',
+                            'Indonesian': 'id', 'Irish': 'ga', 'Italian': 'it', 'Japanese': 'ja', 'Javanese': 'jv',
+                            'Kannada': 'kn', 'Kazakh': 'kk', 'Khmer': 'km', 'Kinyarwanda': 'rw', 'Korean': 'ko',
+                            'Kurdish': 'ku', 'Kyrgyz': 'ky', 'Lao': 'lo', 'Latin': 'la', 'Latvian': 'lv',
+                            'Lithuanian': 'lt', 'Luxembourgish': 'lb', 'Macedonian': 'mk', 'Malagasy': 'mg', 'Malay': 'ms',
+                            'Malayalam': 'ml', 'Maltese': 'mt', 'Maori': 'mi', 'Marathi': 'mr', 'Mongolian': 'mn',
+                            'Myanmar': 'my', 'Nepali': 'ne', 'Norwegian': 'no', 'Nyanja': 'ny', 'Odia': 'or',
+                            'Pashto': 'ps', 'Persian': 'fa', 'Polish': 'pl', 'Portuguese': 'pt', 'Punjabi': 'pa',
+                            'Romanian': 'ro', 'Russian': 'ru', 'Samoan': 'sm', 'Scots Gaelic': 'gd', 'Serbian': 'sr',
+                            'Sesotho': 'st', 'Shona': 'sn', 'Sindhi': 'sd', 'Sinhala': 'si', 'Slovak': 'sk',
+                            'Slovenian': 'sl', 'Somali': 'so', 'Spanish': 'es', 'Sundanese': 'su', 'Swahili': 'sw',
+                            'Swedish': 'sv', 'Tagalog': 'tl', 'Tajik': 'tg', 'Tamil': 'ta', 'Tatar': 'tt',
+                            'Telugu': 'te', 'Thai': 'th', 'Turkish': 'tr', 'Turkmen': 'tk', 'Ukrainian': 'uk',
+                            'Urdu': 'ur', 'Uyghur': 'ug', 'Uzbek': 'uz', 'Vietnamese': 'vi', 'Welsh': 'cy',
+                            'Xhosa': 'xh', 'Yiddish': 'yi', 'Yoruba': 'yo', 'Zulu': 'zu'
+                            }
 # check language supported or not
     def check_lang(self, lang):
         lang = lang.capitalize()
@@ -64,59 +86,77 @@ class Translate(commands.Cog):
         em_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
         
         msg = await ctx.send(embed = em_msg)
-        emojis = ["⬅️", "➡️"]
+        emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
         last_page = False # to control last page emoji reaction
+        reverse = False # to control page that goes reverse
+        out_emoji = False # to control emojis which is not in emojis
+        
         page = 1
         pages = round(len(self.supp_langs)/n)
+        
+        def reaction_check(reaction, user):
+            return user.id == ctx.author.id and reaction.message.id == msg.id
 
         while True:
-            if pages == 1 and page == 1:
+            if out_emoji:
                 pass
-            elif page <= 1:
+            elif page <= 1 or page <= 0:
                 await msg.clear_reactions()
                 await msg.add_reaction(emojis[1])
             elif page >= pages:
                 await msg.clear_reactions()
                 await msg.add_reaction(emojis[0])
             else:
-                if page - 1 <=1 or last_page:
-                    await msg.clear_reactions()
-                    for i in emojis:
-                        await msg.add_reaction(i)
+                if not reverse:
+                    if (page-1)<=1 or last_page:
+                        await msg.clear_reactions()
+                        for emoji in emojis:
+                            await msg.add_reaction(emoji)
+                else:
                     if last_page:
-                        last_page = False
+                        await msg.clear_reactions()
+                        for emoji in emojis:
+                            await msg.add_reaction(emoji)
+                if last_page:
+                    last_page = False
             
             try:
-                reaction, user = await self.client.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == msg.id and re.emoji in emojis, timeout=60)
+                reaction, user = await self.bot.wait_for("reaction_add", check = reaction_check, timeout= 60)
             except asyncio.TimeoutError:
                 await msg.clear_reactions()
                 break
-            if reaction.emoji == emojis[1]:
+            
+            if reaction.emoji == emojis[1] and page!=pages:
                 page += 1
                 start = end
                 end += n
+                reverse = False
+                out_emoji = False
                 the_table = self.make_table(all_lang[start: end])
-                edit_em_msg = discord.Embed(title = "Supported Languages", description = the_table, color = 0xffdf08, timestamp = time.now())
-                edit_em_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
-                edit_em_msg.set_footer(text="Programming Hero")
-                await msg.edit(embed=edit_em_msg)
+                edit_em_msg = discord.Embed(title= "Supported Languages", description= the_table, color= 0xffdf08, timestamp= time.now())
+                edit_em_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                edit_em_msg.set_footer(text= "Programming Hero")
+                await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
                 
-            elif reaction.emoji == emojis[0]:
+            elif reaction.emoji == emojis[0] and page > 1:
                 page -= 1
                 end = start
                 start -= n
+                reverse = True
+                out_emoji = False
                 if page == pages-1:
                     last_page = True
                 the_table = self.make_table(all_lang[start: end])
-                edit_em_msg = discord.Embed(title = "Supported Languages", description = the_table, color = 0xffdf08, timestamp = time.now())
+                edit_em_msg = discord.Embed(title= "Supported Languages", description= the_table, color= 0xffdf08, timestamp= time.now())
                 edit_em_msg.set_footer(text="Programming Hero")
-                edit_em_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
+                edit_em_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
 
                 await msg.edit(embed=edit_em_msg)
                 await msg.remove_reaction(reaction, user)
             else:
-                pass
+                out_emoji = True
+                await msg.remove_reaction(reaction, user)
 
 ## make the table
     def make_table(self, lang_list):
@@ -137,10 +177,6 @@ class Translate(commands.Cog):
         
         table = header + main + footer
         return f"```\n{table}\n```"
-
-
-
-
 
 
 def setup(bot):

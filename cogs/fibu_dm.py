@@ -22,7 +22,7 @@ class UsersDm(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if isinstance(message.channel, discord.channel.DMChannel):
-            if message.content.startswith("!"):
+            if message.content.startswith("!") or message.content.lower().startswith("f"):
                 pass
             else:
                 if message.author.id == self.bot.user.id or message.author.id in UsersDm.DEVS:

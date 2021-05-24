@@ -42,60 +42,67 @@ class Google(commands.Cog):
                 link_msg = await ctx.send(links[0]) #send the link
             
                 def react_check(reaction, user): #reaction check function
-                    return user.id == ctx.author.id and reaction.message.id == link_msg.id and str(reaction.emoji) in emojis
+                    return user.id == ctx.author.id and reaction.message.id == link_msg.id
         
                 page = 0
                 pages = len(links)
-                emojis = ["⬅️","➡️"]
-                last_page = False
+                
+                emojis = ["\N{Black Left-Pointing Triangle}\ufe0f", "\N{Black Right-Pointing Triangle}\ufe0f"]
+                last_page = False # to control last page emoji reaction
+                reverse = False # to control page that goes reverse
+                out_emoji = False # to control emojis which is not in emojis
+
                 while True: # looping between pages
                     '''
-                        Handle page by emoji if page is 0 the can't go backward and if page is the last page then can't go forward
+                        Handle page by emoji if page is 0 then can't go backward and if page is the last page then can't go forward
                     '''
-                    if page == 0 and pages == 1:
+                    if out_emoji:
                         pass
-                    elif page <= 0:
-                        await link_msg.clear_reactions() # remove reactions if exists
-                        await link_msg.add_reaction(emojis[1]) # add reaction to link_msg
-    				
-                        
-                    elif page >= pages-1:
-                        await link_msg.clear_reactions() # remove reactions if exists
-    
+                    elif page <= 1 or page <= 0:
+                        await link_msg.clear_reactions()
+                        await link_msg.add_reaction(emojis[1])
+                    elif page >= pages:
+                        await link_msg.clear_reactions()
                         await link_msg.add_reaction(emojis[0])
-                        
                     else:
-                        if page-1<=0 or last_page:
-                            await link_msg.clear_reactions() # remove emoji if exists
-    
-                        
-                            for emoji in emojis:
-                                await link_msg.add_reaction(emoji)
+                        if not reverse:
+                            if (page-1)<=1 or last_page:
+                                await link_msg.clear_reactions()
+                                for emoji in emojis:
+                                    await link_msg.add_reaction(emoji)
+                        else:
                             if last_page:
-                                last_page = False
+                                await link_msg.clear_reactions()
+                                for emoji in emojis:
+                                    await link_msg.add_reaction(emoji)
+                        if last_page:
+                            last_page = False
                     try: # to handle timeout error
-                        user_react, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
+                        reaction, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
                     except asyncio.TimeoutError:
                         await link_msg.clear_reactions()
                         break
         				
-                    if user_react.emoji == "➡️" and page != pages-1:
+                    if reaction.emoji == emojis[1] and page!=pages:
                         page += 1
-                        await link_msg.edit(content = links[page])
-                        await link_msg.remove_reaction(user_react, user)
-        				
-                    elif user_react.emoji == "⬅️" and page > 0:
+                        reverse = False
+                        out_emoji = False
+                        await link_msg.edit(content= links[page])
+                        await link_msg.remove_reaction(reaction, user)
+                        
+                    elif reaction.emoji == emojis[0] and page > 1:
                         page -= 1
-                        if page==pages-1:
+                        reverse = True
+                        out_emoji = False
+                        await link_msg.edit(content= links[page])
+                        await link_msg.remove_reaction(reaction, user)
+                        if page == pages-1:
                             last_page = True
-                        await link_msg.edit(content = links[page])
-                        await link_msg.remove_reaction(user_react, user)
-        				
-                    else:
-                        await link_msg.remove_reaction(user_react,user)
-                    
+                     else:
+                        out_emoji = True
+                        await msg.remove_reaction(reaction, user)
             except:
-                await ctx.send("Page Not Found")
+                await ctx.send("404 Page Not Found!!")
 
 def setup(bot):
     bot.add_cog(Google(bot))
