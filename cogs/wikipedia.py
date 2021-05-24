@@ -127,12 +127,13 @@ class Wiki(commands.Cog):
 
 
 #select options
-    @wiki.command()
-    async def select(self, ctx, index_no):
-        if ctx.author.id in self.wiki_content.keys() and index_no.isnumeric():
-            await ctx.message.add_reaction("🆗")
-            query = self.wiki_content[ctx.author.id][int(index_no) - 1]
-            await ctx.invoke(self.client.get_command("wiki"), query = query)
+    @commands.command()
+    async def select(self, ctx, command, index_no):
+        if command.lower()=="wiki":
+            if ctx.author.id in self.wiki_content.keys() and index_no.isnumeric():
+                await ctx.message.add_reaction("🆗")
+                query = self.wiki_content[ctx.author.id][int(index_no) - 1]
+                await ctx.invoke(self.client.get_command("wiki"), query = query)
             
             
 
