@@ -121,26 +121,26 @@ class Youtube(commands.Cog):
 
             while True:
                 if out_emoji:
-                pass
-            elif page <= 1 or page <= 0:
-                await url_msg.clear_reactions()
-                await url_msg.add_reaction(emojis[1])
-            elif page >= pages:
-                await url_msg.clear_reactions()
-                await url_msg.add_reaction(emojis[0])
-            else:
-                if not reverse:
-                    if (page-1)<=1 or last_page:
-                        await url_msg.clear_reactions()
-                        for emoji in emojis:
-                            await url_msg.add_reaction(emoji)
+                    pass
+                elif page <= 1 or page <= 0:
+                    await url_msg.clear_reactions()
+                    await url_msg.add_reaction(emojis[1])
+                elif page >= pages:
+                    await url_msg.clear_reactions()
+                    await url_msg.add_reaction(emojis[0])
                 else:
+                    if not reverse:
+                        if (page-1)<=1 or last_page:
+                            await url_msg.clear_reactions()
+                            for emoji in emojis:
+                                await url_msg.add_reaction(emoji)
+                    else:
+                        if last_page:
+                            await url_msg.clear_reactions()
+                            for emoji in emojis:
+                                await url_msg.add_reaction(emoji)
                     if last_page:
-                        await url_msg.clear_reactions()
-                        for emoji in emojis:
-                            await url_msg.add_reaction(emoji)
-                if last_page:
-                    last_page = False
+                        last_page = False
 
 
                 try:
@@ -167,7 +167,6 @@ class Youtube(commands.Cog):
                     out_emoji = True
                     await url_msg.remove_reaction(reaction, user)
             else:
-                else:
                 await ctx.message.add_reaction("<:wrong:846424916404207636>")
                 msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
                 await ctx.send(embed=msg)
