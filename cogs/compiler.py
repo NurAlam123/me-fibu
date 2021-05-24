@@ -2,308 +2,269 @@ import discord
 from discord.ext import commands
 
 import requests
+#import json
 import os
 import asyncio
+import re
 from datetime import datetime as time
 
-API = os.getenv("WANDBOX_API")
+API = os.getenv("COMPILER_API")
 
 class Compiler(commands.Cog):
     def __init__(self, client):
         self.bot = client
-        self.all_compilers = self.get_data()
+        self.all_languages = {}
+        self.all_sup_lang = []
+        self.data = {}
+        self.need_edit = False
+        self.find_code = re.compile(r'(?s)(?:edit_last_)?compile(?: +(?P<language>\S*)\s*|\s*)(?:\n'
+    r'(?P<args>(?:[^\n\r\f\v]*\n)*?)\s*|\s*)'
+    r'```(?:(?P<syntax>\S+)\n\s*|\s*)(?P<source>.*)```'
+    r'(?:\n?(?P<stdin>(?:[^\n\r\f\v]\n?)+)+|)')
+        self.get_data()
 
 ### get compiler data
     def get_data(self):
-        res = requests.get(f"{API}/list.json")
+        res = requests.get(f"{API}/runtimes")
         json_data = res.json()
-        compilers = {}
         for data in json_data:
-           language = data["language"].lower()
-           compiler = data["name"].lower()
-           if language not in compilers:
-               compilers[language] = [compiler]
-           else:
-               compilers[language].append(compiler)
-        return compilers
+           language = data["language"]
+           version = data["version"]
+           aliases = data["aliases"]
+           if language.capitalize() not in self.all_sup_lang or language!="cpp":
+               self.all_sup_lang.append(language.capitalize())
+           self.all_languages[language] = language
+           for alias in aliases:
+               self.all_languages[alias] = language
 
-## check it's compiler or not
-    def check_compiler(self, compiler):
-        for i in self.all_compilers.values():
-            if compiler in i:
-                return True
-                break
-            else:
-                continue
-
-## get compiler name    
-    def get_compiler(self, lang):
-        short_names = {"py": "python", "js": "javascript", "ts": "typescript", "vim": "vim script"}
-        if lang in short_names:
-            lang = short_names[lang]
-
-        if lang in self.all_compilers:
-            compiler = self.all_compilers[lang][0]
-            return compiler
-        else:
-            is_compiler = self.check_compiler(lang)
-            if is_compiler:
-                return lang
-            else:
-                return None     
         
 ## the compiler   
-    def compiler(self, lang, code, user_input=""): 
-        url = f"{API}/compile.json"
+    def compiler(self, lang, code, args, user_input=""): 
+        url = f"{API}/execute"
         data = {
-            'code': code,
-            'compiler': lang,
-            'stdin': user_input 
+            'language': lang,
+            'version': '*',
+            'args': args,
+            'files':[{'content': code}],
+            'stdin': user_input,
+            'log': 0
             }
-        res = requests.post(url, json=data)
-        return res
-
-## check message has user input or not    
-    def has_user_input(self, message):
-        message = message.lower()
-        if message.strip().startswith("-i") or "-i" in message:
-            return True
-        else:
-            return False
-
-## extract user input form message
-    def get_user_input(self, stdin):
-        if stdin.strip().startswith("-i"):
-            user_input = stdin.strip().lstrip("-i ")
-            code = user_input.split("-c ")[1]
-        elif "-i" in stdin:
-            user_input = stdin.split("-i ")[1]
-            try:
-                code = stdin.split("-c ")[1].split("-i ")[0]
-            except:
-                code = None
-            
-        if "```" in user_input:
-            user_input = user_input.lstrip("`\n").rstrip("\n")[:-3].strip("\n")
-            return user_input, code
-        else:
-            return user_input.strip("\n"), code
-
-## extract the code from message
-    def get_code(self, code):
-        all_code_lang = ['c', 'cpp', 'c++', 'c#', 'rill', 'erlang', 'elixir', 'haskell', 'd', 'java', 'rust', 'python', 'ruby', 'scala', 'groovy', 'javascript', 'coffeescript', 'swift', 'perl', 'php', 'lua', 'sql', 'pascal', 'lisp', 'vim script', 'ocaml', 'go', 'bash script', 'pony', 'crystal', 'nim', 'openssl', 'f#', 'cmake', 'r', 'typescript', 'julia', "py", "ts", "js", "vim"]
-        code = code.lstrip("\n-c ").lstrip("\n`").rstrip("\n`")
-        if code.split("\n")[0] in all_code_lang:
-            code = code.lstrip(code.split("\n")[0])
-            return code
-        else:
-            return code
+        try:
+            res = requests.post(url, json=data)
+            return res
+        except:
+            return
 
 ## compile command
-    @commands.command()
-    async def compile(self, ctx, lang, *, msg= None):
-        lang_com = ["lang", "langs", "language", "languages"] # language commands
-        compiler_lang = self.get_compiler(lang)
-        
-        error = False
-        if compiler_lang and lang not in lang_com:
-            if '-c ' not in msg or '-i ' not in msg:
-                if "```" in msg:
-                    code = self.get_code(msg)
-                    compile_code = self.compiler(compiler_lang, code).json()
-                else:
-                    compile_code = self.compiler(compiler_lang, msg).json()
-            else:
-                has_input = self.has_user_input(msg)
-                if has_input:
-                    user_input, code = self.get_user_input(msg)
-                    if code and user_input:
-                        code = self.get_code(code)
-                        compile_code = self.compiler(compiler_lang, code, user_input).json()
+    @commands.group()
+    async def compile(self, ctx):
+        if ctx.invoked_subcommand is None:
+            msg = None
+            
+            match = self.find_code.search(ctx.message.content)
+            if not match:
+                pass
+            lang_error = False
+            code_error = False
+            try:
+                lang, args, syntax, code, stdin = match.groups()
+            except:
+                code_error = True
+            if not code_error:
+                if not lang:
+                    lang = syntax
+                if lang:
+                    lang = lang.lower()
+                if lang not in self.all_languages:
+                    lang_error = True
+                if code=="" or code==None:
+                    code_error = True
+    
+            if not lang_error and not code_error:
+                    ### loading gif ####
+                    await ctx.message.clear_reactions()
+                    await ctx.message.add_reaction("<:loading:846416824903270420>")
+                    
+                    lang = self.all_languages[lang]
+                    compile_response = self.compiler(lang, code, args, stdin)
+                    if compile_response:
+                        
+            ########## Embed Part #########
+                        output = None
+                        error = None
+                        status_code = None
+                        if compile_response.status_code == 200:
+                            compile_code = compile_response.json().get('run')
+                            compile_embed = discord.Embed(title= f"{lang.capitalize()} Compilation Results", color= 0xdbca32, timestamp= time.now())
+                            if len(compile_code.get('stderr')) != 0:
+                                await ctx.message.clear_reactions()
+                                await ctx.message.add_reaction("\N{CROSS MARK}")
+                                if compile_response.json().get("compile"):
+                                    compiler = compile_response.json()['compile']
+                                    error = compiler['output']
+                                    status_code = compiler.get("code") if compiler.get("code") else None
+                                else:
+                                    error = compile_code.get('stderr')
+                                
+                            elif compile_code.get('output')!=None:
+                                await ctx.message.clear_reactions()
+                                await ctx.message.add_reaction("\N{White Heavy Check Mark}")
+                                if compile_code.get("code"):
+                                    status_code = compile_code.get('code')
+                                else:
+                                    status_code = None
+                                output = compile_code.get('output')[:1000]
+                                output = discord.utils.escape_mentions(output)
+                                output = output.replace("`", "`\u200b")
+                                if output.__len__() >= 2000:
+                                    output = output[:1000]
+                            else:
+                                pass
+                            if self.need_edit and ctx.author.id in self.data:
+                                self.need_edit = False
+                                compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if status_code else None
+                                compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
+                                compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
+                                compile_embed.set_footer(text=f"Programming Hero")
+                                embed_message = await ctx.fetch_message(self.data.get(ctx.author.id))
+                                compile_msg = await embed_message.edit(embed= compile_embed)
+                            else:
+                                compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if status_code else None
+                                compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
+                                compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
+                                compile_embed.set_footer(text=f"Programming Hero")
+                                compile_msg = await ctx.reply(embed= compile_embed, mention_author=True)
+           ########## Error Part ############
+                        else:
+                            msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= f"Something went wrong!:(\nStatus: {compile_response.json()['message']}", color= 0xC70039)
+                            await ctx.reply(embed= msg, mention_author=True)
                     else:
-                        error = True
-                else:
-                    code = self.get_code(msg)
-                    compile_code = self.compiler(compiler_lang, code).json()
-                
-            if not error:
-                json_keys = compile_code.keys()
-                compile_embed = discord.Embed(title= "Result", color= 0xdbca32, timestamp= time.now())
-                ######### Embed Part ########
-                await ctx.message.add_reaction("\N{White Heavy Check Mark}")
-                compile_embed.add_field(name= "Status", value= f"Program finished with exit code: {compile_code.get('status')}") if 'status' in json_keys else None
-                compile_embed.add_field(name= "Signal", value= compile_code.get("signal")) if "signal" in json_keys else None
-                compile_embed.add_field(name= "Compiler Message", value= f"```\n{compile_code.get('compiler_message')}\n```") if "compiler_message" in json_keys else None
-                compile_embed.add_field(name= "Program Message", value= f"```\n{compile_code.get('program_message')}\n```") if "program_message" in json_keys else None
-                compile_embed.set_footer(text=f"Requested by {ctx.author} | Programming Hero")
-                await ctx.send(embed= compile_embed)
+                        msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Something went wrong\nType ```!fibu help compile``` for help or try again after sometime.", color= 0xC70039)
+                        await ctx.reply(embed= msg, mention_author=True)
+                        
+            elif code_error:
+                        msg = discord.Embed(title= ":warning: Compiler Error [Code block not found] :warning:", description= "Write your code inside code block.\nUse **```** before and after your code.\n__For Example:__\n", color= 0xC70039)
+                        msg.set_image(url="https://is.gd/ea7N4q")
+                        await ctx.reply(embed= msg, mention_author=True)
+            elif lang_error:
+                msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Unsupported programming language.\nType ```!fibu compile languages``` to see all supported programming languages.", color= 0xC70039)
+                await ctx.reply(embed= msg, mention_author=True)
             else:
-                msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Code is a required argument which isn't provided. Provide code and try again", color= 0xC70039)
-                await ctx.send(embed= msg)   
-           
-        elif lang in lang_com:
-            await ctx.invoke(self.bot.get_command("_lang"))
-        else:
-            msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Unsupported programming language.\nType ```!fibu compile languages``` to see all supported programming languages.", color= 0xC70039)
-            await ctx.send(embed= msg)
+                msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Something went wrong\nType ```!fibu help compile``` for help or try again after sometime.", color= 0xC70039)
+                await ctx.reply(embed= msg, mention_author=True)
+            ########## message data store #########
+            if msg:
+                try:
+                    self.data[ctx.author.id] = msg.id
+                except:
+                    pass
+            elif compile_msg:
+                try:
+                    self.data[ctx.author.id] = compile_msg.id
+                except:
+                    pass
+                
+            
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        if after.author.bot:
+            return
+        if before.author.id in self.data:
+            prefixes = await self.bot.get_prefix(after)
+            if isinstance(prefixes, str):
+                prefixes = [prefixes, ]
+            for prefix in prefixes:
+                if after.content.lower().startswith(f'{prefix}compile'):
+                    after.content = after.content.replace(f'{prefix}compile', f'{prefix}compile')
+                    self.need_edit = True
+                    await self.bot.process_commands(after)
+                    break
 
 ## all supported programming language
-    @commands.command()
-    async def _lang(self, ctx):
-        all_langs = [f"{i}. {j}" for i, j in enumerate(self.all_compilers, 1)]
-        n = 10
+    @compile.command(aliases=["language", "languages", "langs"])
+    async def lang(self, ctx):
+        message_content = []
+        for i, j in enumerate(sorted(self.all_sup_lang), 1):
+            page_format = f"{i}. {j}"
+            message_content.append(page_format)
+        per_page = 10
         start = 0
-        end = n
-        em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in all_langs[start: end]), timestamp= time.now(), color= 0xffdf08)
-        em_msg.set_footer(text= f"1/{n} | Programming Hero")
+        end = per_page
+        page = 1
+        pages = round(len(message_content)/per_page)
+
+        em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in message_content[start: end]), timestamp= time.now(), color= 0xffdf08)
+        em_msg.set_footer(text= f"Page: {page}/{pages} | Programming Hero")
         em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
         
         msg = await ctx.send(embed = em_msg)
+       ####### Paginator ######### 
         emojis = ["\N{Black Left-Pointing Triangle}\ufe0f", "\N{Black Right-Pointing Triangle}\ufe0f"]
         last_page = False # to control last page emoji reaction
+        reverse = False # to control page that goes reverse
+        out_emoji = False # to control emojis which is not in emojis
         
-        page = 1
-        pages = round(len(self.all_compilers)/n)
+        def reaction_check(reaction, user):
+            return user.id == ctx.author.id and reaction.message.id == msg.id
         
         while True:
-            if pages == 1 and page == 1:
+            if out_emoji:
                 pass
-            elif page <= 1:
+            elif page <= 1 or page <= 0:
                 await msg.clear_reactions()
                 await msg.add_reaction(emojis[1])
             elif page >= pages:
                 await msg.clear_reactions()
                 await msg.add_reaction(emojis[0])
             else:
-                if page - 1 <=1 or last_page:
-                    await msg.clear_reactions()
-                    for i in emojis:
-                        await msg.add_reaction(i)
+                if not reverse:
+                    if (page-1)<=1 or last_page:
+                        await msg.clear_reactions()
+                        for emoji in emojis:
+                            await msg.add_reaction(emoji)
+                else:
                     if last_page:
-                        last_page = False
+                        await msg.clear_reactions()
+                        for emoji in emojis:
+                            await msg.add_reaction(emoji)
+                if last_page:
+                    last_page = False
 
             try:
-                reaction, user = await self.bot.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == msg.id and re.emoji in emojis, timeout= 60)
+                reaction, user = await self.bot.wait_for("reaction_add", check = reaction_check, timeout= 60)
             except asyncio.TimeoutError:
                 await msg.clear_reactions()
                 break
             
-            if reaction.emoji == emojis[1]:
+            if reaction.emoji == emojis[1] and page!=pages:
                 page += 1
                 start = end
-                end += n
-                edit_em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in all_langs[start: end]), timestamp= time.now(), color= 0xffdf08)
+                end += per_page
+                reverse = False
+                out_emoji = False
+                edit_em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in message_content[start: end]), timestamp= time.now(), color= 0xffdf08)
                 edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
-                edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
+                edit_em_msg.set_footer(text= f"Page: {page}/{pages} | Programming Hero")
                 await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
                 
-            elif reaction.emoji == emojis[0]:
+            elif reaction.emoji == emojis[0] and page > 1:
                 page -= 1
                 end = start
-                start -= n
+                start -= per_page
+                reverse = True
+                out_emoji = False
                 if page == pages-1:
                     last_page = True
-                edit_em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in all_langs[start: end]), timestamp= time.now(), color= 0xffdf08)
-                edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
+                edit_em_msg = discord.Embed(title= "Compiler Languages", description= '\n'.join(i for i in message_content[start: end]), timestamp= time.now(), color= 0xffdf08)
+                edit_em_msg.set_footer(text= f"Page: {page}/{pages} | Programming Hero")
                 edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
 
                 await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
             else:
-                pass
-
-##### get all compilers of that language
-    @commands.command()
-    async def compilers(self, ctx, lang=None):
-        if lang:
-            isCompiler = self.check_compiler(lang)
-            if isCompiler:
-                await ctx.send("It's a compiler. Write the programming language name to get all compilers list")
-            else:
-                short_names = {"py": "python", "js": "javascript", "ts": "typescript", "vim": "vim script"}
-                if lang in short_names:
-                    lang = short_names[lang]
-                    if lang in self.all_compilers:
-                        lang_compilers = self.all_compilers[lang]
-                    else:
-                        await ctx.send("Type language name correctly!")
-                else:
-                    if lang in self.all_compilers:
-                        lang_compilers = self.all_compilers[lang]
-                    else:
-                        await ctx.send("Type language name correctly!!")
-                        
-                        
-                format_compilers = [f"{i}. {j}" for i,j in enumerate(lang_compilers, 1)]
-                n = 10
-                start = 0
-                end = n
-                em_msg = discord.Embed(title= f"{lang.capitalize()} Compilers", description= '\n'.join(i for i in format_compilers[start: end]), timestamp= time.now(), color= 0xffdf08)
-                em_msg.set_footer(text= f"1/{n} | Programming Hero")
-                em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
-                
-                msg = await ctx.send(embed = em_msg)
-                emojis = ["\N{Black Left-Pointing Triangle}\ufe0f", "\N{Black Right-Pointing Triangle}\ufe0f"]
-                last_page = False # to control last page emoji reaction
-                
-                page = 1
-                pages = round(len(self.all_compilers)/n)
-                
-                while True:
-                    if pages == 1 and page == 1:
-                        pass
-                    elif page <= 1:
-                        await msg.clear_reactions()
-                        await msg.add_reaction(emojis[1])
-                    elif page >= pages:
-                        await msg.clear_reactions()
-                        await msg.add_reaction(emojis[0])
-                    else:
-                        if page - 1 <=1 or last_page:
-                            await msg.clear_reactions()
-                            for i in emojis:
-                                await msg.add_reaction(i)
-                            if last_page:
-                                last_page = False
-                    
-                    try:
-                        reaction, user = await self.bot.wait_for("reaction_add", check = lambda re, user: user.id == ctx.author.id and re.message.id == msg.id and re.emoji in emojis, timeout= 60)
-                    except asyncio.TimeoutError:
-                        await msg.clear_reactions()
-                        break
-                    if str(reaction.emoji) == emojis[1]:
-                        page += 1
-                        start = end
-                        end += n
-                        edit_em_msg = discord.Embed(title= f"{lang.capitalize()} Compilers", description= '\n'.join(i for i in format_compilers[start: end]), timestamp= time.now(), color= 0xffdf08)
-                        edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
-                        edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
-                        await msg.edit(embed= edit_em_msg)
-                        await msg.remove_reaction(reaction, user)
-                        
-                    elif str(reaction.emoji) == emojis[0]:
-                        page -= 1
-                        end = start
-                        start -= n
-                        if page == pages-1:
-                            last_page = True
-                        edit_em_msg = discord.Embed(title= f"{lang.capitalize()} Compilers", description= '\n'.join(i for i in format_compilers[start: end]), timestamp= time.now(), color= 0xffdf08)
-                        edit_em_msg.set_footer(text= f"{page}/{pages} | Programming Hero")
-                        edit_em_msg.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
-        
-                        await msg.edit(embed= edit_em_msg)
-                        await msg.remove_reaction(reaction, user)
-                    else:
-                        pass
-
-        else:
-            await ctx.send("Language is an required argument. Type the programming language name to get all compilers.")
-
-
-
-                 
-
+                out_emoji = True
+                await msg.remove_reaction(reaction, user)
 
 def setup(bot):
     bot.add_cog(Compiler(bot))
