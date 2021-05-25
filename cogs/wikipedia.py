@@ -30,7 +30,7 @@ class Wiki(commands.Cog):
                 pages = math.ceil(len(options)/10)
                 
                 show = discord.Embed(title=f"Wikipedia | Page: {page}/{pages}", description="**Not found the page you are looking for. See the below list.**\n"+"\n".join(options[start:end]), color=0xffdf08, timestamp= time.now())
-                show.add_field(name="Pick a index number reference to that title and send below command to search again!",value="Example: ```!fibu wiki select <index no>```")
+                options_msg.add_field(name= "Pick a number and send below command to select that title!",value= "```!fibu select [the number]```\nExample: ```!fibu select 1```")
                 show.set_author(name=self.client.user.name, icon_url= self.client.user.avatar_url)
                 show.set_footer(text="Programming Hero")
                 msg = await ctx.send(embed = show)
@@ -83,7 +83,7 @@ class Wiki(commands.Cog):
                         out_emoji = False
 
                         options_msg = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "\n".join(options[start:end]),color= 0xffdf08, timestamp= time.now())
-                        options_msg.add_field(name= "Pick a number and send below command to search!",value= "```!fibu wiki select [the number]```\nExample: ```!fibu wiki select 1```")
+                        options_msg.add_field(name= "Pick a number and send below command to select that title!",value= "```!fibu select [the number]```\nExample: ```!fibu select 1```")
                         options_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
                         options_msg.set_footer(text= "Programming Hero")
                         await msg.edit(embed= options_msg)
