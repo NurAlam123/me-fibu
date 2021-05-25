@@ -58,7 +58,7 @@ class Google(commands.Cog):
                     '''
                     if out_emoji:
                         pass
-                    elif page <= 1 or page <= 0:
+                    elif page <= 0:
                         await link_msg.clear_reactions()
                         await link_msg.add_reaction(emojis[1])
                     elif page >= pages:
@@ -66,7 +66,7 @@ class Google(commands.Cog):
                         await link_msg.add_reaction(emojis[0])
                     else:
                         if not reverse:
-                            if (page-1)<=1 or last_page:
+                            if (page-1)<= 0 or last_page:
                                 await link_msg.clear_reactions()
                                 for emoji in emojis:
                                     await link_msg.add_reaction(emoji)

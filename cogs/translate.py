@@ -6,7 +6,7 @@ import asyncio
 
 class Translate(commands.Cog):
     def __init__(self,client):
-        self.client = client
+        self.bot = client
 ## Languages data
         self.supp_langs = {
                             'Afrikaans': 'af', 'Albanian': 'sq', 'Amharic': 'am', 'Arabic': 'ar', 'Armenian': 'hy',
@@ -70,7 +70,7 @@ class Translate(commands.Cog):
             msg = discord.Embed(title=":warning: Translation Error :warning:", description = "Text is require to translate\nProvide the **text** that you want to translate", color=0xC70039)
             await ctx.send(embed=msg)
         else:
-            await ctx.invoke(self.client.get_command("_languages"))
+            await ctx.invoke(self.bot.get_command("_languages"))
             
 # show supported languages
     @commands.command()
@@ -83,7 +83,7 @@ class Translate(commands.Cog):
         
         em_msg = discord.Embed(title = "Supported Languages", description = the_table, color = 0xffdf08, timestamp = time.now()) # the embed message
         em_msg.set_footer(text="Programming Hero")
-        em_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
+        em_msg.set_author(name=self.bot.user.name,icon_url=self.bot.user.avatar_url)
         
         msg = await ctx.send(embed = em_msg)
         emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
@@ -134,7 +134,7 @@ class Translate(commands.Cog):
                 out_emoji = False
                 the_table = self.make_table(all_lang[start: end])
                 edit_em_msg = discord.Embed(title= "Supported Languages", description= the_table, color= 0xffdf08, timestamp= time.now())
-                edit_em_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                edit_em_msg.set_author(name= self.bot.user.name,icon_url= self.bot.user.avatar_url)
                 edit_em_msg.set_footer(text= "Programming Hero")
                 await msg.edit(embed= edit_em_msg)
                 await msg.remove_reaction(reaction, user)
@@ -150,7 +150,7 @@ class Translate(commands.Cog):
                 the_table = self.make_table(all_lang[start: end])
                 edit_em_msg = discord.Embed(title= "Supported Languages", description= the_table, color= 0xffdf08, timestamp= time.now())
                 edit_em_msg.set_footer(text="Programming Hero")
-                edit_em_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                edit_em_msg.set_author(name= self.bot.user.name,icon_url= self.bot.user.avatar_url)
 
                 await msg.edit(embed=edit_em_msg)
                 await msg.remove_reaction(reaction, user)
@@ -163,7 +163,7 @@ class Translate(commands.Cog):
         
         sl_space = len(str(len(self.supp_langs)))+2
         lang_name_space = max([len(i) for i in self.supp_langs])+2
-        iso_space = max([len(i) for i in self.supp_langs.values()])+2 # adding 2 for some space before and after the word
+        iso_space = max([len(i) for i in self.supp_langs.values()])+4 # adding 2 for some space before and after the word
 
         header = "╔{0:═^{2}}╦{0:═^{3}}╦{0:═^{4}}╗\n\
 ║{1[0]:^{2}}║{1[1]:^{3}}║{1[2]:^{4}}║\n".format('', ['SL', 'Languages', 'ISO Code'], sl_space, lang_name_space, iso_space)
