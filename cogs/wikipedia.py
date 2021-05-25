@@ -23,9 +23,9 @@ class Wiki(commands.Cog):
                 self.wiki_content[ctx.author.id] = e.options # storing options and author id to execute select command
                 options = [f"{i+1} • {e.options[i]}" for i in range(len(e.options))]
                 await ctx.message.add_reaction("<:wrong:846424916404207636>")
-                start = 0
-                end = 10
                 n = 10
+                start = 0
+                end = n
                 page = 1
                 pages = math.ceil(len(options)/10)
                 
@@ -79,7 +79,7 @@ class Wiki(commands.Cog):
                         start = end
                         end += n
 
-                        reverse = True
+                        reverse = False
                         out_emoji = False
 
                         options_msg = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "\n".join(options[start:end]),color= 0xffdf08, timestamp= time.now())
@@ -91,10 +91,10 @@ class Wiki(commands.Cog):
                     
                     elif str(reaction.emoji)==emojis[0] and page > 1:
                         page -= 1
-                        start = end
-                        end -= n
+                        end = start
+                        start -= n
 
-                        reverse = False
+                        reverse = True
                         out_emoji = False
                         if page == pages-1:
                             last_page = True
