@@ -38,13 +38,13 @@ class Google(commands.Cog):
                         else:
                             links.append(requests.utils.unquote(split_link)) 
                             ''' if the link didn't start with "/urls?q=" then do above same process but here not omitted "/urls?q=" '''
-            try:
+            if links!=[]:
                 link_msg = await ctx.send(links[0]) #send the link
             
                 def react_check(reaction, user): #reaction check function
                     return user.id == ctx.author.id and reaction.message.id == link_msg.id
         
-                page = 0
+                page = 1
                 pages = len(links)
                 
                 emojis = ["\N{Black Left-Pointing Triangle}\ufe0f", "\N{Black Right-Pointing Triangle}\ufe0f"]
@@ -58,7 +58,7 @@ class Google(commands.Cog):
                     '''
                     if out_emoji:
                         pass
-                    elif page <= 0:
+                    elif page <= 1:
                         await link_msg.clear_reactions()
                         await link_msg.add_reaction(emojis[1])
                     elif page >= pages:
@@ -66,7 +66,7 @@ class Google(commands.Cog):
                         await link_msg.add_reaction(emojis[0])
                     else:
                         if not reverse:
-                            if (page-1)<= 0 or last_page:
+                            if (page-1)<= 1 or last_page:
                                 await link_msg.clear_reactions()
                                 for emoji in emojis:
                                     await link_msg.add_reaction(emoji)
@@ -77,6 +77,7 @@ class Google(commands.Cog):
                                     await link_msg.add_reaction(emoji)
                         if last_page:
                             last_page = False
+                    
                     try: # to handle timeout error
                         reaction, user = await self.bot.wait_for("reaction_add", check = react_check, timeout=60)
                     except asyncio.TimeoutError:
@@ -84,24 +85,24 @@ class Google(commands.Cog):
                         break
         				
                     if reaction.emoji == emojis[1] and page!=pages:
-                        page += 1
                         reverse = False
                         out_emoji = False
                         await link_msg.edit(content= links[page])
                         await link_msg.remove_reaction(reaction, user)
+                        page += 1
                         
                     elif reaction.emoji == emojis[0] and page > 1:
-                        page -= 1
                         reverse = True
                         out_emoji = False
                         await link_msg.edit(content= links[page])
                         await link_msg.remove_reaction(reaction, user)
+                        page -= 1
                         if page == pages-1:
                             last_page = True
                     else:
                         out_emoji = True
                         await msg.remove_reaction(reaction, user)
-            except:
+            else:
                 await ctx.send("404 Page Not Found!!")
 
 def setup(bot):

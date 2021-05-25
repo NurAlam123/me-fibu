@@ -47,7 +47,7 @@ class Wiki(commands.Cog):
                 while True:
                     if out_emoji:
                         pass
-                    elif page <= 1 or page <= 0:
+                    elif page <= 1:
                         await msg.clear_reactions()
                         await msg.add_reaction(emojis[1])
                     elif page >= pages:

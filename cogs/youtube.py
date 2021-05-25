@@ -70,7 +70,7 @@ class Youtube(commands.Cog):
 
 
                 try:
-                    reaction, user = await self.bot.wait_for("reaction_add", check = reaction_check(), timeout=60)
+                    reaction, user = await self.bot.wait_for("reaction_add", check = reaction_check, timeout=60)
                 except asyncio.TimeoutError:
                         await url_msg.clear_reactions()
                         break
@@ -92,10 +92,10 @@ class Youtube(commands.Cog):
                 else:
                     out_emoji = True
                     await url_msg.remove_reaction(reaction, user)
-            else:
-                await ctx.message.add_reaction("<:wrong:846424916404207636>")
-                msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found any video..\nPlease search again by typing ```!fibu yt search <video name>```")
-                await ctx.send(embed=msg)
+        else:
+            await ctx.message.add_reaction("<:wrong:846424916404207636>")
+            msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found any video..\nPlease search again by typing ```!fibu yt search <video name>```")
+            await ctx.send(embed=msg)
 
 ## YouTube channel search
     @yt.command(aliases=["chnl", "c"])
@@ -122,7 +122,7 @@ class Youtube(commands.Cog):
             while True:
                 if out_emoji:
                     pass
-                elif page <= 1 or page <= 0:
+                elif page <= 1:
                     await url_msg.clear_reactions()
                     await url_msg.add_reaction(emojis[1])
                 elif page >= pages:
@@ -144,7 +144,7 @@ class Youtube(commands.Cog):
 
 
                 try:
-                    reaction, user = await self.bot.wait_for("reaction_add", check = reaction_check(), timeout=60)
+                    reaction, user = await self.bot.wait_for("reaction_add", check = reaction_check, timeout=60)
                 except asyncio.TimeoutError:
                         await url_msg.clear_reactions()
                         break
@@ -166,10 +166,10 @@ class Youtube(commands.Cog):
                 else:
                     out_emoji = True
                     await url_msg.remove_reaction(reaction, user)
-            else:
-                await ctx.message.add_reaction("<:wrong:846424916404207636>")
-                msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
-                await ctx.send(embed=msg)
+        else:
+            await ctx.message.add_reaction("<:wrong:846424916404207636>")
+            msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
+            await ctx.send(embed=msg)
 
 
 
