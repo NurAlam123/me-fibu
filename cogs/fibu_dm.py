@@ -17,7 +17,10 @@ class UsersDm(commands.Cog):
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
     all_users = tb.find()
-    users = all_users[0]["Users"]
+    if all_users!=[]:
+        users = all_users[0]
+        if users!=[]:
+            users = users["Users"]
 
     @commands.Cog.listener()
     async def on_message(self, message):
