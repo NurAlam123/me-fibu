@@ -142,7 +142,7 @@ class Compiler(commands.Cog):
                             await ctx.reply(embed= msg, mention_author=True)
                     else:
                         await ctx.message.clear_reactions()
-                         await ctx.message.add_reaction("<:wrong:846424916404207636>")
+                        await ctx.message.add_reaction("<:wrong:846424916404207636>")
                         msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Something went wrong\nType ```!fibu help compile``` for help or try again after sometime.", color= 0xC70039)
                         await ctx.reply(embed= msg, mention_author=True)
                         
