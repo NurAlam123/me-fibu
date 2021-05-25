@@ -57,14 +57,14 @@ class Youtube(commands.Cog):
                 else:
                     if not reverse:
                         if (page-1)<=1 or last_page:
-                            await message.clear_reactions()
+                            await url_msg.clear_reactions()
                             for emoji in emojis:
-                                await message.add_reaction(emoji)
+                                await url_msg.add_reaction(emoji)
                     else:
                         if last_page:
-                            await message.clear_reactions()
+                            await url_msg.clear_reactions()
                             for emoji in emojis:
-                                await message.add_reaction(emoji)
+                                await url_msg.add_reaction(emoji)
                     if last_page:
                         last_page = False
 
