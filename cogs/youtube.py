@@ -21,7 +21,7 @@ class Youtube(commands.Cog):
     @yt.command(aliases=["vdo", "v"])
     async def video(self, ctx, *, query):
         yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "video")
-        if yt_video != []:
+        if yt_video.items != []:
             limit = 10
             yt_url = "https://youtube.com/watch?v="
             video_urls = []
@@ -100,7 +100,7 @@ class Youtube(commands.Cog):
     @yt.command(aliases=["chnl", "c"])
     async def channel(self,ctx,*,query):
         yt_channel = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
-        if yt_channel != []:
+        if yt_channel.items != []:
             limit = 10
             yt_url = "https://youtube.com/channel/"
             channel_urls = [yt_url+yt_channel.items[i].to_dict()["id"]["channelId"] for i in range(limit)]
