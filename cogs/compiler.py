@@ -60,6 +60,9 @@ class Compiler(commands.Cog):
     async def compile(self, ctx):
         if ctx.invoked_subcommand is None:
             msg = None
+        ### loading gif reaction ####
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction("<:loading:846416824903270420>")
             
             match = self.find_code.search(ctx.message.content)
             if not match:
@@ -81,10 +84,6 @@ class Compiler(commands.Cog):
                     code_error = True
     
             if not lang_error and not code_error:
-                    ### loading gif ####
-                    await ctx.message.clear_reactions()
-                    await ctx.message.add_reaction("<:loading:846416824903270420>")
-                    
                     lang = self.all_languages[lang]
                     compile_response = self.compiler(lang, code, args, stdin)
                     if compile_response:
@@ -98,7 +97,7 @@ class Compiler(commands.Cog):
                             compile_embed = discord.Embed(title= f"{lang.capitalize()} Compilation Results", color= 0xdbca32, timestamp= time.now())
                             if len(compile_code.get('stderr')) != 0:
                                 await ctx.message.clear_reactions()
-                                await ctx.message.add_reaction("\N{CROSS MARK}")
+                                await ctx.message.add_reaction("<:wrong:846424916404207636>")
                                 if compile_response.json().get("compile"):
                                     compiler = compile_response.json()['compile']
                                     error = compiler['output']
@@ -134,24 +133,36 @@ class Compiler(commands.Cog):
                                 compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
                                 compile_embed.set_footer(text=f"Programming Hero")
                                 compile_msg = await ctx.reply(embed= compile_embed, mention_author=True)
+           
            ########## Error Part ############
                         else:
+                            await ctx.message.clear_reactions()
+                            await ctx.message.add_reaction("<:wrong:846424916404207636>")
                             msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= f"Something went wrong!:(\nStatus: {compile_response.json()['message']}", color= 0xC70039)
                             await ctx.reply(embed= msg, mention_author=True)
                     else:
+                        await ctx.message.clear_reactions()
+                         await ctx.message.add_reaction("<:wrong:846424916404207636>")
                         msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Something went wrong\nType ```!fibu help compile``` for help or try again after sometime.", color= 0xC70039)
                         await ctx.reply(embed= msg, mention_author=True)
                         
             elif code_error:
+                        await ctx.message.clear_reactions()
+                        await ctx.message.add_reaction("<:wrong:846424916404207636>")
                         msg = discord.Embed(title= ":warning: Compiler Error [Code block not found] :warning:", description= "Write your code inside code block.\nUse **```** before and after your code.\n__For Example:__\n", color= 0xC70039)
                         msg.set_image(url="https://is.gd/ea7N4q")
                         await ctx.reply(embed= msg, mention_author=True)
             elif lang_error:
+                await ctx.message.clear_reactions()
+                await ctx.message.add_reaction("<:wrong:846424916404207636>")
                 msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Unsupported programming language.\nType ```!fibu compile languages``` to see all supported programming languages.", color= 0xC70039)
                 await ctx.reply(embed= msg, mention_author=True)
             else:
+                await ctx.message.clear_reactions()
+                await ctx.message.add_reaction("<:wrong:846424916404207636>")
                 msg = discord.Embed(title= ":warning: Compiler Error :warning:", description= "Something went wrong\nType ```!fibu help compile``` for help or try again after sometime.", color= 0xC70039)
                 await ctx.reply(embed= msg, mention_author=True)
+            
             ########## message data store #########
             if msg:
                 try:
