@@ -63,6 +63,7 @@ class Compiler(commands.Cog):
         ### loading gif reaction ####
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction("<:loading:846416824903270420>")
+            await asyncio.sleep(1)
             
             match = self.find_code.search(ctx.message.content)
             if not match:
