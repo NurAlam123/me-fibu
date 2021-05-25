@@ -74,15 +74,15 @@ class Youtube(commands.Cog):
                         break
             				
                 if reaction.emoji == emojis[1] and page!=pages:
-                    await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(reaction, user)
                     page += 1
+                    await url_msg.edit(content = video_urls[page-1])
+                    await url_msg.remove_reaction(reaction, user)
                     reverse = False
                     out_emoji = False
                 elif reaction.emoji == emojis[0] and page > 1:
-                    await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(user_react, user)
                     page -= 1
+                    await url_msg.edit(content = video_urls[page-1])
+                    await url_msg.remove_reaction(user_react, user)
                     reverse = True
                     out_emoji = False
                     if page == pages-1:
@@ -148,15 +148,16 @@ class Youtube(commands.Cog):
                         break
             				
                 if reaction.emoji == emojis[1] and page!=pages:
-                    await url_msg.edit(content = video_urls[page])
+                    page =+ 1
+                    await url_msg.edit(content = channel_urls[page-1])
                     await url_msg.remove_reaction(reaction, user)
-                    page += 1
+                    #page += 1
                     reverse = False
                     out_emoji = False
                 elif reaction.emoji == emojis[0] and page > 1:
-                    await url_msg.edit(content = video_urls[page])
+                    page -=1
+                    await url_msg.edit(content = channel_urls[page-1])
                     await url_msg.remove_reaction(user_react, user)
-                    page -= 1
                     reverse = True
                     out_emoji = False
                     if page == pages-1:
