@@ -74,7 +74,7 @@ class Wiki(commands.Cog):
                         await msg.clear_reactions()
                         break
                     
-                    if str(reaction.emoji)== emoji[1] and page!=pages:
+                    if str(reaction.emoji)== emojis[1] and page!=pages:
                         page += 1
                         start = end
                         end += n
@@ -82,14 +82,14 @@ class Wiki(commands.Cog):
                         reverse = True
                         out_emoji = False
 
-                        options_msg = discord.Embed(title=f"Wikipedia | Page: {page}/{pages}", description="\n".join(options[start:end]),color=0xffdf08, timestamp=time.now())
-                        options_msg.add_field(name="Pick a number and send below command to search!",value="```!fibu wiki select [the number]```\nExample: ```!fibu wiki select 1```")
-                        options_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
-                        options_msg.set_footer(text="Programming Hero")
-                        await msg.edit(embed=options_msg)
+                        options_msg = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "\n".join(options[start:end]),color= 0xffdf08, timestamp= time.now())
+                        options_msg.add_field(name= "Pick a number and send below command to search!",value= "```!fibu wiki select [the number]```\nExample: ```!fibu wiki select 1```")
+                        options_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                        options_msg.set_footer(text= "Programming Hero")
+                        await msg.edit(embed= options_msg)
                         await msg.remove_reaction(reaction,user)
                     
-                    elif str(reaction.emoji)==emoji[0] and page > 1:
+                    elif str(reaction.emoji)==emojis[0] and page > 1:
                         page -= 1
                         start = end
                         end -= n
@@ -99,11 +99,11 @@ class Wiki(commands.Cog):
                         if page == pages-1:
                             last_page = True
 
-                        options_msg = discord.Embed(title=f"Wikipedia | Page: {page}/{pages}", description="\n".join(options[start:end]),color=0xffdf08, timestamp=time.now())
-                        options_msg.add_field(name="Pick a number and send below command to select that title!",value="```!fibu wiki select [the number]```\nExample: ```!fibu wiki select 1```")
-                        options_msg.set_author(name=self.client.user.name,icon_url=self.client.user.avatar_url)
-                        options_msg.set_footer(text="Programming Hero")
-                        await msg.edit(embed=options_msg)
+                        options_msg = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "\n".join(options[start:end]),color= 0xffdf08, timestamp= time.now())
+                        options_msg.add_field(name= "Pick a number and send below command to select that title!",value= "```!fibu select [the number]```\nExample: ```!fibu select 1```")
+                        options_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                        options_msg.set_footer(text= "Programming Hero")
+                        await msg.edit(embed= options_msg)
                         await msg.remove_reaction(reaction,user)
                         
                     else:
@@ -115,12 +115,12 @@ class Wiki(commands.Cog):
             await ctx.send("No Page Found!!")
         else:
             await ctx.message.add_reaction("🔍")
-            wiki_msg = discord.Embed(title= "Wikipedia", description=f"Showing result of **{page.title}**",color=0xffdf08,timestamp=time.now())
+            wiki_msg = discord.Embed(title= "Wikipedia", description= f"Showing result of **{page.title}**", color= 0xffdf08, timestamp= time.now())
             try:
-                wiki_msg.add_field(name= page.title, value=f"{result} ... [Read More]({page.fullurl})")
+                wiki_msg.add_field(name= page.title, value= f"{result} ... [Read More]({page.fullurl})")
             except:
                 wiki_msg.add_field(name= page.title, value=f"{result} ... [Read More]({page.canonicalurl})")
-            wiki_msg.set_author(name= self.client.user.name,icon_url=self.client.user.avatar_url)
+            wiki_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
             wiki_msg.set_footer(text= "Programming Hero")
             await ctx.send(embed= wiki_msg)
 
@@ -129,11 +129,10 @@ class Wiki(commands.Cog):
 #select options
     @commands.command()
     async def select(self, ctx, command, index_no):
-        if command.lower()=="wiki":
-            if ctx.author.id in self.wiki_content.keys() and index_no.isnumeric():
-                await ctx.message.add_reaction("🆗")
-                query = self.wiki_content[ctx.author.id][int(index_no) - 1]
-                await ctx.invoke(self.client.get_command("wiki"), query = query)
+        if ctx.author.id in self.wiki_content.keys() and index_no.isnumeric():
+            await ctx.message.add_reaction("🆗")
+            query = self.wiki_content[ctx.author.id][int(index_no) - 1]
+            await ctx.invoke(self.client.get_command("wiki"), query= query)
             
             
 
