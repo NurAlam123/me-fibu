@@ -113,7 +113,7 @@ class Info(commands.Cog):
 							color=0xffdf08,
 							timestamp=time.now())
 				msg.set_thumbnail(url=f"{self.client.user.avatar_url}")
-				msg.add_field(name="Version",value="0.1.1", inline= False)
+				msg.add_field(name="Version",value="0.2.1", inline= False)
 				msg.add_field(name="Prefix",value="```!fibu```", inline= False)
 				msg.add_field(name="Released on",value="Jan 1, 2021", inline= False)
 				msg.add_field(name="Website",value="[Programming Hero](https://www.programming-hero.com/)", inline= False)
