@@ -44,16 +44,14 @@ class Youtube(commands.Cog):
                 return user.id == ctx.author.id and reaction.message.id == url_msg.id
 
             while True:
-                if out_emoji or (page==0 and pages==1):
+                if out_emoji:
                     pass
-                elif page <= 1 or page <= 0:
+                elif page <= 1:
                     await url_msg.clear_reactions()
-                    await url_msg.add_reaction(emojis[1])     
+                    await url_msg.add_reaction(emojis[1])
                 elif page >= pages:
                     await url_msg.clear_reactions()
-    
                     await url_msg.add_reaction(emojis[0])
-                        
                 else:
                     if not reverse:
                         if (page-1)<=1 or last_page:
