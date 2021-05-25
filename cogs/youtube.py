@@ -34,7 +34,8 @@ class Youtube(commands.Cog):
             page = 1
             pages = limit
             
-            emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
+            emojis = ["\N{Black Left-Pointing Triangle}",
+                              "\N{Black Right-Pointing Triangle}"]
             
             last_page = False
             reverse = False
@@ -82,7 +83,7 @@ class Youtube(commands.Cog):
                 elif reaction.emoji == emojis[0] and page > 1:
                     page -= 1
                     await url_msg.edit(content = video_urls[page-1])
-                    await url_msg.remove_reaction(user_react, user)
+                    await url_msg.remove_reaction(reaction, user)
                     reverse = True
                     out_emoji = False
                     if page == pages-1:
@@ -108,7 +109,8 @@ class Youtube(commands.Cog):
             page = 1
             pages = limit
            
-            emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
+            emojis = ["\N{Black Left-Pointing Triangle}", 
+                              "\N{Black Right-Pointing Triangle}"]
             
             last_page = False
             reverse = False
@@ -157,7 +159,7 @@ class Youtube(commands.Cog):
                 elif reaction.emoji == emojis[0] and page > 1:
                     page -=1
                     await url_msg.edit(content = channel_urls[page-1])
-                    await url_msg.remove_reaction(user_react, user)
+                    await url_msg.remove_reaction(reaction, user)
                     reverse = True
                     out_emoji = False
                     if page == pages-1:
@@ -167,8 +169,8 @@ class Youtube(commands.Cog):
                     await url_msg.remove_reaction(reaction, user)
         else:
             await ctx.message.add_reaction("<:wrong:846424916404207636>")
-            msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
-            await ctx.send(embed=msg)
+            msg = discord.Embed(title= ":warning: Error :warning:", description= "Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
+            await ctx.send(embed= msg)
 
 
 
