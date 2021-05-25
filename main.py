@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 token = os.getenv("TOKEN")
 
-dev = [838836138537648149,728260210464129075,664550550527803405,693375549686415381,555452986885668886] # our team's discord ids
+dev = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
 
 prefix_file = open("prefix.txt","r")
 prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
@@ -66,7 +66,7 @@ async def off(ctx,file):
             
 
 for files in os.listdir("./cogs"):
-    if files.endswith(".py") and files != "fibu_dm.py":
+    if files.endswith(".py"):
         bot.load_extension(f"cogs.{files[:-3]}")
 
 bot.run(token)
