@@ -139,7 +139,7 @@ class UsersDm(commands.Cog):
                     await ctx.message.add_reaction("✅")
                     for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
+                        await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}")
                 except:
                     await ctx.send("Oops!! Message not found..\nTry `msg` command!!")
             except:
