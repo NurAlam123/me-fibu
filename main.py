@@ -11,7 +11,7 @@ import logging
 
 
 #### logging [recommended]####
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level= logging.INFO)
 ########
 
 token = os.getenv("TOKEN")
@@ -24,7 +24,7 @@ prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix=prefixes, intents=intents, case_insensitive=True)
+bot = commands.Bot(command_prefix= prefixes, intents= intents, case_insensitive= True)
 bot.remove_command("help")
 
 @bot.event
@@ -68,5 +68,33 @@ async def off(ctx,file):
 for files in os.listdir("./cogs"):
     if files.endswith(".py"):
         bot.load_extension(f"cogs.{files[:-3]}")
+
+#client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")			
+#db = client["fibu"]
+	
+##testing mongodb
+#@bot.command()
+#async def show_db(ctx,*,name):
+#	col = db["guild_data"]
+#	data = {"name":f"{name}"}
+#	show_data = col.find_one(data)
+#	print(show_data)
+#	try:
+#		await ctx.send(f"Name: {show_data['name']}\n")
+#	except:
+#		pass
+
+#@bot.command()
+#async def add_db(ctx,*,name):
+#		col = db["guild_data"]
+#		data = {"name":f"{name}"}
+#		add = col.insert_one(data)
+#		await ctx.send(f"{name} added to database")
+#@bot.command()
+#async def del_db(ctx,*,name):
+#		col = db.guild_data
+#		data = {"name":f"{name}"}
+#		del_data = col.delete_one(data)
+#		await ctx.send(f"{name} deleted!")
 
 bot.run(token)
