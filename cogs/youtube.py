@@ -21,7 +21,7 @@ class Youtube(commands.Cog):
     @yt.command(aliases=["vdo", "v"])
     async def video(self, ctx, *, query):
         yt_video = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "video")
-        if yt_video != []:
+        if yt_video.items != []:
             limit = 10
             yt_url = "https://youtube.com/watch?v="
             video_urls = []
@@ -34,7 +34,8 @@ class Youtube(commands.Cog):
             page = 1
             pages = limit
             
-            emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
+            emojis = ["\N{Black Left-Pointing Triangle}",
+                              "\N{Black Right-Pointing Triangle}"]
             
             last_page = False
             reverse = False
@@ -74,15 +75,15 @@ class Youtube(commands.Cog):
                         break
             				
                 if reaction.emoji == emojis[1] and page!=pages:
-                    await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(reaction, user)
                     page += 1
+                    await url_msg.edit(content = video_urls[page-1])
+                    await url_msg.remove_reaction(reaction, user)
                     reverse = False
                     out_emoji = False
                 elif reaction.emoji == emojis[0] and page > 1:
-                    await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(user_react, user)
                     page -= 1
+                    await url_msg.edit(content = video_urls[page-1])
+                    await url_msg.remove_reaction(reaction, user)
                     reverse = True
                     out_emoji = False
                     if page == pages-1:
@@ -99,7 +100,7 @@ class Youtube(commands.Cog):
     @yt.command(aliases=["chnl", "c"])
     async def channel(self,ctx,*,query):
         yt_channel = yt_api.search_by_keywords(q = query, safe_search = "strict", search_type = "channel")
-        if yt_channel != []:
+        if yt_channel.items != []:
             limit = 10
             yt_url = "https://youtube.com/channel/"
             channel_urls = [yt_url+yt_channel.items[i].to_dict()["id"]["channelId"] for i in range(limit)]
@@ -108,7 +109,8 @@ class Youtube(commands.Cog):
             page = 1
             pages = limit
            
-            emojis = ["\N{Black Left-Pointing Triangle}", "\N{Black Right-Pointing Triangle}"]
+            emojis = ["\N{Black Left-Pointing Triangle}", 
+                              "\N{Black Right-Pointing Triangle}"]
             
             last_page = False
             reverse = False
@@ -148,15 +150,16 @@ class Youtube(commands.Cog):
                         break
             				
                 if reaction.emoji == emojis[1] and page!=pages:
-                    await url_msg.edit(content = video_urls[page])
+                    page =+ 1
+                    await url_msg.edit(content = channel_urls[page-1])
                     await url_msg.remove_reaction(reaction, user)
-                    page += 1
+                    #page += 1
                     reverse = False
                     out_emoji = False
                 elif reaction.emoji == emojis[0] and page > 1:
-                    await url_msg.edit(content = video_urls[page])
-                    await url_msg.remove_reaction(user_react, user)
-                    page -= 1
+                    page -=1
+                    await url_msg.edit(content = channel_urls[page-1])
+                    await url_msg.remove_reaction(reaction, user)
                     reverse = True
                     out_emoji = False
                     if page == pages-1:
@@ -166,8 +169,8 @@ class Youtube(commands.Cog):
                     await url_msg.remove_reaction(reaction, user)
         else:
             await ctx.message.add_reaction("<:wrong:846424916404207636>")
-            msg = discord.Embed(title=":warning: Error :warning:", description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
-            await ctx.send(embed=msg)
+            msg = discord.Embed(title= ":warning: Error :warning:", description= "Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
+            await ctx.send(embed= msg)
 
 
 
