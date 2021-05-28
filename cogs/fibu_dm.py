@@ -163,9 +163,10 @@ class UsersDm(commands.Cog):
     @commands.command()
     async def new_dm(self, ctx, user_id: int, *, msg = None):
         users, Msg = self.db()
-        if msg is None:
+        if not msg:
+            await ctx.message.add_reaction('❌')
             await ctx.send("Give a message!!")
-        if ctx.author.id not in UsersDm.DEVS:
+        elif ctx.author.id not in UsersDm.DEVS:
             pass
         else:
             try:
