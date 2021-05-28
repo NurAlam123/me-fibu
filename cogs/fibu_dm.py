@@ -5,7 +5,7 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [838836138537648149, 728260210464129075, 664550550527803405]
+    DEVS = [838836138537648149, 728260210464129075, 664550550527803405, 555452986885668886]
     con_fibu = pymongo.MongoClient(os.getenv("DB"))
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
