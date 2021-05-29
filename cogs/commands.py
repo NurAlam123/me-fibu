@@ -15,33 +15,76 @@ class Command(commands.Cog):
 
 #echo
     @commands.command()
-    async def echo(self, ctx, channel: typing.Optional[discord.TextChannel] = None, *, msg):
+    async def echo(self, ctx, channel: typing.Optional[discord.TextChannel] = None, *, msg= None):
         await ctx.message.delete()
-        if channel == None:
-            await ctx.send(msg)
+        if channel:
+            channel = channel
         else:
-            await channel.send(msg)
-        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
-        log_channel = await self.client.fetch_channel(802766376719876107)
-        await log_channel.send(log_format)
+            channel = ctx.channel
+        
+        attachments = ctx.message.attachments
+        files = []
+        if msg:
+            if attachments:
+                for attachment in attachments:
+                    file = await attachment.to_file()
+                    files.append(file)
+                await channel.send(msg, files= files)
+                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                log_channel = await self.client.fetch_channel(802766376719876107)
+                await log_channel.send(log_format, files= files)
+            else:
+                await channel.send(msg)
+                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                log_channel = await self.client.fetch_channel(802766376719876107)
+                await log_channel.send(log_format)
+        elif attachments:
+            for attachment in attachments:
+                file = await attachment.to_file()
+                files.append(file)
+            await channel.send(msg, files= files)
+            log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+            log_channel = await self.client.fetch_channel(802766376719876107)
+            await log_channel.send(log_format, files= files)
 
     @commands.command()
-    async def echoin(self, ctx, guild = None, channel = None, *, msg):
+    async def echoin(self, ctx, guild = None, channel = None, *, msg= None):
         if isinstance(ctx.message.channel, discord.channel.DMChannel):
-            if guild == None:
+            attachments = ctx.message.attachments
+            files = []
+            if not guild:
                 await ctx.send("Put a guild id...😑")
-            elif channel == None:
+            elif not channel:
                 await ctx.send("Put a channel id...😪")
-            else:
+            elif not msg:
+                await ctx.send('Provide message 😩')
+            elif msg:
                 try:
                     find_guild = await self.client.fetch_guild(int(guild))
-                    find_channel = await self.client.fetch_channel(int(channel))
-                    await find_channel.send(msg)
-                    log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {find_guild.name}\nChannel: {find_channel}\nMessage: {msg}\n=========="
-                    log_channel = await self.client.fetch_channel(802766376719876107)
-                    await log_channel.send(log_format) 
+                    channel = await self.client.fetch_channel(int(channel))
+                    if attachments:
+                        for attachment in attachments:
+                            file = await attachment.to_file()
+                            files.append(file)
+                        await channel.send(msg, files= files)
+                        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                        log_channel = await self.client.fetch_channel(802766376719876107)
+                        await log_channel.send(log_format, files= files)
+                    else:
+                        await channel.send(msg)
+                        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                        log_channel = await self.client.fetch_channel(802766376719876107)
+                        await log_channel.send(log_format)
                 except:
                     await ctx.send("Type the guild id that exists...🙄")
+            elif attachments:
+                for attachment in attachments:
+                    file = await attachment.to_file()
+                    files.append(file)
+                await channel.send(msg, files= files)
+                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                log_channel = await self.client.fetch_channel(802766376719876107)
+                await log_channel.send(log_format, files= files)
             
        
 
