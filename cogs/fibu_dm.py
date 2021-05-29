@@ -5,7 +5,7 @@ import os
 
 class UsersDm(commands.Cog):
     
-    DEVS = [838836138537648149, 728260210464129075, 664550550527803405]
+    DEVS = [838836138537648149, 728260210464129075, 664550550527803405, 555452986885668886]
     con_fibu = pymongo.MongoClient(os.getenv("DB"))
     db = con_fibu["fibu"] #database
     tb = db["DmUsers"] #table
@@ -43,7 +43,7 @@ class UsersDm(commands.Cog):
                 UsersDm.tb.delete_one({"user_id": removed_user_id})
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f"{user} remove from list.")
+                        await receiver.send(f":warning: {user} remove from list.:warning:", mention_author= True)
                     
                     
             elif Msg.get(message.author.id):
@@ -115,12 +115,18 @@ class UsersDm(commands.Cog):
                 id = users[index_no]
                 user = await self.bot.fetch_user(id)
                  # async with ctx.channel.typing():
-                await user.send(f"{message}")
-                await ctx.message.add_reaction("✅")
+                msg = await user.send(f"{message}")
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
-            except:
+                    await receiver.send(f'Message ID: {msg.id}')
+                
+                await ctx.message.add_reaction("✅")
+                await ctx.author.send(f'Message sent to {user}..\nUse bellow message id to **edit or delete** message next time')
+                await msg.reply(f'Message ID: {msg.id}')
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in msg: {e}')
                 await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
                 
     @commands.command()
@@ -135,14 +141,21 @@ class UsersDm(commands.Cog):
                     user = await self.bot.fetch_user(user_id)
                     msg = await user.fetch_message(msg_id)
                     # async with ctx.channel.typing():
-                    await msg.reply(f"{message}")
-                    await ctx.message.add_reaction("✅")
+                    reply_msg = await msg.reply(f"{message}")
                     for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
                         await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}")
-                except:
+                        await receiver.send(f'Message ID: {reply_msg.id}')
+                    await ctx.message.add_reaction("✅")
+                    await ctx.author.send(f'You replied a message of {user}..\nUse bellow message id to **edit or delete** message next time')
+                    await reply_msg.reply(f'Message ID: {reply_msg.id}')
+                except Exception as e:
+                    receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                    await receiver.send(f'Exception in reply: {e}')
                     await ctx.send("Oops!! Message not found..\nTry `msg` command!!")
-            except:
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in reply: {e}')
                 await ctx.send("User not in list.\nTry `new_dm` command to continue!!")                
 
     @commands.command()
@@ -163,9 +176,10 @@ class UsersDm(commands.Cog):
     @commands.command()
     async def new_dm(self, ctx, user_id: int, *, msg = None):
         users, Msg = self.db()
-        if msg is None:
+        if not msg:
+            await ctx.message.add_reaction('❌')
             await ctx.send("Give a message!!")
-        if ctx.author.id not in UsersDm.DEVS:
+        elif ctx.author.id not in UsersDm.DEVS:
             pass
         else:
             try:
@@ -177,14 +191,77 @@ class UsersDm(commands.Cog):
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
-                await user.send(f"{msg}")
+                sent_msg = await user.send(f"{msg}")
+                
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
-                    await receiver.send(f"`{ctx.author.name}`:: {msg}")
+                    await receiver.send(f"`{ctx.author.name} to {user}`:: {msg}")
+                    await receiver.send(f'Message ID: {sent_msg.id}')
                 await ctx.message.add_reaction("✅")
-            except:
+                await ctx.author.send(f'Message sent to {user}..\nTo Check **UserIndex** use ```!fibu show_all_dm```\nUse bellow message id to **edit or delete** message next time')
+                await sent_msg.reply(f'Message ID: {sent_msg.id}')
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in new_dm: {e}')
                 await ctx.send("Not found this user")
 
+    ### message edit
+    @commands.command()
+    async def editmsg(self, ctx, msg_id: discord.Message= None, message= None):
+        if ctx.author.id not in UsersDm.DEVS:
+            pass
+        else:
+            if msg_id:
+                if message:
+                    from_msg = msg_id.content
+                    await msg_id.edit(content= message)
+                    receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+                    for receiver in receivers:
+                            receiver = await self.bot.fetch_user(receiver)
+                            await receiver.send(f"Message Edited by {ctx.author}::\nMessageID: {msg_id.id}\nFrom: {from_msg}\nTo: {message}")
+                    await ctx.send(f"Message Edited::\nFrom: {from_msg}\nTo: {message}")
+                    await ctx.message.add_reaction('✅')
+                else:
+                    await ctx.send('Provide message')
+            else:
+                await ctx.send('Provid message id')
+    
+    ### message delete
+    @commands.command()
+    async def delmsg(self, ctx, msg_id: discord.Message= None):
+        if ctx.author.id not in UsersDm.DEVS:
+            pass
+        else:
+                if msg_id:
+                    msg_content = msg_id.content
+                    await msg_id.delete()
+                    receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
+                    for receiver in receivers:
+                            receiver = await self.bot.fetch_user(receiver)
+                            await receiver.send(f"Message Deleted by {ctx.author}::\nMessageID: {msg_id.id}\nMessage: {msg_content}")
+                    await ctx.send(f"Message Deleted::\nMessage: {msg_content}")
+                    await ctx.message.add_reaction('✅')
+                    
+                
+    
+    
+    @commands.command()
+    async def show_dm(self, ctx, index):
+        if ctx.author.id not in UsersDm.DEVS:
+            pass
+        else:
+            users, Msg = self.db()
+            data = ""
+            try:
+                user = users[int(index)]
+                user = await self.bot.fetch_user(user)
+                for i, j in enumerate(Msg[user.id]):
+                    data+= f'{i}. {j}\n'
+                await ctx.send(f'Username: {user}\nUserIndex: {index}\nMessagesIDs:\n```index - message ID\n{data}\n```')
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in show_dm: {e}')
+    
     @commands.command()
     async def clean_dm(self, ctx, index_no = None):
         if ctx.author.id in UsersDm.DEVS:
@@ -197,7 +274,8 @@ class UsersDm(commands.Cog):
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f"{user} removed from list.")
+                        await receiver.send(f":warning: {user} removed from list. :warning:", mention_author= True)
+                await ctx.message.add_reaction('✅')
                 await ctx.send(f"{user.name} removed from db!!")
                 
             else:
@@ -205,7 +283,8 @@ class UsersDm(commands.Cog):
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
                 for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f"Users list fully cleared by `{ctx.author.name}`")
+                        await receiver.send(f":warning::warning: Users list fully cleared by `{ctx.author.name}` :warning::warning:", mention_author= True)
+                await ctx.message.add_reaction('✅')
                 await ctx.send("Data Successfully Deleted!!")
 
 
