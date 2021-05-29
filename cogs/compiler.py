@@ -118,6 +118,8 @@ class Compiler(commands.Cog):
                                 output = output.replace("`", "`\u200b")
                                 if output.__len__() >= 2000:
                                     output = output[:1000]
+                                elif output.__len__() <= 0:
+                                    output = 'No output found'
                             else:
                                 pass
                             if self.need_edit and ctx.author.id in self.data:
@@ -125,14 +127,14 @@ class Compiler(commands.Cog):
                                 compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if status_code else None
                                 compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
                                 compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
-                                compile_embed.set_footer(text=f"Programming Hero")
+                                compile_embed.set_footer(text=f"{ctx.author}|Programming Hero")
                                 embed_message = await ctx.fetch_message(self.data.get(ctx.author.id))
                                 compile_msg = await embed_message.edit(embed= compile_embed)
                             else:
                                 compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if status_code else None
                                 compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
                                 compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
-                                compile_embed.set_footer(text=f"Programming Hero")
+                                compile_embed.set_footer(text=f"{ctx.author}|Programming Hero")
                                 compile_msg = await ctx.reply(embed= compile_embed, mention_author=True)
            
            ########## Error Part ############
