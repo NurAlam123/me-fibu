@@ -72,7 +72,9 @@ class Compiler(commands.Cog):
             code_error = False
             try:
                 lang, args, syntax, code, stdin = match.groups()
-            except:
+            except Exception as e:
+                receiver = await self.bot.fetch_user(838836138537648149)
+                await receiver.send(f'Exception in compile command: {e}')
                 code_error = True
             if not code_error:
                 if not lang:
@@ -170,7 +172,9 @@ class Compiler(commands.Cog):
             if msg:
                 try:
                     self.data[ctx.author.id] = msg.id
-                except:
+                except Exception as e:
+                    receiver = await self.bot.fetch_user(838836138537648149)
+                    await receiver.send(f'Exception in compile msg: {e}')
                     pass
             elif compile_msg:
                 try:
