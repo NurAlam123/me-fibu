@@ -120,7 +120,7 @@ class Compiler(commands.Cog):
                                 output = output.replace("`", "`\u200b")
                                 if output.__len__() >= 2000:
                                     output = output[:1000]
-                                if output.__len__() <= 0:
+                                elif output.__len__() <= 0:
                                     output = 'No output found'
                             else:
                                 pass
@@ -129,7 +129,7 @@ class Compiler(commands.Cog):
                                 compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if (status_code or status_code == 0) else None
                                 compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
                                 compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
-                                compile_embed.set_footer(text=f"Programming Hero")
+                                compile_embed.set_footer(text=f"{ctx.author}|Programming Hero")
                                 embed_message = await ctx.fetch_message(self.data.get(ctx.author.id))
                                 compile_msg = await embed_message.edit(embed= compile_embed)
                             else:
