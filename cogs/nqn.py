@@ -22,7 +22,7 @@ class emoji(commands.Cog):
                 server_emoji = utils.get(message.guild.emojis, name= emote.strip(':'))
                 if server_emoji:
                     if server_emoji.animated:
-                        server_emoji = f"<a:{emoji.name}:{emoji.id}>"
+                        server_emoji = f"<a:{server_emoji.name}:{server_emoji.id}>"
                         user_message = user_message.replace(emote, server_emoji)
                         em = True
                 else:
