@@ -8,7 +8,7 @@ import math
 
 class Wiki(commands.Cog):
     def __init__(self, client):
-        self.client = client
+        self.bot = client
         self.wiki_content = {}
 #wiki
     @commands.command(aliases=["wikipedia"])
@@ -31,7 +31,7 @@ class Wiki(commands.Cog):
                 
                 show = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "**Not found the page you are looking for. See the below list.**\n"+"\n".join(options[start:end]), color= 0xffdf08, timestamp= time.now())
                 show.add_field(name= "Pick a number and send below command to select that title!",value= "```!fibu select [the number]```\nExample: ```!fibu select 1```")
-                show.set_author(name= self.client.user.name, icon_url= self.client.user.avatar_url)
+                show.set_author(name= self.bot.user.name, icon_url= self.bot.user.avatar_url)
                 show.set_footer(text= "Programming Hero")
                 msg = await ctx.send(embed= show)
                 
@@ -68,7 +68,7 @@ class Wiki(commands.Cog):
                             last_page = False
 
                     try:
-                        reaction, user = await self.client.wait_for("reaction_add", check=re_check, timeout=60)
+                        reaction, user = await self.bot.wait_for("reaction_add", check=re_check, timeout=60)
                     except asyncio.TimeoutError:
                         options=[]
                         await msg.clear_reactions()
@@ -84,7 +84,7 @@ class Wiki(commands.Cog):
 
                         options_msg = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "\n".join(options[start:end]),color= 0xffdf08, timestamp= time.now())
                         options_msg.add_field(name= "Pick a number and send below command to select that title!",value= "```!fibu select [the number]```\nExample: ```!fibu select 1```")
-                        options_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                        options_msg.set_author(name= self.bot.user.name,icon_url= self.bot.user.avatar_url)
                         options_msg.set_footer(text= "Programming Hero")
                         await msg.edit(embed= options_msg)
                         await msg.remove_reaction(reaction,user)
@@ -101,7 +101,7 @@ class Wiki(commands.Cog):
 
                         options_msg = discord.Embed(title= f"Wikipedia | Page: {page}/{pages}", description= "\n".join(options[start:end]),color= 0xffdf08, timestamp= time.now())
                         options_msg.add_field(name= "Pick a number and send below command to select that title!",value= "```!fibu select [the number]```\nExample: ```!fibu select 1```")
-                        options_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+                        options_msg.set_author(name= self.bot.user.name,icon_url= self.bot.user.avatar_url)
                         options_msg.set_footer(text= "Programming Hero")
                         await msg.edit(embed= options_msg)
                         await msg.remove_reaction(reaction,user)
@@ -120,7 +120,7 @@ class Wiki(commands.Cog):
                 wiki_msg.add_field(name= page.title, value= f"{result} ... [Read More]({page.fullurl})")
             except:
                 wiki_msg.add_field(name= page.title, value=f"{result} ... [Read More]({page.canonicalurl})")
-            wiki_msg.set_author(name= self.client.user.name,icon_url= self.client.user.avatar_url)
+            wiki_msg.set_author(name= self.bot.user.name,icon_url= self.bot.user.avatar_url)
             wiki_msg.set_footer(text= "Programming Hero")
             await ctx.send(embed= wiki_msg)
 
@@ -132,7 +132,7 @@ class Wiki(commands.Cog):
         if ctx.author.id in self.wiki_content.keys() and index_no.isnumeric():
             await ctx.message.add_reaction("🆗")
             query = self.wiki_content[ctx.author.id][int(index_no) - 1]
-            await ctx.invoke(self.client.get_command("wiki"), query= query)
+            await ctx.invoke(self.bot.get_command("wiki"), query= query)
             
             
 
