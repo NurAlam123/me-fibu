@@ -14,16 +14,25 @@ class emoji(commands.Cog):
         if message.author.bot:
             return
         if ":" in message.content:
-
-            emotes = re.findall(r":\w+:", message.content)
             user_message = message.content
-            
+            emotes = set(re.findall(r":\w+:", user_message))
+    
             em = False
             for emote in emotes:
-                emoji = utils.get(self.bot.emojis, name= emote.strip(":"))
-                if emoji:
-                    if emoji.animated:
+                server_emoji = utils.get(message.guild.emojis, name= emote.strip(':'))
+                if server_emoji:
+                    if server_emoji.animated:
                         server_emoji = f"<a:{emoji.name}:{emoji.id}>"
+                        user_message = user_message.replace(emote, server_emoji)
+                        em = True
+                else:
+                    emoji = utils.get(self.bot.emojis, name= emote.strip(":"))
+                    if emoji:
+                        if emoji.animated:
+                            pre= 'a'
+                        else:
+                            pre = ''
+                        server_emoji = f"<{pre}:{emoji.name}:{emoji.id}>"
                         user_message = user_message.replace(emote, server_emoji)
                         em = True
                         
