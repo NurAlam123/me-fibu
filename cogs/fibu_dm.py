@@ -115,7 +115,7 @@ class UsersDm(commands.Cog):
                 id = users[index_no]
                 user = await self.bot.fetch_user(id)
                  # async with ctx.channel.typing():
-                await user.send(f"{message}")
+                msg = await user.send(f"{message}")
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
@@ -141,7 +141,7 @@ class UsersDm(commands.Cog):
                     user = await self.bot.fetch_user(user_id)
                     msg = await user.fetch_message(msg_id)
                     # async with ctx.channel.typing():
-                    await msg.reply(f"{message}")
+                    reply_msg = await msg.reply(f"{message}")
                     for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
                         await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}")
@@ -191,7 +191,7 @@ class UsersDm(commands.Cog):
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
-                await user.send(f"{msg}")
+                sent_msg = await user.send(f"{msg}")
                 
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
