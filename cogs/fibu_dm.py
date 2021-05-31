@@ -115,15 +115,15 @@ class UsersDm(commands.Cog):
                 id = users[index_no]
                 user = await self.bot.fetch_user(id)
                  # async with ctx.channel.typing():
-                msg = await user.send(f"{message}")
+                await user.send(f"{message}")
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
                     await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
                     await receiver.send(f'Message ID: {msg.id}')
                 
                 await ctx.message.add_reaction("✅")
-                await ctx.author.send(f'Message sent to {user}..\nUse bellow message id to **edit or delete** message next time')
-                await msg.reply(f'Message ID: {msg.id}')
+                await ctx.send(f'Message sent to {user}..\nUse bellow message id to **edit or delete** message next time')
+                await ctx.reply(f'Message ID: {msg.id}')
             except Exception as e:
                 receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
                 await receiver.send(f'Exception in msg: {e}')
@@ -141,14 +141,14 @@ class UsersDm(commands.Cog):
                     user = await self.bot.fetch_user(user_id)
                     msg = await user.fetch_message(msg_id)
                     # async with ctx.channel.typing():
-                    reply_msg = await msg.reply(f"{message}")
+                    await msg.reply(f"{message}")
                     for receiver in receivers:
                         receiver = await self.bot.fetch_user(receiver)
                         await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}")
                         await receiver.send(f'Message ID: {reply_msg.id}')
                     await ctx.message.add_reaction("✅")
-                    await ctx.author.send(f'You replied a message of {user}..\nUse bellow message id to **edit or delete** message next time')
-                    await reply_msg.reply(f'Message ID: {reply_msg.id}')
+                    await ctx.send(f'You replied a message of {user}..\nUse bellow message id to **edit or delete** message next time')
+                    await ctx.reply(f'Message ID: {reply_msg.id}')
                 except Exception as e:
                     receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
                     await receiver.send(f'Exception in reply: {e}')
@@ -191,7 +191,7 @@ class UsersDm(commands.Cog):
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
-                sent_msg = await user.send(f"{msg}")
+                await user.send(f"{msg}")
                 
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
@@ -199,7 +199,7 @@ class UsersDm(commands.Cog):
                     await receiver.send(f'Message ID: {sent_msg.id}')
                 await ctx.message.add_reaction("✅")
                 await ctx.author.send(f'Message sent to {user}..\nTo Check **UserIndex** use ```!fibu show_all_dm```\nUse bellow message id to **edit or delete** message next time')
-                await sent_msg.reply(f'Message ID: {sent_msg.id}')
+                await ctx.reply(f'Message ID: {sent_msg.id}')
             except Exception as e:
                 receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
                 await receiver.send(f'Exception in new_dm: {e}')

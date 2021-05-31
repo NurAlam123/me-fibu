@@ -6,7 +6,7 @@ from discord.ext.commands import has_permissions
 
 class Challenge(commands.Cog):
     def __init__(self, client):
-        self.client = client
+        self.bot = client
 
     @commands.command()
     @has_permissions(administrator=True, manage_guild=True)
@@ -221,9 +221,9 @@ class Challenge(commands.Cog):
             from_channel_id = guild["swap_channels"]["from_channel"]
             to_channel_id = guild["swap_channels"]["to_channel"]
             if from_channel_id is not None:
-                from_channel = await self.client.fetch_channel(int(from_channel_id))
-                to_channel = await self.client.fetch_channel(int(to_channel_id))
-                if message.channel.id == from_channel.id and message.author.id != self.client.user.id:
+                from_channel = await self.bot.fetch_channel(int(from_channel_id))
+                to_channel = await self.bot.fetch_channel(int(to_channel_id))
+                if message.channel.id == from_channel.id and message.author.id != self.bot.user.id:
                     await message.delete()
                     await message.author.send(f"{message.author.mention}, your code has been submitted!!")
                     if message.content.__len__() >= 1990:
