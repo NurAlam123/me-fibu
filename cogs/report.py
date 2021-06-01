@@ -48,6 +48,7 @@ class Bug(commands.Cog):
                     other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                 else:
                     if ok.content.lower() == 'ok':
+                        await ok.add_reaction('\N{white heavy check mark}')
                         await asyncio.sleep(2)
                         answers = {}
                         for no, question in enumerate(questions, 1):
@@ -57,6 +58,11 @@ class Bug(commands.Cog):
                                 ans = await self.bot.wait_for('message', check= message_check, timeout= 180)
                             except asyncio.TimeoutError:
                                 await ctx.author.send('Time out!!\nYou didn\'t respond in time')
+                                ## remove user
+                                ids= other_data.get('user_ids')
+                                if ctx.author.id in ids:
+                                    ids.remove(ctx.author.id)
+                                other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                                 break
                             else:
                                 if ans.attachments:
@@ -68,13 +74,27 @@ class Bug(commands.Cog):
                                     user_answers.append(ans.content)
                                 else:
                                     answers[ctx.author.id] = [ans.content]
-                        await ctx.author.send('Do you want to submit this bug?\nSend \'Yes\' or \'Done\' to **continue** or \'No\' to **cancel**!!')
+                       
+                        submit = await ctx.author.send('Do you want to submit this bug?\n**React below:**\n\N{white heavy check mark} = \'Yes\'\n\N{cross mark} = \'No\'')
+                        
+                        emojis = ['\N{white heavy check mark}', '\N{cross mark}']
+                        for emoji in emojis:
+                            await submit.add_reaction()
+                        ## reaction check
+                        def reaction_check(reaction, user):
+                            return user.id == ctx.author.id and reaction.message.id == submit.id and reaction.emoji in emojis
+        
                         try:
-                            done = await self.bot.wait_for('reaction_add', check= message_check, timeout= 60)
+                            reaction,user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
                         except:
-                            await ctx.send('Oops!! You didn\'t respond in time :(')
+                            await ctx.author.send('Oops!! You didn\'t respond in time :(')
+                            ## remove user
+                            ids= other_data.get('user_ids')
+                            if ctx.author.id in ids:
+                                ids.remove(ctx.author.id)
+                            other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                         else:
-                            if done.content.lower() in ['done', 'yes']:
+                            if reaction.emoji == emoji[0]:
                                 report_channel = guild_data.get('bug_channel')
                                 if report_channel:
                                     channel = await bot.fetch_channel(int(report_channel))
@@ -87,12 +107,23 @@ class Bug(commands.Cog):
                                 await channel.send(embed= report_em)
                                 await done.add_reaction('\N{white heavy check mark}')
                                 await ctx.author.send('Your report successfully submitted!!')
-                            else:
+                                ## remove user
+                                ids= other_data.get('user_ids')
+                                if ctx.author.id in ids:
+                                    ids.remove(ctx.author.id)
+                                other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                            elif reaction.emoji == emoji[1]:
                                 await ctx.author.send('Ok.. No problem.')
+                                ## remove user
+                                ids= other_data.get('user_ids')
+                                if ctx.author.id in ids:
+                                    ids.remove(ctx.author.id)
+                                other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                            
             else:
-                await ctx.send('No question found')
+                await ctx.send('No question provided from the server')
         else:
-            await ctx.send('This server doesn\'t allow report command')
+            await ctx.send('This server doesn\'t enabled this feature')
 
 def setup(bot):
 	bot.add_cog(Bug(bot))
