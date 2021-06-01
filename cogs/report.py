@@ -53,6 +53,7 @@ class Bug(commands.Cog):
                         await ok.add_reaction('\N{white heavy check mark}')
                         await asyncio.sleep(2)
                         answers = {ctx.author.id: []}
+                        done = True
                         for no, question in enumerate(questions, 1):
                             ques_em = discord.Embed(title= f'Question-{no}', description= f'{question}', color= 0xFDB706)
                             await ctx.author.send(embed= ques_em)
@@ -65,58 +66,59 @@ class Bug(commands.Cog):
                                 if ctx.author.id in ids:
                                     ids.remove(ctx.author.id)
                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                done = False
                                 break
                             else:
                                 if ans.attachments:
                                     for attachment in ans.attachments:
                                         ans.content += f'\n{attachment.url}'
                                 answers[ctx.author.id].append(ans.content)
-                       
-                        submit = await ctx.author.send('Do you want to submit this bug?\n**React below:**\n\N{white heavy check mark} = \'Yes\'\n\N{cross mark} = \'No\'')
-                        
-                        emojis = ['\N{white heavy check mark}', '\N{cross mark}']
-                        for emoji in emojis:
-                            await submit.add_reaction(emoji)
-                        ## reaction check
-                        def reaction_check(reaction, user):
-                            return user.id == ctx.author.id and reaction.message.id == submit.id and reaction.emoji in emojis
-        
-                        try:
-                            reaction,user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
-                        except:
-                            await ctx.author.send('Oops!! You didn\'t respond in time :(')
-                            ## remove user
-                            ids= other_data.get('user_ids')
-                            if ctx.author.id in ids:
-                                ids.remove(ctx.author.id)
-                            other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
-                        else:
-                            if str(reaction.emoji) == emojis[0]:
-                                report_channel = guild_data.get('bug_channel')
-                                if report_channel:
-                                    channel = await bot.fetch_channel(int(report_channel))
-                                else:
-                                    channel = ctx.channel
-                                
-                                report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
-                                for no, question in enumerate(questions, 1):
-                                    the_answer = answers.get(ctx.author.id)[no-1]
-                                    report_em.add_field(name= f'Question-{no}', value= f'**Question:** {question}\n**Answer:** {the_answer}', inline= False)
-                                report_em.set_thumbnail(url= f'{ctx.author.avatar_url}')
-                                await channel.send(embed= report_em)
-                                await ctx.author.send('Your report successfully submitted!!')
+                       if done:
+                            submit = await ctx.author.send('Do you want to submit this bug?\n**React below:**\n\N{white heavy check mark} = \'Yes\'\n\N{cross mark} = \'No\'')
+                            
+                            emojis = ['\N{white heavy check mark}', '\N{cross mark}']
+                            for emoji in emojis:
+                                await submit.add_reaction(emoji)
+                            ## reaction check
+                            def reaction_check(reaction, user):
+                                return user.id == ctx.author.id and reaction.message.id == submit.id and reaction.emoji in emojis
+            
+                            try:
+                                reaction,user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
+                            except:
+                                await ctx.author.send('Oops!! You didn\'t respond in time :(')
                                 ## remove user
                                 ids= other_data.get('user_ids')
                                 if ctx.author.id in ids:
                                     ids.remove(ctx.author.id)
                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
-                            elif str(reaction.emoji) == emojis[1]:
-                                await ctx.author.send('Ok.. No problem.')
-                                ## remove user
-                                ids= other_data.get('user_ids')
-                                if ctx.author.id in ids:
-                                    ids.remove(ctx.author.id)
-                                other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                            else:
+                                if str(reaction.emoji) == emojis[0]:
+                                    report_channel = guild_data.get('bug_channel')
+                                    if report_channel:
+                                        channel = await bot.fetch_channel(int(report_channel))
+                                    else:
+                                        channel = ctx.channel
+                                    
+                                    report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
+                                    for no, question in enumerate(questions, 1):
+                                        the_answer = answers.get(ctx.author.id)[no-1]
+                                        report_em.add_field(name= f'Question-{no}', value= f'**Question:** {question}\n**Answer:** {the_answer}', inline= False)
+                                    report_em.set_thumbnail(url= f'{ctx.author.avatar_url}')
+                                    await channel.send(embed= report_em)
+                                    await ctx.author.send('Your report successfully submitted!!')
+                                    ## remove user
+                                    ids= other_data.get('user_ids')
+                                    if ctx.author.id in ids:
+                                        ids.remove(ctx.author.id)
+                                    other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                elif str(reaction.emoji) == emojis[1]:
+                                    await ctx.author.send('Ok.. No problem.')
+                                    ## remove user
+                                    ids= other_data.get('user_ids')
+                                    if ctx.author.id in ids:
+                                        ids.remove(ctx.author.id)
+                                    other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                             
             else:
                 await ctx.send('No question provided from the server')
