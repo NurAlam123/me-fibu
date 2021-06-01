@@ -36,10 +36,13 @@ class UsersDm(commands.Cog):
         if isinstance(message.channel, discord.channel.DMChannel):
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"] #database
-            tb = db["other_data"] #table
-            field =  tb.find_one({'name': 'ignore_dm'})
-            user_ids = field.get('user_ids')
-            if not user_ids:
+            other_tb = db["other_data"] #table
+            field =  other_tb.find_one({'name': 'ignore_dm'})
+            if field:
+                user_ids = field.get('user_ids')
+                if not user_ids:
+                    user_ids = []
+            else:
                 user_ids = []
             if message.author.id not in user_ids:
                 users, Msg = self.db()
