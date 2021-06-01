@@ -99,9 +99,9 @@ class Bug(commands.Cog):
                                     channel = ctx.channel
                                 
                                 report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
-                                for question in enumerate(questions, 1):
+                                for no, question in enumerate(questions, 1):
                                     the_answer = answers.get(ctx.author.id)[no-1]
-                                    report_em.add_field(name= f'Question-{no}', value= f'**Question:** {question}\n**Answer:** {the_answer}')
+                                    report_em.add_field(name= f'Question-{no}', value= f'**Question:** {question}\n**Answer:** {the_answer}', inline= False)
                                 report_em.set_thumbnail(url= f'{ctx.author.avatar_url}')
                                 await channel.send(embed= report_em)
                                 await ctx.author.send('Your report successfully submitted!!')
