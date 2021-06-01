@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 
 
-class Challenge(commands.Cog):
+class SwapCommands(commands.Cog):
     def __init__(self, client):
         self.bot = client
     
@@ -87,4 +87,4 @@ class Challenge(commands.Cog):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
             
 def setup(bot):
-    bot.add_cog(Command(bot))
+    bot.add_cog(SwapCommands(bot))
