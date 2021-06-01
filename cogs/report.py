@@ -5,6 +5,7 @@ from datetime import datetime as time
 
 import asyncio
 import pymongo
+import os
 
 class Bug(commands.Cog):
     def __init__(self,client):
