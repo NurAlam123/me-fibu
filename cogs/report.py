@@ -18,7 +18,7 @@ class Bug(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db['guild_data']
         other_tb = db["other_data"] #table
-        other_data = tb.find_one({'name': 'ignore_dm'})
+        other_data = other_tb.find_one({'name': 'ignore_dm'})
         guild_data = tb.find_one({'guild_id': ctx.guild.id})
         if guild_data:
             questions = guild_data.get('report_questions')
@@ -37,7 +37,7 @@ class Bug(commands.Cog):
                     other_tb.insert_one({'name': 'ignore_dm', 'user_ids': [ctx.author.id]})
                 
                 await ctx.message.add_reaction('\N{Lady Beetle}')
-                await ctx.author.send("Thank you {ctx.author.mention} for informing a bug.\nPlease provide some extra information to make it easier for the developer to fix.\nSend 'Ok' to continue.")
+                await ctx.author.send(f"Thank you {ctx.author.mention} for informing a bug.\nPlease provide some extra information to make it easier for the developer to fix.\nSend 'Ok' to continue.")
                 try:
                     ok = await self.bot.wait_for("message", check= message_check, timeout=60)
                 except asyncio.TimeoutError:
@@ -56,7 +56,7 @@ class Bug(commands.Cog):
                             try:
                                 ans = await self.bot.wait_for('message', check= message_check, timeout= 180)
                             except asyncio.TimeoutError:
-                                await ctx.send('Time out!!\nYou didn\'t respond in time')
+                                await ctx.author.send('Time out!!\nYou didn\'t respond in time')
                                 break
                             else:
                                 if ans.attachments:
@@ -68,23 +68,27 @@ class Bug(commands.Cog):
                                     user_answers.append(ans.content)
                                 else:
                                     user_ans[ctx.author.id] = [ans.content]
-                        await ctx.author.send('Do you want to submit this bug?\nSend \'Yes\' or \'Done\' to **continue** or \'No\' to **cancel**!!')
-                        done = await self.bot.wait_for('reaction_add', check= message_check, timeout= 60)
-                        if done.content.lower() in ['done', 'yes']:
-                            report_channel = guild_data.get('bug_channel')
-                            if report_channel:
-                                channel = await bot.fetch_channel(int(report_channel))
-                            else:
-                                channel = ctx.channel
-                            report_em = discord.Embed(title= f'Bug Reported', description= 'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
-                            for question in enumerate(questions, 1):
-                                the_ans = user_answers.get(ctx.author.id)[no-1]
-                                report_em.add_field(name= f'Question-{no}', value= f'**Answer:** {the_answer}')
-                            await channel.send(embed= report_em)
-                            await done.add_reaction('\N{white heavy check mark}')
-                            await ctx.author.send('Your report successfully submitted!!')
-                        else:
-                            await ctx.author.send('Ok.. No problem.')
+                                await ctx.author.send('Do you want to submit this bug?\nSend \'Yes\' or \'Done\' to **continue** or \'No\' to **cancel**!!')
+                                try:
+                                    done = await self.bot.wait_for('reaction_add', check= message_check, timeout= 60)
+                                except:
+                                    await ctx.send('Oops!! You didn\'t respond in time :(')
+                                else:
+                                    if done.content.lower() in ['done', 'yes']:
+                                        report_channel = guild_data.get('bug_channel')
+                                        if report_channel:
+                                            channel = await bot.fetch_channel(int(report_channel))
+                                        else:
+                                            channel = ctx.channel
+                                        report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
+                                        for question in enumerate(questions, 1):
+                                            the_ans = user_answers.get(ctx.author.id)[no-1]
+                                            report_em.add_field(name= f'Question-{no}', value= f'**Answer:** {the_answer}')
+                                        await channel.send(embed= report_em)
+                                        await done.add_reaction('\N{white heavy check mark}')
+                                        await ctx.author.send('Your report successfully submitted!!')
+                                    else:
+                                        await ctx.author.send('Ok.. No problem.')
             else:
                 await ctx.send('No question found')
         else:
