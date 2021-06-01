@@ -80,7 +80,7 @@ class Bug(commands.Cog):
                                 the_ans = user_answers.get(ctx.author.id)[no-1]
                                 report_em.add_field(name= f'Question-{no}', value= f'**Answer:** {the_answer}')
                             await channel.send(embed= report_em)
-                            await done.add_reaction('\N{green heavy check mark}')
+                            await done.add_reaction('\N{white heavy check mark}')
                             await ctx.author.send('Your report successfully submitted!!')
                         else:
                             await ctx.author.send('Ok.. No problem.')
