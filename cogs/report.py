@@ -103,7 +103,7 @@ class Bug(commands.Cog):
                                     channel = ctx.channel
                                 report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
                                 for question in enumerate(questions, 1):
-                                    the_ans = answers.get(ctx.author.id)[no-1]
+                                    the_answer = answers.get(ctx.author.id)[no-1]
                                     report_em.add_field(name= f'Question-{no}', value= f'**Answer:** {the_answer}')
                                 await channel.send(embed= report_em)
                                 await done.add_reaction('\N{white heavy check mark}')
