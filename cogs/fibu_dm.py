@@ -34,62 +34,70 @@ class UsersDm(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if isinstance(message.channel, discord.channel.DMChannel):
-            users, Msg = self.db()
-        ###################
-            receivers = [i for i in UsersDm.DEVS if i != message.author.id]
-            if len(users) >= 20:
-                removed_user_id = users.pop(0)
-                user = await self.bot.fetch_user(removed_user_id)
-                UsersDm.tb.delete_one({"user_id": removed_user_id})
-                for receiver in receivers:
-                        receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f":warning: {user} remove from list.:warning:", mention_author= True)
-                    
-                    
-            elif Msg.get(message.author.id):
-                all_msg_id = Msg[message.author.id]
-                if len(all_msg_id) >= 5:
-                    all_msg_id.pop(0)
-                    Msg[message.author.id] = all_msg_id
-                    new_value = {"msg_ids": all_msg_id}
-                    UsersDm.tb.update_one({"user_id": message.author.id}, {"$set":new_value})
+            con_fibu = pymongo.MongoClient(os.getenv("DB"))
+            db = con_fibu["fibu"] #database
+            tb = db["other_data"] #table
+            field =  tb.find_one({'name': 'ignore_dm'})
+            user_ids = field.get('user_ids')
+            if not user_ids:
+                user_ids = []
+            if message.author.id not in user_ids:
+                users, Msg = self.db()
+                ###################
+                receivers = [i for i in UsersDm.DEVS if i != message.author.id]
+                if len(users) >= 20:
+                    removed_user_id = users.pop(0)
+                    user = await self.bot.fetch_user(removed_user_id)
+                    UsersDm.tb.delete_one({"user_id": removed_user_id})
+                    for receiver in receivers:
+                            receiver = await self.bot.fetch_user(receiver)
+                            await receiver.send(f":warning: {user} remove from list.:warning:", mention_author= True)
+                        
+                        
+                elif Msg.get(message.author.id):
+                    all_msg_id = Msg[message.author.id]
+                    if len(all_msg_id) >= 5:
+                        all_msg_id.pop(0)
+                        Msg[message.author.id] = all_msg_id
+                        new_value = {"msg_ids": all_msg_id}
+                        UsersDm.tb.update_one({"user_id": message.author.id}, {"$set":new_value})
+                    else: pass
                 else: pass
-            else: pass
-        ##################
-            if message.content.startswith("!"):
-                pass
-            else:
-                if message.author.id == self.bot.user.id or message.author.id in UsersDm.DEVS:
+                ##################
+                if message.content.startswith("!") or message.content.lower().startswith('f'):
                     pass
                 else:
-                    id = message.author.id
-                    if id not in users:
-                        users.append(id)
-                        Msg[id] = [message.id]
-                        new_value = {"user_id":  id, "msg_ids": [message.id]}
-                        UsersDm.tb.insert_one(new_value)
-                    elif id not in Msg and id in users:
-                        Msg[id] = [message.id]
-                        new_value = {"msg_ids": message.id}
-                        UsersDm.tb.update_one({"user_id": id}, {"$set": new_value})
-                    elif id in Msg:
-                        if message.id not in Msg[id]:
-                            Msg[id].append(message.id)
-                            UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": Msg[id]}})
-                        
-                    name = message.author.name
-                    for dev in UsersDm.DEVS:
-                        receiver = await self.bot.fetch_user(dev)
-                        info_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(message.id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n----------"
-                        await receiver.send(info_format)
-                        if message.attachments:
-                            attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
-                            await receiver.send(attach_format)
-                            for attachment in message.attachments:
-                                await receiver.send(attachment.url)
-                        else:
-                            message_format = f"`{name}::` {message.content}\n"
-                            await receiver.send(message_format)
+                    if message.author.id == self.bot.user.id or message.author.id in UsersDm.DEVS:
+                        pass
+                    else:
+                        id = message.author.id
+                        if id not in users:
+                            users.append(id)
+                            Msg[id] = [message.id]
+                            new_value = {"user_id":  id, "msg_ids": [message.id]}
+                            UsersDm.tb.insert_one(new_value)
+                        elif id not in Msg and id in users:
+                            Msg[id] = [message.id]
+                            new_value = {"msg_ids": message.id}
+                            UsersDm.tb.update_one({"user_id": id}, {"$set": new_value})
+                        elif id in Msg:
+                            if message.id not in Msg[id]:
+                                Msg[id].append(message.id)
+                                UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": Msg[id]}})
+                            
+                        name = message.author.name
+                        for dev in UsersDm.DEVS:
+                            receiver = await self.bot.fetch_user(dev)
+                            info_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(message.id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n----------"
+                            await receiver.send(info_format)
+                            if message.attachments:
+                                attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
+                                await receiver.send(attach_format)
+                                for attachment in message.attachments:
+                                    await receiver.send(attachment.url)
+                            else:
+                                message_format = f"`{name}::` {message.content}\n"
+                                await receiver.send(message_format)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
