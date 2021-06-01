@@ -73,7 +73,7 @@ class Bug(commands.Cog):
                                     for attachment in ans.attachments:
                                         ans.content += f'\n{attachment.url}'
                                 answers[ctx.author.id].append(ans.content)
-                       if done:
+                        if done:
                             submit = await ctx.author.send('Do you want to submit this bug?\n**React below:**\n\N{white heavy check mark} = \'Yes\'\n\N{cross mark} = \'No\'')
                             
                             emojis = ['\N{white heavy check mark}', '\N{cross mark}']
