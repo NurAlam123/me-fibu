@@ -18,7 +18,8 @@ class Challenge(commands.Cog):
         if not from_channel or not to_channel:
             channel_ok = False
             await ctx.send("Provide channel correctly!!")
-        elif from_channel
+        elif from_channel:
+            pass
         
         if channel_ok:
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
