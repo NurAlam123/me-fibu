@@ -84,6 +84,10 @@ class Bug(commands.Cog):
                             await ctx.author.send('Your report successfully submitted!!')
                         else:
                             await ctx.author.send('Ok.. No problem.')
+            else:
+                await ctx.send('No question found')
+        else:
+            await ctx.send('This server doesn\'t allow report command')
 
 def setup(bot):
 	bot.add_cog(Bug(bot))
