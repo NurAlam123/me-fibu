@@ -37,7 +37,7 @@ class Bug(commands.Cog):
                     other_tb.insert_one({'name': 'ignore_dm', 'user_ids': [ctx.author.id]})
                 
                 await ctx.message.add_reaction('\N{Lady Beetle}')
-                await ctx.send('Thank you {ctx.author.mention} for informing a bug.\nCheck DM!!')
+                await ctx.send(f'Thank you {ctx.author.mention} for informing a bug.\nCheck DM!!')
                 await ctx.author.send(f"Please provide some extra information to make it easier for the developer to fix.\nSend 'Ok' to continue.")
                 try:
                     ok = await self.bot.wait_for("message", check= message_check, timeout=60)
@@ -95,7 +95,7 @@ class Bug(commands.Cog):
                                 ids.remove(ctx.author.id)
                             other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                         else:
-                            if reaction.emoji == emoji[0]:
+                            if str(reaction.emoji) == emojis[0]:
                                 report_channel = guild_data.get('bug_channel')
                                 if report_channel:
                                     channel = await bot.fetch_channel(int(report_channel))
@@ -113,7 +113,7 @@ class Bug(commands.Cog):
                                 if ctx.author.id in ids:
                                     ids.remove(ctx.author.id)
                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
-                            elif reaction.emoji == emoji[1]:
+                            elif str(reaction.emoji) == emojis[1]:
                                 await ctx.author.send('Ok.. No problem.')
                                 ## remove user
                                 ids= other_data.get('user_ids')
