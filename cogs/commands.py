@@ -128,46 +128,46 @@ class Command(commands.Cog):
             await msg.delete()
 
 # add swap channels
-    @commands.command()
-    @has_permissions(administrator=True,manage_guild=True)
-    async def swap(self, ctx, from_channel: discord.TextChannel = None, to_channel: discord.TextChannel = None):
-        if from_channel is None or to_channel is None:
-            await ctx.send("Provide channel correctly!!")
-        else:
-            con_fibu = pymongo.MongoClient(os.getenv("DB"))
-            db = con_fibu["fibu"] #database
-            tb = db["guild_data"] #table
-            get_guild = tb.find_one({"guild_id":ctx.guild.id})
-            if get_guild!=None:
-                new_value = {"swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
-                tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
-                await ctx.message.add_reaction("✅")
-            else:
-                value = {"guild_id": ctx.guild.id, "swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
-                tb.insert_one(value)
-                await ctx.message.add_reaction("✅")
+#    @commands.command()
+#    @has_permissions(administrator=True,manage_guild=True)
+#    async def swap(self, ctx, from_channel: discord.TextChannel = None, to_channel: discord.TextChannel = None):
+#        if from_channel is None or to_channel is None:
+#            await ctx.send("Provide channel correctly!!")
+#        else:
+#            con_fibu = pymongo.MongoClient(os.getenv("DB"))
+#            db = con_fibu["fibu"] #database
+#            tb = db["guild_data"] #table
+#            get_guild = tb.find_one({"guild_id":ctx.guild.id})
+#            if get_guild!=None:
+#                new_value = {"swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
+#                tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
+#                await ctx.message.add_reaction("✅")
+#            else:
+#                value = {"guild_id": ctx.guild.id, "swap_channels": {"from_channel": from_channel.id, "to_channel": to_channel.id}}
+#                tb.insert_one(value)
+#                await ctx.message.add_reaction("✅")
 # remove swap channels
-    @commands.command()
-    @has_permissions(administrator=True,manage_guild=True)
-    async def removeSwap(self, ctx):
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["guild_data"] #table
-        #guild = tb.find_one({"guild_id":ctx.guild.id})
-        new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
-        tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
-        await ctx.message.add_reaction("✅")
+#    @commands.command()
+#    @has_permissions(administrator=True,manage_guild=True)
+#    async def removeSwap(self, ctx):
+#        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+#        db = con_fibu["fibu"] #database
+#        tb = db["guild_data"] #table
+#        #guild = tb.find_one({"guild_id":ctx.guild.id})
+#        new_value = {"swap_channels": {"from_channel": None, "to_channel": None}}
+#        tb.update_one({"guild_id":ctx.guild.id},{"$set":new_value})
+#        await ctx.message.add_reaction("✅")
 
 ######### permission Handling #########
-    @swap.error
-    async def _error(self,ctx,error):
-        if isinstance(error,commands.MissingPermissions):
-            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-    
-    @removeSwap.error
-    async def _error(self,ctx,error):
-        if isinstance(error,commands.MissingPermissions):
-            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+   # @swap.error
+#    async def _error(self,ctx,error):
+#        if isinstance(error,commands.MissingPermissions):
+#            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+#    
+#    @removeSwap.error
+#    async def _error(self,ctx,error):
+#        if isinstance(error,commands.MissingPermissions):
+#            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
 
 ### Error Handling ###
     @clean.error
