@@ -29,7 +29,8 @@ class Bug(commands.Cog):
                 if other_data:
                     ids = other_data.get('user_ids')
                     if ids:
-                        ids.append(ctx.author.id)
+                        if not ctx.author.id in ids:
+                            ids.append(ctx.author.id)
                     else:
                         ids = [ctx.author.id]
                     other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
@@ -51,7 +52,7 @@ class Bug(commands.Cog):
                     if ok.content.lower() == 'ok':
                         await ok.add_reaction('\N{white heavy check mark}')
                         await asyncio.sleep(2)
-                        answers = {}
+                        answers = {ctx.author.id: []}
                         for no, question in enumerate(questions, 1):
                             ques_em = discord.Embed(title= f'Question-{no}', description= f'{question}', color= 0xFDB706)
                             await ctx.author.send(embed= ques_em)
@@ -69,12 +70,7 @@ class Bug(commands.Cog):
                                 if ans.attachments:
                                     for attachment in ans.attachments:
                                         ans.content += f'\n{attachment.url}'
-                                user_ans = answers.get(ctx.author.id)
-                                if user_ans:
-                                    user_answers = answers[ctx.author.id]
-                                    user_answers.append(ans.content)
-                                else:
-                                    answers[ctx.author.id] = [ans.content]
+                                answers[ctx.author.id].append(ans.content)
                        
                         submit = await ctx.author.send('Do you want to submit this bug?\n**React below:**\n\N{white heavy check mark} = \'Yes\'\n\N{cross mark} = \'No\'')
                         
@@ -101,12 +97,13 @@ class Bug(commands.Cog):
                                     channel = await bot.fetch_channel(int(report_channel))
                                 else:
                                     channel = ctx.channel
+                                
                                 report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
                                 for question in enumerate(questions, 1):
                                     the_answer = answers.get(ctx.author.id)[no-1]
-                                    report_em.add_field(name= f'Question-{no}', value= f'**Answer:** {the_answer}')
+                                    report_em.add_field(name= f'Question-{no}', value= f'**Question:** {question}\n**Answer:** {the_answer}')
+                                report_em.set_thumbnail(url= f'{ctx.author.avatar_url}')
                                 await channel.send(embed= report_em)
-                                await done.add_reaction('\N{white heavy check mark}')
                                 await ctx.author.send('Your report successfully submitted!!')
                                 ## remove user
                                 ids= other_data.get('user_ids')
