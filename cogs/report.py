@@ -37,7 +37,8 @@ class Bug(commands.Cog):
                     other_tb.insert_one({'name': 'ignore_dm', 'user_ids': [ctx.author.id]})
                 
                 await ctx.message.add_reaction('\N{Lady Beetle}')
-                await ctx.author.send(f"Thank you {ctx.author.mention} for informing a bug.\nPlease provide some extra information to make it easier for the developer to fix.\nSend 'Ok' to continue.")
+                await ctx.send('Thank you {ctx.author.mention} for informing a bug.\nCheck DM!!')
+                await ctx.author.send(f"Please provide some extra information to make it easier for the developer to fix.\nSend 'Ok' to continue.")
                 try:
                     ok = await self.bot.wait_for("message", check= message_check, timeout=60)
                 except asyncio.TimeoutError:
@@ -79,7 +80,7 @@ class Bug(commands.Cog):
                         
                         emojis = ['\N{white heavy check mark}', '\N{cross mark}']
                         for emoji in emojis:
-                            await submit.add_reaction()
+                            await submit.add_reaction(emoji)
                         ## reaction check
                         def reaction_check(reaction, user):
                             return user.id == ctx.author.id and reaction.message.id == submit.id and reaction.emoji in emojis
