@@ -31,7 +31,8 @@ class Challenge(commands.Cog):
                 tb.update_one({"guild_id": ctx.guild.id},{"$set": new_value})
                 await ctx.message.add_reaction("✅")
             else:
-                def message_check()
+                def message_check(message):
+                    return message.author.id == ctx.author.id
                 msg = await ctx.send('Should I DM user that his/her message swapped?\nSend Yes/No or True/False by replying this message.')
                 
                 
@@ -54,7 +55,7 @@ class Challenge(commands.Cog):
                         dm_msg_dict = {id: None}
                 else:
                     is_dm = {id: False}
-                value = {"guild_id": ctx.guild.id, "from_channel": from_channel.id, "to_channel": to_channel.id}}
+                value = {"guild_id": ctx.guild.id, "from_channel": from_channel.id, "to_channel": to_channel.id}
                 tb.insert_one(value)
                 await ctx.message.add_reaction("✅")
 
@@ -75,7 +76,7 @@ class Challenge(commands.Cog):
     async def _error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-       if isinstance(error, commands.ChannelNotFound):
+        if isinstance(error, commands.ChannelNotFound):
             await ctx.send(f"**From channel** is out of guild!\nPlease provide a channel that exists in this guild to swap messages from that channel.")
                
                     
