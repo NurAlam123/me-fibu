@@ -15,9 +15,9 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
         user = tb.find_one({
-                                                "user_id": member.id,
-                                                "guild_id": ctx.guild.id
-                                            })
+            "user_id": member.id,
+            "guild_id": ctx.guild.id
+        })
         if user:
             new_challenge = list(user["challenges"])
             if challenge:
@@ -28,7 +28,7 @@ class Challenge(commands.Cog):
             old_need_xp = user["need_xp"]
             old_level = user["level"]
             if total_xp >= old_need_xp:
-                level = int(total_xp/100)
+                level = int(total_xp/100) + old_level
                 need_xp = (level+1)*100
                 _xp = total_xp - (level*100)
             else:
@@ -36,17 +36,17 @@ class Challenge(commands.Cog):
                 need_xp = old_need_xp
                 level = old_level
             tb.update({
-                                    "user_id": member.id,
-                                    "guild_id": ctx.guild.id
-                                },
-                                {
-                                    "$set": {
-                                        "xp": _xp, 
-                                        "need_xp": need_xp,
-                                        "level": level,
-                                        "challenges": new_challenge
-                                        }
-                                    })
+               "user_id": member.id,
+                "guild_id": ctx.guild.id
+            },
+            {
+                "$set": {
+                    "xp": _xp, 
+                    "need_xp": need_xp,
+                    "level": level,
+                    "challenges": new_challenge
+                }
+            })
             await ctx.reply(f"{member}'s Data Updated")
         else:
             level = int(xp/100)
@@ -54,22 +54,22 @@ class Challenge(commands.Cog):
             new_xp = xp - (level*100)
             if challenge:
                 new_value = {
-                                            "user_id": member.id,
-                                            "guild_id": ctx.guild.id,
-                                            "xp": new_xp,
-                                            "need_xp": need_xp, 
-                                            "level": level,
-                                            "challenges": [challenge]
-                                        }
+                    "user_id": member.id,
+                    "guild_id": ctx.guild.id,
+                    "xp": new_xp,
+                    "need_xp": need_xp, 
+                    "level": level,
+                    "challenges": [challenge]
+                }
             else:
                 new_value = {
-                                            "user_id": member.id,
-                                            "guild_id": ctx.guild.id, 
-                                            "xp": new_xp,
-                                            "need_xp": need_xp, 
-                                            "level": level,
-                                            "challenges": []
-                                        }
+                    "user_id": member.id,
+                    "guild_id": ctx.guild.id, 
+                    "xp": new_xp,
+                    "need_xp": need_xp,
+                    "level": level,
+                    "challenges": []
+                }
             tb.insert(new_value)
             await ctx.reply("New Data Saved")
             
@@ -80,22 +80,22 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"] #database
         tb = db["all_about_challenge"] #table
         user = tb.find_one({
-                                                "user_id": member.id,
-                                                "guild_id": ctx.guild.id
-                                            })
+            "user_id": member.id,
+            "guild_id": ctx.guild.id
+        })
         if user:
             new_challenges = user["challenges"]
             for challenge in challenges.split(","):
                 new_challenges.append(challenge.split())
             tb.update({
-                                    "user_id": member.id,
-                                    "guild_id": ctx.guild.id
-                                },
-                                {
-                                    "$set": {
-                                        "challenges": new_challenges
-                                        }
-                                    })
+                "user_id": member.id,
+                "guild_id": ctx.guild.id
+           },
+           {
+               "$set": {
+                   "challenges": new_challenges
+               }
+           })
             await ctx.send("Data Successfully Added!")
         else:
             await ctx.send("User not found in the database.")
@@ -107,9 +107,9 @@ class Challenge(commands.Cog):
        db = con_fibu["fibu"]
        tb = db["all_about_challenge"]
        tb.delete_one({
-                                       "user_id": member.id,
-                                       "guild_id": ctx.guild.id
-                                       })
+           "user_id": member.id,
+           "guild_id": ctx.guild.id
+       })
        await ctx.send("Data Deleted")
     
     @commands.command(aliases=["rmAllData"])
@@ -118,8 +118,13 @@ class Challenge(commands.Cog):
        con_fibu = pymongo.MongoClient(os.getenv("DB"))
        db = con_fibu["fibu"]
        tb = db["all_about_challenge"]
-       tb.delete_one({"guild_id": ctx.guild.id})
-       await ctx.send("Data Deleted")
+       await ctx.send(':warning::warning: Do you really want to delete all challenges data of this server? :warning::warning:\nSend **\'Yes\'** to proceed or **\'No\'** to cancel the process\n**[!!Deleting data is very dangerous!!]**')
+       confirm = await self.bot.wait_for('message', check= lambda message: message.author.id == ctx.author.id)
+       if confirm.content.lower() == 'yes':
+           tb.delete_one({"guild_id": ctx.guild.id})
+           await ctx.send("Data Successfully Deleted!!!!")
+       else:
+           await ctx.send('Yeah.. That\'s a great choice!!')
      
     @commands.command(aliases=["rmxp", 'remxp'])
     @has_permissions(administrator=True, manage_guild=True)
@@ -128,9 +133,9 @@ class Challenge(commands.Cog):
         db = con_fibu["fibu"]
         tb = db["all_about_challenge"]
         user = tb.find_one({
-                                                "user_id": member.id,
-                                                "guild_id": ctx.guild.id
-                                                })
+            "user_id": member.id,
+            "guild_id": ctx.guild.id
+        })
         if user:
             old_xp = user["xp"]
             old_need_xp = user["need_xp"]
@@ -155,17 +160,16 @@ class Challenge(commands.Cog):
                     insufficient = False
             if not insufficient:
                 tb.update({
-                                        "user_id": member.id,
-                                        "guild_id": ctx.guild.id
-                                      },
-                                      {
-                                          "$set": {
-                                              "xp": _xp, 
-                                              "need_xp": need_xp,
-                                              "level": level
-                                          }
-                                      }
-                                  )
+                   "user_id": member.id,
+                   "guild_id": ctx.guild.id
+                },
+                {
+                    "$set": {
+                        "xp": _xp, 
+                        "need_xp": need_xp,
+                        "level": level
+                        }
+                })
                 await ctx.send("Done")
             else:
                 await ctx.reply(f'This user don\'t have {xp} xp')
@@ -179,8 +183,8 @@ class Challenge(commands.Cog):
             db = con_fibu["fibu"]
             tb = db["all_about_challenge"]
             all_data = list(tb.find({
-                                                        "guild_id": ctx.guild.id
-                                                    }))
+                "guild_id": ctx.guild.id
+            }))
             if all_data == []:
                 await ctx.send("No data found of this server.")
             else:
@@ -197,10 +201,10 @@ class Challenge(commands.Cog):
                 db = con_fibu["fibu"]
                 tb = db["all_about_challenge"]
                 member_data = tb.find_one({
-                                                                        "guild_id": ctx.guild.id,
-                                                                        "user_id": member.id
-                                                                        })
-                if member_data is None:
+                    "guild_id": ctx.guild.id,
+                    "user_id": member.id
+                })
+                if not member_data:
                     await ctx.send("No data found!!")
                 else:
                     user = ctx.guild.get_member(member_data["user_id"])
@@ -216,8 +220,8 @@ class Challenge(commands.Cog):
         tb = db["guild_data"] #table
         try:
             guild = tb.find_one({
-                                                    "guild_id":message.guild.id
-                                                    })
+                "guild_id":message.guild.id
+            })
             from_channel_id = guild["swap_channels"]["from_channel"]
             to_channel_id = guild["swap_channels"]["to_channel"]
             if from_channel_id is not None:

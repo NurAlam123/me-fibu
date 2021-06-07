@@ -26,7 +26,7 @@ class Google(commands.Cog):
                 if link.startswith("/url?q="):
     				# omitting /url?q= from link to get working link
                     link = link.split("/url?q=")[1].split("&")[0] # working link
-                    if "https://" in link and ".google" not in link: #finding perfect link
+                    if "https://" in link and ".google" not in link and 'accounts.google' not in link: #finding perfect link
                         link = link.split("&")[0]
                         links.append(link)
                     else:
@@ -94,9 +94,9 @@ class Google(commands.Cog):
                     elif reaction.emoji == emojis[0] and page > 1:
                         reverse = True
                         out_emoji = False
+                        page -= 1
                         await link_msg.edit(content= links[page])
                         await link_msg.remove_reaction(reaction, user)
-                        page -= 1
                         if page == pages-1:
                             last_page = True
                     else:
