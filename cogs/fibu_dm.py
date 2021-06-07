@@ -77,7 +77,7 @@ class UsersDm(commands.Cog):
                             Msg[id].append(message.id)
                             UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": Msg[id]}})
                         
-                    name = message.author.name
+                    name = message.author
                     for dev in UsersDm.DEVS:
                         receiver = await self.bot.fetch_user(dev)
                         info_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(message.id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n----------"
@@ -113,21 +113,29 @@ class UsersDm(commands.Cog):
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             try:
                 id = users[index_no]
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in msg: {e}')
+                await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
+            else:
+                files= None
                 user = await self.bot.fetch_user(id)
-                 # async with ctx.channel.typing():
-                msg = await user.send(f"{message}")
+                # async with ctx.channel.typing():
+                if ctx.message.attachments:
+                    files = []
+                    for attachment in ctx.message.attachments:
+                        file = await attachment.to_file()
+                        files.append(file)
+                        
+                msg = await user.send(f"{message}", files= files)
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
-                    await receiver.send(f"`{ctx.author.name} to {user}::` {message}")
+                    await receiver.send(f"`{ctx.author.name} to {user}::` {message}", files= files)
                     await receiver.send(f'Message ID: {msg.id}')
                 
                 await ctx.message.add_reaction("✅")
                 await ctx.send(f'Message sent to {user}..\nUse bellow message id to **edit or delete** message next time')
                 await ctx.reply(f'Message ID: {msg.id}')
-            except Exception as e:
-                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
-                await receiver.send(f'Exception in msg: {e}')
-                await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
                 
     @commands.command()
     async def reply(self, ctx, user_index: int, msg_index: int, *, message):
@@ -136,27 +144,36 @@ class UsersDm(commands.Cog):
             receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
             try:
                 user_id = users[user_index]
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in reply: {e}')
+                await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
+            else:
                 try:
                     msg_id = Msg[user_id][msg_index]
-                    user = await self.bot.fetch_user(user_id)
-                    msg = await user.fetch_message(msg_id)
-                    # async with ctx.channel.typing():
-                    reply_msg = await msg.reply(f"{message}")
-                    for receiver in receivers:
-                        receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}")
-                        await receiver.send(f'Message ID: {reply_msg.id}')
-                    await ctx.message.add_reaction("✅")
-                    await ctx.send(f'You replied a message of {user}..\nUse bellow message id to **edit or delete** message next time')
-                    await ctx.reply(f'Message ID: {reply_msg.id}')
                 except Exception as e:
                     receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
                     await receiver.send(f'Exception in reply: {e}')
                     await ctx.send("Oops!! Message not found..\nTry `msg` command!!")
-            except Exception as e:
-                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
-                await receiver.send(f'Exception in reply: {e}')
-                await ctx.send("User not in list.\nTry `new_dm` command to continue!!")                
+                else:
+                    files= None
+                    user = await self.bot.fetch_user(user_id)
+                    msg = await user.fetch_message(msg_id)
+                    # async with ctx.channel.typing():
+                    if ctx.message.attachments:
+                        files = []
+                        for attachment in ctx.message.attachments:
+                            file = attachment.to_file()
+                            files.append(file)
+                    reply_msg = await msg.reply(f"{message}", files= files)
+                    for receiver in receivers:
+                        receiver = await self.bot.fetch_user(receiver)
+                        await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}", files= files)
+                        await receiver.send(f'Message ID: {reply_msg.id}')
+                    await ctx.message.add_reaction("✅")
+                    await ctx.send(f'You replied a message of {user}..\nUse bellow message id to **edit or delete** message next time')
+                    await ctx.reply(f'Message ID: {reply_msg.id}')
+                
 
     @commands.command()
     async def show_all_dm(self, ctx):
@@ -177,13 +194,27 @@ class UsersDm(commands.Cog):
     async def new_dm(self, ctx, user_id: int, *, msg = None):
         users, Msg = self.db()
         if not msg:
-            await ctx.message.add_reaction('❌')
-            await ctx.send("Give a message!!")
+            user = await self.bot.fetch_user(user_id)
+            files= None
+            if ctx.message.attachments:
+                    files = []
+                    for attachment in ctx.message.attachments:
+                        file = await attachment.to_file()
+                        files.append(file)
+                    await user.send(files= files)
+            else:
+                await ctx.message.add_reaction('❌')
+                await ctx.send("You didn't gave a message!!")
         elif ctx.author.id not in UsersDm.DEVS:
             pass
         else:
             try:
                 user = await self.bot.fetch_user(user_id)
+            except Exception as e:
+                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
+                await receiver.send(f'Exception in new_dm: {e}')
+                await ctx.reply("\N{NO ENTRY SIGN} Not found this user or user might be disabled direct messages form server members!!!")
+            else:
                 if user.id not in users:
                     users.append(user.id)
                     new_value = {"user_id": user.id, "msg_ids": []}
@@ -191,19 +222,21 @@ class UsersDm(commands.Cog):
                 else:
                     pass
                 receivers = [i for i in UsersDm.DEVS if i != ctx.author.id]
-                sent_msg = await user.send(f"{msg}")
+                files= None
+                if ctx.message.attachments:
+                    files = []
+                    for attachment in ctx.message.attachments:
+                        file = await attachment.to_file()
+                        files.append(file)
+                sent_msg = await user.send(f"{msg}", files= files)
                 
                 for receiver in receivers:
                     receiver = await self.bot.fetch_user(receiver)
-                    await receiver.send(f"`{ctx.author.name} to {user}`:: {msg}")
+                    await receiver.send(f"`{ctx.author.name} to {user}`:: {msg}", files= files)
                     await receiver.send(f'Message ID: {sent_msg.id}')
                 await ctx.message.add_reaction("✅")
                 await ctx.author.send(f'Message sent to {user}..\nTo Check **UserIndex** use ```!fibu show_all_dm```\nUse bellow message id to **edit or delete** message next time')
                 await ctx.reply(f'Message ID: {sent_msg.id}')
-            except Exception as e:
-                receiver = await self.bot.fetch_user(UsersDm.DEVS[0])
-                await receiver.send(f'Exception in new_dm: {e}')
-                await ctx.send("Not found this user")
 
     ### message edit
     @commands.command()
