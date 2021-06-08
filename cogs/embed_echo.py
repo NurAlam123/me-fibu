@@ -4,15 +4,16 @@ from discord.ext import commands
 import re
 import json
 import asyncio
+import typing
 
 class EmbedEcho(commands.Cog):
     def __init__(self, client):
         self.bot = client
     
     @commands.command(aliases= ['echoEm'])
-    @command.guild_only()
+    @commands.guild_only()
     @commands.has_permissions(administrator= True, manage_messages= True, manage_guild= True)
-    async def echoEmbed(self, ctx, channel: typing.Optional[discord.Textchannel], *, embed_obj):
+    async def echoEmbed(self, ctx, channel: typing.Optional[discord.TextChannel], *, embed_obj):
         if not channel:
             channel = ctx.channel
         
@@ -21,7 +22,7 @@ class EmbedEcho(commands.Cog):
             if embed_obj.startswith('json\n'):
                 embed_obj = embed_obj.lstrip('json\n')
         if embed_obj.lstrip('{').rstrip('}').strip()=='':
-            await ctx.send('You have provided an empty embed object'):
+            await ctx.send('You have provided an empty embed object')
         else:
             embed_obj = json.loads(embed_obj)
             em_msg = discord.Embed.from_dict(embed_obj)
