@@ -40,8 +40,6 @@ class EmbedEcho(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(administrator= True, manage_messages= True, manage_guild= True)
     async def editEmbed(self, ctx, message_id: discord.Message):
-        if not channel:
-            channel = ctx.channel
 
         if message.author.id != self.bot.user.id:
             await ctx.send('This is not my message so I can\'t edit it')
@@ -115,7 +113,7 @@ class EmbedEcho(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             arg_name = error.param.name
             if arg_name == 'embed_obj':
-                await ctx.send(f'{error}\nPlease provide an Embed Object or JSON Object to build embed!!')
+                await ctx.send(f'Please provide an Embed Object or JSON Object to build the embed!!')
         elif isinstance(error, commands.CommandInvokeError):
             if isinstance(error.__cause__, json.JSONDecodeError):
                 await ctx.send('You have provided an invalid Embed Object or JSON Object!!')
@@ -132,6 +130,10 @@ class EmbedEcho(commands.Cog):
             await ctx.send(error)
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            arg_name = error.param.name
+            if arg_name == 'message_id':
+                await ctx.send(f'Please provide a embed message id that I have to edit!!')
         else:
             await ctx.send(error)
         
