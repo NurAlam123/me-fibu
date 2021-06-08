@@ -132,7 +132,8 @@ class EmbedEcho(commands.Cog):
             await ctx.send(error)
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-        
+        else:
+            await ctx.send(error)
         
 
 def setup(bot):
