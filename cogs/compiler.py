@@ -129,14 +129,14 @@ class Compiler(commands.Cog):
                                 compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if (status_code or status_code == 0) else None
                                 compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
                                 compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
-                                compile_embed.set_footer(text=f"{ctx.author} |")
+                                #compile_embed.set_footer(text=f"{ctx.author} |")
                                 embed_message = await ctx.fetch_message(self.data.get(ctx.author.id))
                                 compile_msg = await embed_message.edit(embed= compile_embed)
                             else:
                                 compile_embed.add_field(name= f"Status Code", value=f"```\nPrograme finished with status code {status_code}\n```") if (status_code or status_code == 0) else None
                                 compile_embed.add_field(name= f"Output", value=f"```\n{output}\n```") if output else None
                                 compile_embed.add_field(name= f"Error", value=f"```\n{error}\n```") if error else None
-                                compile_embed.set_footer(text=f"{ctx.author} |")
+                                #compile_embed.set_footer(text=f"{ctx.author} |")
                                 compile_msg = await ctx.reply(embed= compile_embed, mention_author=True)
            
            ########## Error Part ############

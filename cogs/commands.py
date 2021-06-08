@@ -22,36 +22,33 @@ class Command(commands.Cog):
             channel = ctx.channel
         
         attachments = ctx.message.attachments
-        files = []
+        files = None
+        log_attach = ''
         if msg:
             if attachments:
+                files = []
                 for attachment in attachments:
                     file = await attachment.to_file()
+                    log_attach += f'{attachment.url}\n'
                     files.append(file)
-                await channel.send(msg, files= files)
-                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
-                log_channel = await self.bot.fetch_channel(802766376719876107)
-                await log_channel.send(log_format, files= files)
-            else:
-                await channel.send(msg)
-                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
-                log_channel = await self.bot.fetch_channel(802766376719876107)
-                await log_channel.send(log_format)
         elif attachments:
+            files = []
             for attachment in attachments:
                 file = await attachment.to_file()
+                log_attach += f'{attachment.url}\n'
                 files.append(file)
-            await channel.send(msg, files= files)
-            log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
-            log_channel = await self.bot.fetch_channel(802766376719876107)
-            await log_channel.send(log_format, files= files)
+        await channel.send(msg, files= files)
+        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}{log_attach}\n=========="
+        log_channel = await self.bot.fetch_channel(802766376719876107)
+        await log_channel.send(log_format, files= files)
 
     @commands.command()
     @has_permissions(administrator= True, manage_guild= True, manage_messages= True)
     async def echoin(self, ctx, guild = None, channel = None, *, msg= None):
         if isinstance(ctx.message.channel, discord.channel.DMChannel):
             attachments = ctx.message.attachments
-            files = []
+            files = None
+            log_attach = ''
             if not guild:
                 await ctx.send("Put a guild id...😑")
             elif not channel:
@@ -63,26 +60,22 @@ class Command(commands.Cog):
                     find_guild = await self.bot.fetch_guild(int(guild))
                     channel = await self.bot.fetch_channel(int(channel))
                     if attachments:
+                        files = []
                         for attachment in attachments:
                             file = await attachment.to_file()
+                            log_attach += f'{attachment.url}\n'
                             files.append(file)
-                        await channel.send(msg, files= files)
-                        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
-                        log_channel = await self.bot.fetch_channel(802766376719876107)
-                        await log_channel.send(log_format, files= files)
-                    else:
-                        await channel.send(msg)
-                        log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
-                        log_channel = await self.bot.fetch_channel(802766376719876107)
-                        await log_channel.send(log_format)
                 except:
                     await ctx.send("Type the guild id that exists...🙄")
             elif attachments:
+                files = []
                 for attachment in attachments:
                     file = await attachment.to_file()
+                    log_attach += f'{attachment.url}\n'
                     files.append(file)
+            if msg or attachments:
                 await channel.send(msg, files= files)
-                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}\n=========="
+                log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}{log_attach}\n=========="
                 log_channel = await self.bot.fetch_channel(802766376719876107)
                 await log_channel.send(log_format, files= files)
             
@@ -106,26 +99,27 @@ class Command(commands.Cog):
 # delete message
     @commands.command()
     @has_permissions(administrator= True, manage_guild= True, manage_roles= True, manage_messages= True)
-    async def clean(self, ctx, limit: int= 100, member: discord.Member= None):
+    async def clean(self, ctx, limit: int= 10, member: discord.Member= None):
         await ctx.message.delete()
         if limit > 100 or limit < 1:
             await ctx.send(f"Can't delete {limit} messages! My limit is from 1 to 100.")
         else:
-            count = 0
-            async for message in ctx.channel.history(limit=limit):
-                if member is None:
-                    await message.delete()
-                    count+=1
-                else:
-                    if message.author.id==member.id:
-                        await message.delete()
-                        count+=1
-                    else:
-                        pass
-            
+            if member:
+                def check_msg(message):
+                    return message.author.id == member.id
+                check = check_msg
+            else:
+                check = None
+            deleted = await ctx.channel.purge(limit= limit, check= check)
+            count = len(deleted)
             msg = await ctx.send(f"{count} messages deleted!!")
             await asyncio.sleep(3)
             await msg.delete()
+            ### log update ###
+            log_format = f'\N{warning} ️Clean command used by **{ctx.author}**\n**UserID:** {ctx.author.id}\nServer: {ctx.guild}\n**Limit:** {limit}\n**Deleted**: {count}'
+            log_channel = await self.bot.fetch_channel(796371191837229098)
+            await log_channel.send(log_format)
+
 
 # add swap channels
 #    @commands.command()
