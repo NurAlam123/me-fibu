@@ -116,7 +116,7 @@ class Command(commands.Cog):
             await asyncio.sleep(3)
             await msg.delete()
             ### log update ###
-            log_format = f'\N{warning} ️Clean command used by **{ctx.author}**\n**UserID:** {ctx.author.id}\nServer: {ctx.guild}\n**Limit:** {limit}\n**Deleted**: {count}'
+            log_format = f':warning: ️Clean command used by **{ctx.author}**\n**UserID:** {ctx.author.id}\nServer: {ctx.guild}\n**Limit:** {limit}\n**Deleted**: {count}'
             log_channel = await self.bot.fetch_channel(796371191837229098)
             await log_channel.send(log_format)
 
