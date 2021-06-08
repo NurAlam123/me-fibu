@@ -23,7 +23,7 @@ intents = discord.Intents.default()
 intents.members = True
 
 bot = commands.Bot(command_prefix= prefixes, intents= intents, case_insensitive= True)
-bot.remove_command("help")
+#bot.remove_command("help")
 
 bot.TEAM = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
 
@@ -66,7 +66,7 @@ async def off(ctx,file):
             
 
 for files in os.listdir("./cogs"):
-    if files.endswith(".py"):
+    if files.endswith(".py") and file!='help.py':
         bot.load_extension(f"cogs.{files[:-3]}")
 
 #client = pymongo.MongoClient("mongodb+srv://fibu-ph:FibuProgrammingHero@fibu.vtsjw.mongodb.net/fibu?retryWrites=true&w=majority")			
