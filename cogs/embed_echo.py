@@ -39,7 +39,7 @@ class EmbedEcho(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator= True, manage_messages= True, manage_guild= True)
-    async def editEmbed(self, ctx, message_id: discord.Message):
+    async def editEmbed(self, ctx, message: discord.Message):
 
         if message.author.id != self.bot.user.id:
             await ctx.send('This is not my message so I can\'t edit it')
@@ -132,7 +132,7 @@ class EmbedEcho(commands.Cog):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
         elif isinstance(error, commands.MissingRequiredArgument):
             arg_name = error.param.name
-            if arg_name == 'message_id':
+            if arg_name == 'message':
                 await ctx.send(f'Please provide a embed message id that I have to edit!!')
         else:
             await ctx.send(error)
