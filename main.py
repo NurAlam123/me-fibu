@@ -16,8 +16,6 @@ logging.basicConfig(level= logging.INFO)
 
 token = os.getenv("TOKEN")
 
-dev = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
-
 prefix_file = open("prefix.txt","r")
 prefixes = [i.replace("\n"," ") for i in prefix_file.readlines()]
 
@@ -26,6 +24,8 @@ intents.members = True
 
 bot = commands.Bot(command_prefix= prefixes, intents= intents, case_insensitive= True)
 bot.remove_command("help")
+
+bot.TEAM = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
 
 @bot.event
 async def on_ready():
