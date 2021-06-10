@@ -116,7 +116,7 @@ class EmbedEcho(commands.Cog):
             else:
                 
                 em_msg, text = self.build_embed(embed_obj)
-                await ctx.send(content= text, embed= em_msg)
+                await channel.send(content= text, embed= em_msg)
         else:
             await ctx.send('You didn\'t provide any Embed Object or JSON Object to build the embed.\nYou can also write Embed Object or JSON Object in a json or text file and send it to build the embed!!')
 
