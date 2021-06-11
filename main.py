@@ -41,7 +41,7 @@ async def ping(ctx):
 #cogs load and unload
 @bot.command()
 async def on(ctx,file):
-    if ctx.author.id in dev:
+    if ctx.author.id in bot.TEAM:
         try:
             for files in os.listdir("./cogs"):
                 if files==file.lower()+".py":
@@ -53,7 +53,7 @@ async def on(ctx,file):
         await ctx.send(f"You don't have the permission to do that!!")
 @bot.command()
 async def off(ctx,file):
-        if ctx.author.id in dev:
+        if ctx.author.id in bot.TEAM:
             try:
                 bot.unload_extension(f"cogs.{file.lower()}")
                 await ctx.send(f"{file} unloaded!")

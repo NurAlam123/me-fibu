@@ -299,8 +299,8 @@ class UsersDm(commands.Cog):
                 user = users[int(index)]
                 user = await self.bot.fetch_user(user)
                 for i, j in enumerate(Msg[user.id]):
-                    data+= f'{i}. {j}\n'
-                await ctx.send(f'Username: {user}\nUserIndex: {index}\nMessagesIDs:\n```index - message ID\n{data}\n```')
+                    data+= f'{i} - {j}\n'
+                await ctx.send(f'Username: {user}\nUserId: {user.id}\nUserIndex: {index}\nMessagesIDs:\n```\nindex - message ID\n{data}\n```')
             except Exception as e:
                 receiver = await self.bot.fetch_user(self.bot.TEAM[0])
                 await receiver.send(f'Exception in show_dm: {e}')
