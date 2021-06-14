@@ -160,7 +160,7 @@ class Bug(commands.Cog):
             try:
                 question = await self.bot.wait_for('message', check= check, timeout= 300)
             except asyncio.TimeoutError:
-                await ctx.send('Time out!!\n{ctx.author.mention}, you took a long time...\nNow the process has been cancelled.')
+                await ctx.send(f'Time out!!\n{ctx.author.mention}, you took a long time...\nNow the process has been cancelled.')
                 break
             if question.content.lower().strip() == 'cancel':
                 await ctx.send('The process has been cancelled!!')
@@ -177,6 +177,8 @@ class Bug(commands.Cog):
                 })
                 await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
                 break
+            elif question.content.lower().strip() == 'skip':
+                await ctx.send(f'Question-{no} skipped!!')
             else:
                 if questions:
                     questions[no-1] = question.content
