@@ -11,8 +11,13 @@ class Bug(commands.Cog):
     def __init__(self,client):
         self.bot = client
     
+    def guild_check(self, ctx):
+        return ctx.guild.id == 550676428040044574
+    
     @commands.command()
-    async def bug(self, ctx):
+    @commads.guild_only()
+    @commands.check(self.guild_check)
+    async def report(self, ctx):
         #### connect with database ####
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
@@ -124,6 +129,9 @@ class Bug(commands.Cog):
                 await ctx.send('No question provided from the server')
         else:
             await ctx.send('This server doesn\'t enabled this feature')
+
+
+
 
 def setup(bot):
 	bot.add_cog(Bug(bot))
