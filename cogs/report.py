@@ -31,6 +31,7 @@ class Bug(commands.Cog):
                 #### check function ####
                 def message_check(message):
                     return message.author.id == ctx.author.id and isinstance(message.channel, discord.channel.DMChannel)
+                ########
                 if other_data:
                     ids = other_data.get('user_ids')
                     if ids:
@@ -130,8 +131,65 @@ class Bug(commands.Cog):
         else:
             await ctx.send('This server doesn\'t enabled this feature')
 
-
-
+    @commands.command()
+    async def addQuestion(self, ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] # database
+        tb = db['guild_data'] # table
+        guild_data = tb.find_one({'guild_id': ctx.guild.id})
+        if not guild_data:
+            tb.insert_one({'guild_id': ctx.guild.id, 'report_questions': []})
+       
+        questions = guild_data.get('report_questions')
+        if questions:
+            await ctx.send('Seems like I found some report questions of this server in my database.\n**__Note:__ You can send \'cancel\' anytime to cancel the process.**')
+        def check(message):
+            return message.author.id == ctx.author.id
+        no = 1
+        while True:
+            await ctx.send(f'Question-{no}')
+            if questions:
+                await ctx.send(f'**Old question:** {questions[no-1]}')
+                await ctx.send('Send the question.\nTo cancel send \'cancel\' or \'skip\' to skip to the next question this question will not change if you skip!!')
+            else:
+                await ctx.send('Send the question.\nTo cancel send \'cancel\' or \'Done\' if you are done!!')
+                
+            try:
+                question = await self.bot.wait_for('message', check= check, timeout= 300)
+            except asyncio.TimeoutError:
+                await ctx.send('Time out!!\n{ctx.author.mention}, you took a long time...\nNow the process has been cancelled.')
+                break
+            if question.content.lower().strip() == 'cancel':
+                await ctx.send('The process has been cancelled!!')
+                break
+            elif question.content.lower().strip() == 'done':
+                update_msg = await ctx.send('Wait... Your questions are saving!!')
+                tb.update_one({
+                    'guild_id': ctx.guild.id
+                },
+                {
+                    '$set': {
+                        'report_questions': questions
+                    }
+                })
+               await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
+               break
+            else:
+                if questions:
+                    questions[no-1] = question.content
+                else:
+                    questions.append(question.content)
+                
+        
+        
+        
+    ###### Error Handling ######
+    @report.error
+    async def _error(self, error):
+        await ctx.send(error)
+        raise error
+        
+    
 
 def setup(bot):
 	bot.add_cog(Bug(bot))
