@@ -97,7 +97,7 @@ class Bug(commands.Cog):
                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                             else:
                                 if str(reaction.emoji) == emojis[0]:
-                                    report_channel = guild_data.get('bug_channel')
+                                    report_channel = guild_data.get('report_channels')
                                     if report_channel:
                                         channel = await bot.fetch_channel(int(report_channel))
                                     else:
@@ -177,15 +177,17 @@ class Bug(commands.Cog):
                 })
                 await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
                 break
-            elif question.content.lower().strip() == 'skip':
+            elif question.content.lower().strip() == 'skip' and no <= len(questions):
                 await ctx.send(f'Question-{no} skipped!!')
+                no+=1
+            elif question.content.lower().strip() == 'skip' and no > len(questions):
+                await ctx.send(f'You can\'t skip questions now!!')
             else:
-                if questions:
+                if questions and no <= len(questions):
                     questions[no-1] = question.content
                 else:
                     questions.append(question.content)
-            no += 1
-                
+                no+=1
         
         
         
