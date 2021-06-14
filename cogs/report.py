@@ -177,6 +177,7 @@ class Bug(commands.Cog):
                 break
             else:
                 if questions:
+                    print(no-1, len(questions))
                     questions[no-1] = question.content
                 else:
                     questions.append(question.content)
