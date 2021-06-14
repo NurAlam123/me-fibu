@@ -144,11 +144,15 @@ class Bug(commands.Cog):
             return message.author.id == ctx.author.id
         no = 1
         while True:
-            await ctx.send(f'Question-{no}')
+            
             if questions:
-                await ctx.send(f'**Old question:** {questions[no-1]}')
+                q_em = discord.Embed(color= 0xFDB706)
+                q_em.title = f'Question-{no}'
+                q_em.description = f'**Old question:** {questions[no-1]}'
+                await ctx.send(embed= q_em)
                 await ctx.send('Send the question.\nTo cancel send \'cancel\' or \'skip\' to skip to the next question this question will not change if you skip!!')
             else:
+                await ctx.send(f'Question-{no}')
                 await ctx.send('Send the question.\nTo cancel send \'cancel\' or \'Done\' if you are done!!')
                 
             try:
@@ -176,6 +180,7 @@ class Bug(commands.Cog):
                     questions[no-1] = question.content
                 else:
                     questions.append(question.content)
+            no += 1
                 
         
         
