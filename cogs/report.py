@@ -145,7 +145,7 @@ class Bug(commands.Cog):
         no = 1
         while True:
             
-            if questions:
+            if questions and no <= len(questions):
                 q_em = discord.Embed(color= 0xFDB706)
                 q_em.title = f'Question-{no}'
                 q_em.description = f'**Old question:** {questions[no-1]}'
@@ -177,7 +177,6 @@ class Bug(commands.Cog):
                 break
             else:
                 if questions:
-                    print(no-1, len(questions))
                     questions[no-1] = question.content
                 else:
                     questions.append(question.content)
