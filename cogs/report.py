@@ -15,7 +15,7 @@ class Bug(commands.Cog):
         return ctx.guild.id == 550676428040044574
     
     @commands.command()
-    @commads.guild_only()
+    @commands.guild_only()
     @commands.check(self.guild_check)
     async def report(self, ctx):
         #### connect with database ####
