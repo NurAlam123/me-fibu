@@ -169,8 +169,8 @@ class Bug(commands.Cog):
                         'report_questions': questions
                     }
                 })
-               await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
-               break
+                await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
+                break
             else:
                 if questions:
                     questions[no-1] = question.content
