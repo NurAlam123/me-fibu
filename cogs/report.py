@@ -140,6 +140,8 @@ class Bug(commands.Cog):
         questions = guild_data.get('report_questions')
         if questions:
             await ctx.send('Seems like I found some report questions of this server in my database.\n**__Note:__ You can send \'cancel\' anytime to cancel the process.**')
+        else:
+            questions = []
         def check(message):
             return message.author.id == ctx.author.id
         no = 1
