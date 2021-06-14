@@ -16,7 +16,7 @@ class Bug(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.check(self.guild_check)
+    #@commands.check(self.guild_check)
     async def report(self, ctx):
         #### connect with database ####
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
