@@ -108,7 +108,7 @@ class Bug(commands.Cog):
                                     report_em.set_thumbnail(url= f'{ctx.author.avatar_url}')
                                     if report_channels:
                                         for channel in report_channels:
-                                            channel = await bot.fetch_channel(int(channel))
+                                            channel = await self.bot.fetch_channel(int(channel))
                                             await channel.send(embed= report_em)
                                     else:
                                         await ctx.send(embed= report_em)
@@ -256,7 +256,7 @@ class Bug(commands.Cog):
                 await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
                 break
             elif channel.content.isnumeric():
-                is_channel = await bot.fetch_channel(int(channel.content))
+                is_channel = await self.bot.fetch_channel(int(channel.content))
                 if is_channel and no <= channel_len:
                     channel[no-1] = int(channel.content)
                     no += 1
