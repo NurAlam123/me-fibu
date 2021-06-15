@@ -13,6 +13,7 @@ class Bug(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
+    @commands.has_permissions(administrator= True)
    # @commands.check(self.guild_check)
     async def report(self, ctx):
         #### connect with database ####
@@ -95,26 +96,29 @@ class Bug(commands.Cog):
                                 if ctx.author.id in ids:
                                     ids.remove(ctx.author.id)
                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                            
                             else:
                                 if str(reaction.emoji) == emojis[0]:
-                                    report_channel = guild_data.get('report_channels')
-                                    if report_channel:
-                                        channel = await bot.fetch_channel(int(report_channel))
-                                    else:
-                                        channel = ctx.channel
+                                    report_channels = guild_data.get('report_channels')
                                     
-                                    report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', timestamp= time.now(), color= 0xFDB706)
+                                    report_em = discord.Embed(title= f'Bug Reported', description= f'A bug reported by **{ctx.author}**\n**User ID:** {ctx.author.id}', color= 0xFDB706)
                                     for no, question in enumerate(questions, 1):
                                         the_answer = answers.get(ctx.author.id)[no-1]
                                         report_em.add_field(name= f'Question-{no}', value= f'**Question:** {question}\n**Answer:** {the_answer}', inline= False)
                                     report_em.set_thumbnail(url= f'{ctx.author.avatar_url}')
-                                    await channel.send(embed= report_em)
+                                    if report_channels:
+                                        for channel in report_channels:
+                                            channel = await bot.fetch_channel(int(channel))
+                                            await channel.send(embed= report_em)
+                                    else:
+                                        await ctx.send(embed= report_em)
                                     await ctx.author.send('Your report successfully submitted!!')
                                     ## remove user
                                     ids= other_data.get('user_ids')
                                     if ctx.author.id in ids:
                                         ids.remove(ctx.author.id)
                                     other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                
                                 elif str(reaction.emoji) == emojis[1]:
                                     await ctx.author.send('Ok.. No problem.')
                                     ## remove user
@@ -129,6 +133,8 @@ class Bug(commands.Cog):
             await ctx.send('This server doesn\'t enabled this feature')
 
     @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator= True)
     async def addQuestion(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
@@ -145,9 +151,10 @@ class Bug(commands.Cog):
         def check(message):
             return message.author.id == ctx.author.id
         no = 1
+        ques_len = len(questions)
         while True:
             
-            if questions and no <= len(questions):
+            if questions and no <= ques_len:
                 q_em = discord.Embed(color= 0xFDB706)
                 q_em.title = f'Question-{no}'
                 q_em.description = f'**Old question:** {questions[no-1]}'
@@ -177,13 +184,13 @@ class Bug(commands.Cog):
                 })
                 await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
                 break
-            elif question.content.lower().strip() == 'skip' and no <= len(questions):
+            elif question.content.lower().strip() == 'skip' and no <= ques_len:
                 await ctx.send(f'Question-{no} skipped!!')
                 no+=1
-            elif question.content.lower().strip() == 'skip' and no > len(questions):
+            elif question.content.lower().strip() == 'skip' and no > ques_len:
                 await ctx.send(f'You can\'t skip questions now!!')
             else:
-                if questions and no <= len(questions):
+                if questions and no <= ques_len:
                     questions[no-1] = question.content
                 else:
                     questions.append(question.content)
@@ -191,6 +198,78 @@ class Bug(commands.Cog):
         
         
         
+    @commands.command()
+    @commands.has_permissions(administrator= True)
+    async def addReportChannel(self, ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] # database
+        tb = db['guild_data'] # table
+        guild_data = tb.find_one({'guild_id': ctx.guild.id})
+        
+        if not guild_data:
+            tb.insert_one({'guild_id': ctx.guild.id, 'report_channels': {}})
+        channels = guild_data.get('report_channels')
+        if not channels:
+            channels = []
+        
+        
+        def check(message):
+            return message.author.id == ctx.author.id
+        
+        channel_len = len(channels)
+        if channels:
+            await ctx.send('Seems like I found some channels to send report.\n**__Note:__ You can send \'cancel\' anytime to cancel the process.**')
+       
+        no =  1
+        invalid_channel = False
+        while True:
+            if channels and no <= channel_len and not invalid_channel:
+                old_channel_id = int(channels[no-1])
+                old_channel = discord.utils.get(old_guild.channels, id= old_channel)
+                await ctx.send(f'Old Channel: {old_channel}')
+                await ctx.send('Send the channel id.\nTo cancel send \'cancel\' or \'skip\' to skip to the next channel!!')
+            else:
+                await ctx.send('Send the channel id.\nType and send \'done\' if you are done.')
+            try:
+                channel = await self.bot.wait_for('message', check= check, timeout= 120)
+            except asyncio.TimeoutError:
+                await ctx.send(f'Time out..!\n{ctx.author.mention}, you took a long time.')
+                break
+            if channel.content.lower().strip() == 'skip' and no <= channel_len:
+                await ctx.send('Skipping!!')
+                no += 1
+            elif channel.content.lower().strip() == 'skip' and no > channel_len:
+                await ctx.send('You can\'t skip now!!')
+            elif channel.content.lower().strip() == 'cancle':
+                await ctx.send('The process has been cancelled!!')
+                break
+            elif channel.content.lower().strip() == 'done':
+                update_msg = await ctx.send('Wait... Data saving in database!!')
+                tb.update_one({
+                    'guild_id': ctx.guild.id
+                },
+                {
+                    '$set': {
+                        'report_channels': channels
+                    }
+                })
+                await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
+                break
+            elif channel.content.isnumeric():
+                is_channel = await bot.fetch_channel(int(channel.content))
+                if is_channel and no <= channel_len:
+                    channel[no-1] = int(channel.content)
+                    no += 1
+                elif is_channel and no > channel_len:
+                    channels.append(int(channel.content))
+                    no += 1
+                else:
+                    await ctx.send('Invaild channel!!\nDidn\'t find any channel with that id -_-')
+                    invalid_channel = True
+            
+            else:
+                await ctx.send('Need an integer value!!')
+    
     ###### Error Handling ######
     @report.error
     async def _error(self, error):
