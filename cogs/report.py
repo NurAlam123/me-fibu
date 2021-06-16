@@ -13,8 +13,6 @@ class Bug(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(administrator= True)
-   # @commands.check(self.guild_check)
     async def report(self, ctx):
         #### connect with database ####
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
@@ -43,7 +41,8 @@ class Bug(commands.Cog):
                 
                 await ctx.message.add_reaction('\N{Lady Beetle}')
                 await ctx.send(f'Thank you {ctx.author.mention} for informing a bug.\nCheck DM!!')
-                await ctx.author.send(f"Please provide some extra information to make it easier for the developer to fix.\nSend 'Ok' to continue.")
+                em = discord.Embed(description = 'Please provide some extra information to make it easier for the developer to fix.\nSend \'Ok\' to continue.', color= 0x7700FE)
+                await ctx.author.send(embed= em)
                 try:
                     ok = await self.bot.wait_for("message", check= message_check, timeout=60)
                 except asyncio.TimeoutError:
@@ -54,7 +53,7 @@ class Bug(commands.Cog):
                     other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                 else:
                     if ok.content.lower() == 'ok':
-                        await ok.add_reaction('\N{white heavy check mark}')
+                        await ok.add_reaction('<:greentickbadge:852127602373951519>')
                         await asyncio.sleep(2)
                         answers = {ctx.author.id: []}
                         done = True
@@ -78,9 +77,10 @@ class Bug(commands.Cog):
                                         ans.content += f'\n{attachment.url}'
                                 answers[ctx.author.id].append(ans.content)
                         if done:
-                            submit = await ctx.author.send('Do you want to submit this bug?\n**React below:**\n\N{white heavy check mark} = \'Yes\'\n\N{cross mark} = \'No\'')
+                            submit_em = discord.Embed(title= 'Do you want to submit this bug?', description= '**React below:**\n<:greentickbadge:852127602373951519> = \'Yes\'\n<:redtickbadge:854250345113714688> = \'No\'', color= 0x7700FE)
+                            submit = await ctx.author.send(embed= submit_em)
                             
-                            emojis = ['\N{white heavy check mark}', '\N{cross mark}']
+                            emojis = ['<:greentickbadge:852127602373951519>', '<:redtickbadge:854250345113714688> ']
                             for emoji in emojis:
                                 await submit.add_reaction(emoji)
                             ## reaction check
@@ -182,7 +182,7 @@ class Bug(commands.Cog):
                         'report_questions': questions
                     }
                 })
-                await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
+                await update_msg.edit(content= '<:greentickbadge:852127602373951519>Data Successfully Saved!!')
                 break
             elif question.content.lower().strip() == 'skip' and no <= ques_len:
                 await ctx.send(f'Question-{no} skipped!!')
@@ -200,6 +200,7 @@ class Bug(commands.Cog):
         
     @commands.command()
     @commands.has_permissions(administrator= True)
+    @commands.guild_only()
     async def addReportChannel(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
@@ -253,7 +254,7 @@ class Bug(commands.Cog):
                         'report_channels': channels
                     }
                 })
-                await update_msg.edit(content= ':white_check_mark: Data Successfully Saved!!')
+                await update_msg.edit(content= '<:greentickbadge:852127602373951519>Data Successfully Saved!!')
                 break
             elif channel.content.isnumeric():
                 is_channel = await self.bot.fetch_channel(int(channel.content))
@@ -269,6 +270,70 @@ class Bug(commands.Cog):
             
             else:
                 await ctx.send('Need an integer value!!')
+    
+    
+    @commands.command(aliases= ['rmReportChannel'])
+    @commands.guild_only()
+    @commands.has_permissions(administrator= True)
+    async def removeReportChannel(self, ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] # database
+        tb = db['guild_data'] # table
+        guild_data = tb.find_one({'guild_id': ctx.guild.id})
+        
+        def check(message):
+            return message.author.id == ctx.author.id
+        
+        if guild_data:
+            channel_ids = guild_data.get('report_channels')
+            if channel_ids:
+                channels = []
+                for i in channel_ids:
+                    ch = await self.bot.fetch_channel(int(i))
+                    channels.append(ch)
+                msg = ''
+                for i, j in enumerate(channels, 1):
+                    msg += f'{i} - {j.guild.name} - {j.channel.name}\n'
+                
+                ch_msg = await ctx.send(f'All Channels\n```\nIndex - Guild Name - Channel Name\n{msg}\n```')
+                await ch_msg.reply('Send the index number of the channel you want to remove or send \'cancel\' anytime if you want to cancel')
+                while True:
+                    await ctx.send('Send the index number and send \'Done\' if you are done!!')
+                    try:
+                        choice = await self.bot.wait_for('message', check= check, timeout= 120)
+                    except asyncio.TimeoutError:
+                        await ctx.send(f'Time Out!!\n{ctx.author.mention}, You took long time')
+                        break
+                    
+                    else:
+                        if choice.content.lower().strip() == 'done':
+                            update_msg = await ctx.send('Wait... Data saving in database!!')
+                            tb.update_one({
+                                'guild_id': ctx.guild.id
+                            },
+                            {
+                                '$set': {
+                                    'report_channels': channel_ids
+                                }
+                            })
+                            await update_msg.edit(content= '<:greentickbadge:852127602373951519> Data Successfully Saved!!')
+                            break
+                        elif choice.content.lower().strip() == 'cancle':
+                            await ctx.send('<:greentickbadge:852127602373951519> Process cancelled!!')
+                            break
+                        elif choice.content.isnumeric():
+                            try:
+                                channel_ids.pop(int(choice.content)-1)
+                            except IndexError:
+                                await ctx.send('<:redtickbadge:854250345113714688> Index out of range!!\nSee the list of channels and try again!!')
+                        else:
+                            await ctx.send('Give an integer value...')
+            else:
+                await ctx.send('No report channels found of this server in my database...')
+        
+        else:
+            await ctx.send('This server hasn\'t enabled report command!!')
+        
     
     ###### Error Handling ######
     @report.error
