@@ -293,7 +293,7 @@ class Bug(commands.Cog):
                     channels.append(ch)
                 msg = ''
                 for i, j in enumerate(channels, 1):
-                    msg += f'{i} - {j.guild.name} - {j.channel.name}\n'
+                    msg += f'{i} - {j.guild.name} - {j.name}\n'
                 
                 ch_msg = await ctx.send(f'All Channels\n```\nIndex - Guild Name - Channel Name\n{msg}\n```')
                 await ch_msg.reply('Send the index number of the channel you want to remove or send \'cancel\' anytime if you want to cancel')
