@@ -288,6 +288,7 @@ class Bug(commands.Cog):
             channel_ids = guild_data.get('report_channels')
             if channel_ids:
                 channels = []
+                indx = []
                 for i in channel_ids:
                     ch = await self.bot.fetch_channel(int(i))
                     channels.append(ch)
@@ -298,16 +299,18 @@ class Bug(commands.Cog):
                 ch_msg = await ctx.send(f'All Channels\n```\nIndex - Guild Name - Channel Name\n{msg}\n```')
                 await ch_msg.reply('Send the index number of the channel you want to remove or send \'cancel\' anytime if you want to cancel')
                 while True:
-                    await ctx.send('Send the index number and send \'Done\' if you are done!!')
+                    await ctx.send('Send the index number or send \'Done\' if you are done!!')
                     try:
                         choice = await self.bot.wait_for('message', check= check, timeout= 120)
                     except asyncio.TimeoutError:
-                        await ctx.send(f'Time Out!!\n{ctx.author.mention}, You took long time')
+                        await ctx.send(f'Time Out!!\n{ctx.author.mention}, You took long time so the process is cancelled...')
                         break
                     
                     else:
                         if choice.content.lower().strip() == 'done':
                             update_msg = await ctx.send('Wait... Data saving in database!!')
+                            for i in indx:
+                                channel_ids.pop(i)
                             tb.update_one({
                                 'guild_id': ctx.guild.id
                             },
@@ -322,10 +325,12 @@ class Bug(commands.Cog):
                             await ctx.send('<:greentickbadge:852127602373951519> Process cancelled!!')
                             break
                         elif choice.content.isnumeric():
-                            try:
-                                channel_ids.pop(int(choice.content)-1)
-                            except IndexError:
+                            ind = int(choice.content)
+                            if ind > len(channel_ids):
                                 await ctx.send('<:redtickbadge:854250345113714688> Index out of range!!\nSee the list of channels and try again!!')
+                            else:
+                                indx.append(int(choice.content)-1)
+                         
                         else:
                             await ctx.send('Give an integer value...')
             else:
@@ -337,10 +342,34 @@ class Bug(commands.Cog):
     
     ###### Error Handling ######
     @report.error
-    async def _error(self, error):
-        await ctx.send(error)
+    async def _error(self, ctx, error):
+        log = await self.bot.fetch_channel(855048645174755358)
+        await log.send(f'Exception in report: {error}')
         raise error
-        
+    @addQuestion.error
+    async def _error(self, ctx, error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        else:
+            log = await self.bot.fetch_channel(855048645174755358)
+            await log.send(f'Exception in addQuestion: {error}')
+            raise error
+    @addReportChannel.error
+    async def _error(self, ctx, error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        else:
+            log = await self.bot.fetch_channel(855048645174755358)
+            await log.send(f'Exception in addReportChannel: {error}')
+            raise error
+    @removeReportChannel.error
+    async def _error(self, ctx, error):
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        else:
+            log = await self.bot.fetch_channel(855048645174755358)
+            await log.send(f'Exception in RemoveReportChannel: {error}')
+            raise error
     
 
 def setup(bot):
