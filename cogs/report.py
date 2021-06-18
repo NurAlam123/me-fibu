@@ -360,7 +360,7 @@ class Bug(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator= True)
-    async def showChannels(ctx):
+    async def showChannels(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
         tb = db['guild_data'] # table
@@ -385,7 +385,7 @@ class Bug(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator= True)
-    async def showQuestions(ctx):
+    async def showQuestions(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
         tb = db['guild_data'] # table
@@ -406,7 +406,7 @@ class Bug(commands.Cog):
     @commands.command(aliases= ['rmReportQuestions'])
     @commands.guild_only()
     @commands.has_permissions(administrator= True)
-    async def removeQuestion(ctx):
+    async def removeQuestion(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
         tb = db['guild_data'] # table
