@@ -85,10 +85,10 @@ class Bug(commands.Cog):
                                 await submit.add_reaction(emoji)
                             ## reaction check
                             def reaction_check(reaction, user):
-                                return user.id == ctx.author.id and reaction.message.id == submit.id and reaction.emoji in emojis
+                                return user.id == ctx.author.id and reaction.message.id == submit.id
             
                             try:
-                                reaction,user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
+                                reaction, user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
                             except:
                                 await ctx.author.send('Oops!! You didn\'t respond in time :(')
                                 ## remove user
