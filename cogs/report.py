@@ -309,8 +309,8 @@ class Bug(commands.Cog):
                     else:
                         if choice.content.lower().strip() == 'done':
                             update_msg = await ctx.send('Wait... Data saving in database!!')
-                            for i in indx:
-                                channel_ids.pop(i)
+                            for j in indx:
+                                channel_ids.pop(j)
                             tb.update_one({
                                 'guild_id': ctx.guild.id
                             },
