@@ -329,7 +329,10 @@ class Bug(commands.Cog):
                             if ind > len(channel_ids):
                                 await ctx.send('<:redtickbadge:854250345113714688> Index out of range!!\nSee the list of channels and try again!!')
                             else:
-                                indx.append(int(choice.content)-1)
+                                ind_no = int(choice.content)-1
+                                indx.append(ind_no)
+                                await ctx.send(ind_no)
+                                await ctx.send(indx)
                          
                         else:
                             await ctx.send('Give an integer value...')
