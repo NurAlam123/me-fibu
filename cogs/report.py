@@ -289,6 +289,7 @@ class Bug(commands.Cog):
             if channel_ids:
                 channels = []
                 indx = []
+                no = 1
                 for i in channel_ids:
                     ch = await self.bot.fetch_channel(int(i))
                     channels.append(ch)
@@ -299,18 +300,20 @@ class Bug(commands.Cog):
                 ch_msg = await ctx.send(f'All Channels\n```\nIndex - Guild Name - Channel Name\n{msg}\n```')
                 await ch_msg.reply('Send the index number of the channel you want to remove or send \'cancel\' anytime if you want to cancel')
                 while True:
-                    await ctx.send('Send the index number or send \'Done\' if you are done!!')
+                    if no!=len(channel_ids):
+                        await ctx.send('Send the index number or send \'Done\' if you are done!!')
                     try:
-                        choice = await self.bot.wait_for('message', check= check, timeout= 120)
+                        if no!=len(channel_ids):
+                            choice = await self.bot.wait_for('message', check= check, timeout= 120)
                     except asyncio.TimeoutError:
                         await ctx.send(f'Time Out!!\n{ctx.author.mention}, You took long time so the process is cancelled...')
                         break
                     
                     else:
-                        if choice.content.lower().strip() == 'done':
+                        if choice.content.lower().strip() == 'done' or no == len(channel_ids):
                             update_msg = await ctx.send('Wait... Data saving in database!!')
                             for j in indx:
-                                channel_ids.pop(j)
+                                channel_ids.remove(j)
                             tb.update_one({
                                 'guild_id': ctx.guild.id
                             },
@@ -330,9 +333,9 @@ class Bug(commands.Cog):
                                 await ctx.send('<:redtickbadge:854250345113714688> Index out of range!!\nSee the list of channels and try again!!')
                             else:
                                 ind_no = int(choice.content)-1
-                                indx.append(ind_no)
-                                await ctx.send(ind_no)
-                                await ctx.send(indx)
+                                id = channels[ind_no]
+                                indx.append(id)
+                                no+=1
                          
                         else:
                             await ctx.send('Give an integer value...')
