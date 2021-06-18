@@ -289,7 +289,7 @@ class Bug(commands.Cog):
             if channel_ids:
                 channels = []
                 indx = []
-                no = 1
+                no = 0
                 for i in channel_ids:
                     ch = await self.bot.fetch_channel(int(i))
                     channels.append(ch)
@@ -333,7 +333,7 @@ class Bug(commands.Cog):
                                 await ctx.send('<:redtickbadge:854250345113714688> Index out of range!!\nSee the list of channels and try again!!')
                             else:
                                 ind_no = int(choice.content)-1
-                                id = channels[ind_no]
+                                id = channel_ids[ind_no]
                                 indx.append(id)
                                 no+=1
                          
