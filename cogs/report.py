@@ -201,7 +201,7 @@ class Bug(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator= True)
     @commands.guild_only()
-    async def addReportChannel(self, ctx):
+    async def addChannel(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
         tb = db['guild_data'] # table
@@ -275,7 +275,7 @@ class Bug(commands.Cog):
     @commands.command(aliases= ['rmReportChannel'])
     @commands.guild_only()
     @commands.has_permissions(administrator= True)
-    async def removeReportChannel(self, ctx):
+    async def removeChannel(self, ctx):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] # database
         tb = db['guild_data'] # table
@@ -295,13 +295,13 @@ class Bug(commands.Cog):
                     channels.append(ch)
                 msg = ''
                 for i, j in enumerate(channels, 1):
-                    msg += f'{i} - {j.guild.name} - {j.name}\n'
+                    msg += f'{i:^5} - {j.guild.name:^20} - {j.name:^20}\n'
                 
-                ch_msg = await ctx.send(f'All Channels\n```\nIndex - Guild Name - Channel Name\n{msg}\n```')
+                ch_msg = await ctx.send(f'Here are all channels\n```\n{"Index":^5} - {"Guild Name":^20} - {"Channel Name":^20}\n{msg}\n```')
                 await ch_msg.reply('Send the index number of the channel you want to remove or send \'cancel\' anytime if you want to cancel')
                 while True:
                     if no!=len(channel_ids):
-                        await ctx.send('Send the index number or send \'Done\' if you are done!!')
+                        await ctx.send('Send the index number or send \'Done\' if you are done!!\n(send \'all\' to remove all channel)')
                     try:
                         if no!=len(channel_ids):
                             choice = await self.bot.wait_for('message', check= check, timeout= 120)
@@ -320,6 +320,18 @@ class Bug(commands.Cog):
                             {
                                 '$set': {
                                     'report_channels': channel_ids
+                                }
+                            })
+                            await update_msg.edit(content= '<:greentickbadge:852127602373951519> Data Successfully Saved!!')
+                            break
+                        elif choice.content.lower().strip() == 'all':
+                            update_msg = await ctx.send('Wait... Data saving in database!!')
+                            tb.update_one({
+                                'guild_id': ctx.guild.id
+                            },
+                            {
+                                '$set': {
+                                    'report_channels': []
                                 }
                             })
                             await update_msg.edit(content= '<:greentickbadge:852127602373951519> Data Successfully Saved!!')
@@ -345,36 +357,201 @@ class Bug(commands.Cog):
         else:
             await ctx.send('This server hasn\'t enabled report command!!')
         
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator= True)
+    async def showChannels(ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] # database
+        tb = db['guild_data'] # table
+        guild_data = tb.find_one({'guild_id': ctx.guild.id})
+        if guild_data:
+            channel_ids = guild_data.get('report_channels')
+            if channel_ids:
+                channels = []
+                for i in channel_ids:
+                    ch = await self.bot.fetch_channel(int(i))
+                    channels.append(ch)
+                msg = ''
+                for i, j in enumerate(channels, 1):
+                    msg += f'{i:^5} - {j.guild.name:^20} - {j.name:^20}\n'
+                await ctx.send(f'Here are all channels\n```\n{"Index":^5} - {"Guild Name":^20} - {"Channel Name":^20}\n{msg}\n```')
+
+            else:
+                await ctx.send('No report channels found of this server in my database...')
+        else:
+            await ctx.send('This server hasn\'t enabled report command!!')
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator= True)
+    async def showQuestions(ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] # database
+        tb = db['guild_data'] # table
+        guild_data = tb.find_one({'guild_id': ctx.guild.id})
+        if guild_data:
+            questions = guild_data.get('report_questions')
+            if questions:
+                msg = ''
+                for i, j in enumerate(questions, 1):
+                    msg += f'{i:^5} - {j:>5}\n'
+                await ctx.send(f'Here are all questions\n```\n{"No":^5} - {"Question":>5}\n{msg}\n```')
+
+            else:
+                await ctx.send('No questions found of this server in my database...')
+        else:
+            await ctx.send('This server hasn\'t enabled report command!!')
+    
+    @commands.command(aliases= ['rmReportQuestions'])
+    @commands.guild_only()
+    @commands.has_permissions(administrator= True)
+    async def removeQuestion(ctx):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] # database
+        tb = db['guild_data'] # table
+        guild_data = tb.find_one({'guild_id': ctx.guild.id})
+        
+        def check(message):
+            return message.author.id == ctx.author.id
+        
+        if guild_data:
+            questions = guild_data.get('report_questions')
+            if questions:
+                indx = []
+                no = 0
+
+                msg = ''
+                for i, j in enumerate(questions, 1):
+                    msg += f'{i:^5} - {j:>5}\n'
+                ques_msg = await ctx.send(f'Here are all questions\n```\n{"No":^5} - {"Question":>5}\n{msg}\n```')
+                
+                await ques_msg.reply('Send the index number of the question you want to remove or send \'cancel\' anytime if you want to cancel')
+                while True:
+                    if no!=len(questions):
+                        await ctx.send('Send the index number or send \'Done\' if you are done!!\n(send \'all\' to remove all question)')
+                    try:
+                        if no!=len(questions):
+                            choice = await self.bot.wait_for('message', check= check, timeout= 120)
+                    except asyncio.TimeoutError:
+                        await ctx.send(f'Time Out!!\n{ctx.author.mention}, You took long time so the process is cancelled...')
+                        break
+                    
+                    else:
+                        if choice.content.lower().strip() == 'done' or no == len(questions):
+                            update_msg = await ctx.send('Wait... Data saving in database!!')
+                            for j in indx:
+                                questions.remove(j)
+                            tb.update_one({
+                                'guild_id': ctx.guild.id
+                            },
+                            {
+                                '$set': {
+                                    'report_questions': questions
+                                }
+                            })
+                            await update_msg.edit(content= '<:greentickbadge:852127602373951519> Data Successfully Saved!!')
+                            break
+                        elif choice.content.lower().strip() == 'all':
+                            update_msg = await ctx.send('Wait... Data saving in database!!')
+                            tb.update_one({
+                                'guild_id': ctx.guild.id
+                            },
+                            {
+                                '$set': {
+                                    'report_questions': []
+                                }
+                            })
+                            await update_msg.edit(content= '<:greentickbadge:852127602373951519> Data Successfully Saved!!')
+                            break
+                        elif choice.content.lower().strip() == 'cancle':
+                            await ctx.send('<:greentickbadge:852127602373951519> Process cancelled!!')
+                            break
+                        elif choice.content.isnumeric():
+                            ind = int(choice.content)
+                            if ind > len(questions):
+                                await ctx.send('<:redtickbadge:854250345113714688> Index out of range!!\nSee the list of questions carefully and try again!!')
+                            else:
+                                ind_no = int(choice.content)-1
+                                q = questions[ind_no]
+                                indx.append(q)
+                                no+=1
+                         
+                        else:
+                            await ctx.send('Give an integer value...')
+            else:
+                await ctx.send('No questions found of this server in my database...')
+        
+        else:
+            await ctx.send('This server hasn\'t enabled report command!!')
+
+    
     
     ###### Error Handling ######
     @report.error
     async def _error(self, ctx, error):
         log = await self.bot.fetch_channel(855048645174755358)
-        await log.send(f'Exception in report: {error}')
+        await log.send(f'Exception in **report command** > report: {error}')
         raise error
     @addQuestion.error
     async def _error(self, ctx, error):
-        if isinstance(error,commands.MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send('This command only work in server!!')
         else:
             log = await self.bot.fetch_channel(855048645174755358)
-            await log.send(f'Exception in addQuestion: {error}')
+            await log.send(f'Exception in **report command** > addQuestion: {error}')
             raise error
-    @addReportChannel.error
+    @addChannel.error
     async def _error(self, ctx, error):
-        if isinstance(error,commands.MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send('This command only work in server!!')
         else:
             log = await self.bot.fetch_channel(855048645174755358)
-            await log.send(f'Exception in addReportChannel: {error}')
+            await log.send(f'Exception in **report command** > addChannel: {error}')
             raise error
-    @removeReportChannel.error
+    @removeChannel.error
     async def _error(self, ctx, error):
-        if isinstance(error,commands.MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send('This command only work in server!!')
         else:
             log = await self.bot.fetch_channel(855048645174755358)
-            await log.send(f'Exception in RemoveReportChannel: {error}')
+            await log.send(f'Exception in **report comamnd** > removeChannel: {error}')
+            raise error
+    @removeQuestion.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send('This command only work in server!!')
+        else:
+            log = await self.bot.fetch_channel(855048645174755358)
+            await log.send(f'Exception in **report command** > removeQuestion: {error}')
+            raise error
+    @showQuestions.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send('This command only work in server!!')
+        else:
+            log = await self.bot.fetch_channel(855048645174755358)
+            await log.send(f'Exception in **report command** > showQuestions: {error}')
+            raise error
+    @showChannels.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send('This command only work in server!!')
+        else:
+            log = await self.bot.fetch_channel(855048645174755358)
+            await log.send(f'Exception in **report command** > showChannels: {error}')
             raise error
     
 
