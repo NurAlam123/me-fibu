@@ -92,7 +92,7 @@ class Command(commands.Cog):
             for i in attachments:
                 file = await i.to_file()
                 files.append(file)
-            original_message = await ctx.send(f'```\ndiscord.utils.escape_markdown(message_content)\n```', files= files)
+            original_message = await ctx.send(f'```\n{discord.utils.escape_markdown(message_content)}\n```', files= files)
             await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
             while True:
                 try:
@@ -103,7 +103,7 @@ class Command(commands.Cog):
                 else:
                     if len(replace_message.content) >=2000:
                         await ctx.send('Message character length is greater then 2000 or character limit\nTry again after reducing limit waiting for your messages for 5 min')
-                    elif replace_message.contnet.lower().strip() == 'cancel':
+                    elif replace_message.content.lower().strip() == 'cancel':
                         await ctx.send('Process cancelled!!')
                         break
                     elif replace_message.content.startswith('>'):
