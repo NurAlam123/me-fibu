@@ -92,7 +92,7 @@ class Command(commands.Cog):
             for i in attachments:
                 file = await i.to_file()
                 files.append(file)
-            original_message = await ctx.send(f'```\n{discord.utils.escape_markdown(message_content)}\n```', files= files)
+            original_message = await ctx.send(f'```\n{message_content}\n```', files= files)
             await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
             while True:
                 try:
@@ -109,13 +109,11 @@ class Command(commands.Cog):
                     elif replace_message.content.startswith('>'):
                         message_content = replace_message.content.lstrip('> ')
                         attach = replace_message.attachments
-                        replace_files = []
                         for i in attach:
-                            file = await i.to_file()
-                            replace_files.appned(file)
+                            message_content += f'{i.url}'
                         update = await ctx.send('Wait... Editing message!!')
-                        await message.edit(content= message_content, files= replace_files)
-                        await update.edit('<:greentickbadge:852127602373951519> Message successfully edited!!')
+                        await message.edit(content= message_content)
+                        await update.edit(content= '<:greentickbadge:852127602373951519> Message successfully edited!!')
                         break
                     else:
                         await ctx.send('Put > at the beginning of the message...')
