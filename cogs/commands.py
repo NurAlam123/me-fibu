@@ -81,7 +81,7 @@ class Command(commands.Cog):
             
 # edit message
     @commands.command()
-    @has_permissions(administrator= True, manage_guild= True, manage_messages= True)
+    @has_permissions(administrator= True, manage_guild= True)
     async def edit(self, ctx, message: discord.Message):
         if message.author.id != self.bot.user.id:
             await ctx.send('This is not my message so I can\'t edit it')
@@ -134,6 +134,7 @@ class Command(commands.Cog):
                 await ctx.send(f">>> {quote}\n	- *{search}*")
             except:
                 pass
+
 # delete message
     @commands.command()
     @has_permissions(administrator= True, manage_guild= True, manage_roles= True, manage_messages= True)
@@ -203,17 +204,30 @@ class Command(commands.Cog):
 
 ### Error Handling ###
     @clean.error
-    async def _error(self,ctx,error):
+    async def _error(self, ctx, error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @echo.error
-    async def _error(self,ctx,error):
+    async def _error(self, ctx, error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @echoin.error
-    async def _error(self,ctx,error):
+    async def _error(self, ctx, error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-
+    
+    @edit.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MessageNotFound):
+            await ctx.send(f'Not found any message that associated with the message id in this server!')
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send(error)
+        elif isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            arg_name = error.param.name
+            if arg_name == 'message':
+                await ctx.send(f'Please provide a message id that I have to edit!!')
+    
 def setup(bot):
     bot.add_cog(Command(bot))
