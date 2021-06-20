@@ -110,7 +110,7 @@ class Command(commands.Cog):
                         message_content = replace_message.content.lstrip('> ')
                         attach = replace_message.attachments
                         for i in attach:
-                            message_content += f'{i.url}'
+                            message_content += f'\n{i.url}'
                         update = await ctx.send('Wait... Editing message!!')
                         await message.edit(content= message_content)
                         await update.edit(content= '<:greentickbadge:852127602373951519> Message successfully edited!!')
