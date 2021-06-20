@@ -90,12 +90,14 @@ class Command(commands.Cog):
             await ctx.send('This is not my message so I can\'t edit it')
         else:
             message_content = message.content
+            message_content = discord.utils.escape_markdown(message_content, as_needed= True) # escape markdown
+            message_content = discord.utils.escape_mentions(message_content) # escape mentions
             attachments = message.attachments
             files = []
             for i in attachments:
                 file = await i.to_file()
                 files.append(file)
-            original_message = await ctx.send(f'```\n{message_content}\n```', files= files)
+            original_message = await ctx.send(f'{message_content}', files= files)
             await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.\n**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
             while True:
                 try:
