@@ -81,6 +81,7 @@ class Command(commands.Cog):
             
 # edit message
     @commands.command()
+    @has_permissions(administrator= True, manage_guild= True, manage_messages= True)
     async def edit(self, ctx, message: discord.Message):
         if message.author.id != self.bot.user.id:
             await ctx.send('This is not my message so I can\'t edit it')
@@ -91,7 +92,7 @@ class Command(commands.Cog):
             for i in attachments:
                 file = await i.to_file()
                 files.append(file)
-            original_message = await ctx.send(discord.utils.escape_markdown(message_content), files= files)
+            original_message = await ctx.send(f'```\ndiscord.utils.escape_markdown(message_content)\n```', files= files)
             await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
             while True:
                 try:
@@ -105,8 +106,8 @@ class Command(commands.Cog):
                     elif replace_message.contnet.lower().strip() == 'cancel':
                         await ctx.send('Process cancelled!!')
                         break
-                    elif replace.contnet.startswith('>'):
-                        message_content = replace_message.contnet.lstrip('> ')
+                    elif replace_message.content.startswith('>'):
+                        message_content = replace_message.content.lstrip('> ')
                         attach = replace_message.attachments
                         replace_files = []
                         for i in attach:
@@ -116,6 +117,8 @@ class Command(commands.Cog):
                         await message.edit(content= message_content, files= replace_files)
                         await update.edit('<:greentickbadge:852127602373951519> Message successfully edited!!')
                         break
+                    else:
+                        await ctx.send('Put > at the beginning of the message...')
         
 
 
