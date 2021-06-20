@@ -79,7 +79,44 @@ class Command(commands.Cog):
                 log_channel = await self.bot.fetch_channel(802766376719876107)
                 await log_channel.send(log_format, files= files)
             
-       
+# edit message
+    @commands.command()
+    async def edit(self, ctx, message: discord.Message):
+        if message.author.id != self.bot.user.id:
+            await ctx.send('This is not my message so I can\'t edit it')
+        else:
+            message_content = message.content
+            attachments = message.attachments
+            files = []
+            for i in attachments:
+                file = await i.to_file()
+                files.append(file)
+            original_message = await ctx.send(discord.utils.escape_markdown(message_content), files= files)
+            await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
+            while True:
+                try:
+                    replace_message = await self.bot.wait_for('message', check= lambda msg: msg.author.id == ctx.author.id, timeout= 300)
+                except asyncio.TimeoutError:
+                    await ctx.send('Time out...\nYou took long time')
+                    break
+                else:
+                    if len(replace_message.content) >=2000:
+                        await ctx.send('Message character length is greater then 2000 or character limit\nTry again after reducing limit waiting for your messages for 5 min')
+                    elif replace_message.contnet.lower().strip() == 'cancel':
+                        await ctx.send('Process cancelled!!')
+                        break
+                    elif replace.contnet.startswith('>'):
+                        message_content = replace_message.contnet.lstrip('> ')
+                        attach = replace_message.attachments
+                        replace_files = []
+                        for i in attach:
+                            file = await i.to_file()
+                            replace_files.appned(file)
+                        update = await ctx.send('Wait... Editing message!!')
+                        await message.edit(content= message_content, files= replace_files)
+                        await update.edit('<:greentickbadge:852127602373951519> Message successfully edited!!')
+                        break
+        
 
 
 #quotes
