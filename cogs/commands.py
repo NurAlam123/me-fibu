@@ -79,7 +79,45 @@ class Command(commands.Cog):
                 log_channel = await self.bot.fetch_channel(802766376719876107)
                 await log_channel.send(log_format, files= files)
             
-       
+# edit message
+    @commands.command()
+    @has_permissions(administrator= True, manage_guild= True)
+    async def edit(self, ctx, message: discord.Message):
+        if message.author.id != self.bot.user.id:
+            await ctx.send('This is not my message so I can\'t edit it')
+        else:
+            message_content = message.content
+            attachments = message.attachments
+            files = []
+            for i in attachments:
+                file = await i.to_file()
+                files.append(file)
+            original_message = await ctx.send(f'```\n{message_content}\n```', files= files)
+            await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
+            while True:
+                try:
+                    replace_message = await self.bot.wait_for('message', check= lambda msg: msg.author.id == ctx.author.id, timeout= 300)
+                except asyncio.TimeoutError:
+                    await ctx.send('Time out...\nYou took long time')
+                    break
+                else:
+                    if len(replace_message.content) >=2000:
+                        await ctx.send('Message character length is greater then 2000 or character limit\nTry again after reducing limit waiting for your messages for 5 min')
+                    elif replace_message.content.lower().strip() == 'cancel':
+                        await ctx.send('Process cancelled!!')
+                        break
+                    elif replace_message.content.startswith('>'):
+                        message_content = replace_message.content.lstrip('> ')
+                        attach = replace_message.attachments
+                        for i in attach:
+                            message_content += f'\n{i.url}'
+                        update = await ctx.send('Wait... Editing message!!')
+                        await message.edit(content= message_content)
+                        await update.edit(content= '<:greentickbadge:852127602373951519> Message successfully edited!!')
+                        break
+                    else:
+                        await ctx.send('Put > at the beginning of the message...')
+        
 
 
 #quotes
@@ -96,6 +134,7 @@ class Command(commands.Cog):
                 await ctx.send(f">>> {quote}\n	- *{search}*")
             except:
                 pass
+
 # delete message
     @commands.command()
     @has_permissions(administrator= True, manage_guild= True, manage_roles= True, manage_messages= True)
@@ -165,17 +204,30 @@ class Command(commands.Cog):
 
 ### Error Handling ###
     @clean.error
-    async def _error(self,ctx,error):
+    async def _error(self, ctx, error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @echo.error
-    async def _error(self,ctx,error):
+    async def _error(self, ctx, error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
     @echoin.error
-    async def _error(self,ctx,error):
+    async def _error(self, ctx, error):
         if isinstance(error,commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-
+    
+    @edit.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MessageNotFound):
+            await ctx.send(f'Not found any message that associated with the message id in this server!')
+        elif isinstance(error, commands.NoPrivateMessage):
+            await ctx.send(error)
+        elif isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            arg_name = error.param.name
+            if arg_name == 'message':
+                await ctx.send(f'Please provide a message id that I have to edit!!')
+    
 def setup(bot):
     bot.add_cog(Command(bot))
