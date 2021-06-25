@@ -6,7 +6,7 @@ import os
 
 class Info(commands.Cog):
 	def __init__(self,client):
-		self.client = client
+		self.bot = client
 
 	@commands.group(case_insensitive=True)
 	async def show(self,ctx):
@@ -55,7 +55,7 @@ class Info(commands.Cog):
 					
 				else:
 					pass
-				msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
+				msg.set_author(name=f"{self.bot.user.name}",icon_url=f"{self.bot.user.avatar_url}")
 				msg.set_footer(text="Programming Hero ")
 				await ctx.send(embed=msg)
 			
@@ -71,7 +71,7 @@ class Info(commands.Cog):
 				text = len(guild.text_channels)
 				voice = len(guild.voice_channels)
 				total = text + voice
-				owner = self.client.get_user(ctx.guild.owner_id)
+				owner = self.bot.get_user(ctx.guild.owner_id)
 				
 				msg = discord.Embed(title="Information about",
 							color=0xffdf08,
@@ -86,13 +86,14 @@ class Info(commands.Cog):
 				msg.add_field(name="Channels",value=total, inline= False)
 				msg.add_field(name="Text channels",value=text, inline= False)
 				msg.add_field(name="Voice channels",value=voice, inline= False)
-				msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
+				msg.set_author(name=f"{self.bot.user.name}",icon_url=f"{self.bot.user.avatar_url}")
 				msg.set_footer(text=f"Programming Hero ")
 				await ctx.send(embed=msg)
 
 #our team **need more improvement**
 	@show.command()
 	async def your(self,ctx,arg):
+			version = self.bot.version
 			if arg.lower()=="team":
 				await ctx.message.add_reaction("⚒️")
 				msg = discord.Embed(title="Developer information",
@@ -103,7 +104,7 @@ class Info(commands.Cog):
 				msg.add_field(name="Tamim Vaiya [Tamim Vaiya#2029]",value="Gave suggestions to my developers.", inline= False)
 				msg.add_field(name="Rishikesh [Rishikesh#2034]",value="Worked on my development.", inline= False)
 				msg.add_field(name="Soren_Blank [Soren_Blank#4853]",value="Worked on my development.", inline= False)
-				msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
+				msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
 				msg.set_footer(text=f"Programming Hero ")
 				await ctx.send(embed=msg)
 #fibu info
@@ -112,15 +113,15 @@ class Info(commands.Cog):
 							description="Hey there! I am Fibu. Your friend and a friendly bot. I am from Programming Hero",
 							color=0xffdf08,
 							timestamp=time.now())
-				msg.set_thumbnail(url=f"{self.client.user.avatar_url}")
-				msg.add_field(name="Version",value="0.2", inline= False)
+				msg.set_thumbnail(url=f"{self.bot.user.avatar_url}")
+				msg.add_field(name="Version",value=f"{self.bot.version}", inline= False)
 				msg.add_field(name="Prefix",value="```!fibu```", inline= False)
 				msg.add_field(name="Released on",value="Jan 1, 2021", inline= False)
 				msg.add_field(name="Website",value="[Programming Hero](https://www.programming-hero.com/)", inline= False)
 				msg.add_field(name="Application",value="[Android App](https://is.gd/z11RUg)\n[Iphone Version](https://is.gd/eVH92i)", inline= False)
 				msg.add_field(name="Social Media",value="[Facebook](https://m.facebook.com/programmingHero/)\n[Instagram](https://is.gd/6m3hgd)\n[Twitter](https://twitter.com/ProgrammingHero?s=09)\n[Youtube](https://is.gd/EulQLJ)\n[Pinterest](https://www.pinterest.com/programminghero1/)", inline= False)
 				msg.add_field(name="Team",value="**1. Nur Alam,\n2. Tamim Vaiya,\n3. Rishikesh,\n4. Soren_Blank**\nFor more info type ```!fibu show your team```", inline= False)
-				msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
+				msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
 				msg.set_footer(text=f"Programming Hero ")
 				await ctx.send(embed=msg)
 #user info
@@ -152,7 +153,7 @@ class Info(commands.Cog):
 				msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}\n```", inline=False)			
 		else:
 			pass
-		msg.set_author(name=f"{self.client.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.client.user.avatar_url}")
+		msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
 		msg.set_footer(text="Programming Hero ")
 		await ctx.send(embed=msg)
 #user av	
@@ -161,8 +162,8 @@ class Info(commands.Cog):
 		avatar = discord.Embed(title="Avatar",
 						color=0xffdf08,
 						timestamp=time.now())
-		avatar.set_author(name=f"{self.client.user.name}",
-						icon_url=self.client.user.avatar_url)
+		avatar.set_author(name=f"{self.bot.user.name}",
+						icon_url=self.bot.user.avatar_url)
 		avatar.set_footer(text="Programming Hero ")
 		avatar.set_image(url=member.avatar_url)
 		await ctx.send(embed=avatar)
@@ -181,7 +182,7 @@ class Info(commands.Cog):
 			msg.add_field(name="Members",value=f"{ctx.guild.member_count}", inline= False)
 			msg.add_field(name="Humans",value=f"{(ctx.guild.member_count)-bots}", inline= False)
 			msg.add_field(name="Bots",value=f"{bots}", inline= False)
-			msg.set_author(name=f"{self.client.user.name}",icon_url=f"{self.client.user.avatar_url}")
+			msg.set_author(name=f"{self.bot.user.name}",icon_url=f"{self.bot.user.avatar_url}")
 			msg.set_footer(text=f"Programming Hero ")
 			await ctx.send(embed=msg)
 		

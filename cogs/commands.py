@@ -82,18 +82,23 @@ class Command(commands.Cog):
 # edit message
     @commands.command()
     @has_permissions(administrator= True, manage_guild= True)
-    async def edit(self, ctx, message: discord.Message):
+    async def edit(self, ctx, channel: typing.Optional[discord.TextChannel], message_id: int):
+        if not channel:
+            channel = ctx.channel
+        message = await channel.fetch_message(message_id)
         if message.author.id != self.bot.user.id:
             await ctx.send('This is not my message so I can\'t edit it')
         else:
             message_content = message.content
+            message_content = discord.utils.escape_markdown(message_content, as_needed= True) # escape markdown
+            message_content = discord.utils.escape_mentions(message_content) # escape mentions
             attachments = message.attachments
             files = []
             for i in attachments:
                 file = await i.to_file()
                 files.append(file)
-            original_message = await ctx.send(f'```\n{message_content}\n```', files= files)
-            await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
+            original_message = await ctx.send(f'{message_content}', files= files)
+            await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.\n**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
             while True:
                 try:
                     replace_message = await self.bot.wait_for('message', check= lambda msg: msg.author.id == ctx.author.id, timeout= 300)
@@ -228,6 +233,14 @@ class Command(commands.Cog):
             arg_name = error.param.name
             if arg_name == 'message':
                 await ctx.send(f'Please provide a message id that I have to edit!!')
-    
+            if arg_name == 'channel':
+                await ctx.send(f'Please provide a channel where the message is!!')
+
+        log = await self.bot.fetch_channel(855048645174755358)
+        await log.send(f'Error in **Edit** command:\n{error}')
+        raise error
+                
+                
+                
 def setup(bot):
     bot.add_cog(Command(bot))
