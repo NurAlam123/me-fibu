@@ -117,6 +117,7 @@ class UsersDm(commands.Cog):
                     else: pass
 
     @commands.command()
+    @commands.dm_only()
     async def msg(self, ctx, index_no: int, *, message):
         if ctx.author.id in self.bot.TEAM:
             users, Msg = self.db()
