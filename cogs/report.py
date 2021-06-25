@@ -80,15 +80,15 @@ class Bug(commands.Cog):
                             submit_em = discord.Embed(title= 'Do you want to submit this bug?', description= '**React below:**\n<:greentickbadge:852127602373951519> = \'Yes\'\n<:redtickbadge:854250345113714688> = \'No\'', color= 0x7700FE)
                             submit = await ctx.author.send(embed= submit_em)
                             
-                            emojis = ['<:greentickbadge:852127602373951519>', '<:redtickbadge:854250345113714688> ']
+                            emojis = ['<:greentickbadge:852127602373951519>', '<:redtickbadge:854250345113714688>']
                             for emoji in emojis:
                                 await submit.add_reaction(emoji)
                             ## reaction check
                             def reaction_check(reaction, user):
-                                return user.id == ctx.author.id and reaction.message.id == submit.id and reaction.emoji in emojis
+                                return user.id == ctx.author.id and reaction.message.id == submit.id
             
                             try:
-                                reaction,user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
+                                reaction, user = await self.bot.wait_for('reaction_add', check= reaction_check, timeout= 60)
                             except:
                                 await ctx.author.send('Oops!! You didn\'t respond in time :(')
                                 ## remove user
