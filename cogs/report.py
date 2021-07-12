@@ -124,7 +124,7 @@ class Report(commands.Cog):
         return embed
     
     def full_report_embed(self, user, answers):
-        embed = hv_embed(user, answers)
+        embed = self.hv_embed(user, answers)
         platform = user["platform"]
         device = user["device"]
         embed_1 = embed.copy()
@@ -309,7 +309,7 @@ class Report(commands.Cog):
                                 if option_value == "content":
                                     ## question 2.1
                                     location = "Seems like, bug was trying to learn programming from the contents. You have to give us the location of that bug to kill it properly.\n**__For Example:__**\n```\nGalaxy Name > Fundamentals\nModule Name > Functions\nLesson Name > function usage\nPage Number > 2/9\n```\nNow, copy below text, fill up properly like that given example and send it here!!"
-                                    embed = build_embed(location)
+                                    embed = self.build_embed(location)
                                     location_format = "Galaxy name > \nModule name > \nLesson name> \nPage Number > "
                                     loc_msg = await ctx.author.send(embed = embed)
                                     await loc_msg.reply(f"```\n{location_format}\n```")
@@ -486,7 +486,7 @@ class Report(commands.Cog):
                                         ]
                                         
                                         ### preview
-                                        preview_embed = full_report_embed(user_info, answers)
+                                        preview_embed = self.full_report_embed(user_info, answers)
                                         preview = await ctx.author.send(content = "Here is the preview of your report!!", embed = preview_embed)
                                         
                                         ### submit
