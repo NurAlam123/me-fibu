@@ -539,4 +539,4 @@ class Report(commands.Cog):
             
     
 def setup(bot):
-    bot.addiscordog(Report(bot))
+    bot.add_cog(Report(bot))
