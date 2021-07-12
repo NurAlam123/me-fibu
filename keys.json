@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "storeappreports",
+  "private_key_id": "32ddcb336f837b1a60259cee84c7564787f9c0d6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDWlpIsS9ofogdn\nkghTVLZsZXLHg00xUvm0PIPx+NnpIkxwztf1fbUKwu7Glu7hORu+PH3/x6BVQQg6\na6REqQ3JfA1m9R6dZ4ovnVoJAJ6kWOPFO6kRYq0thpCIJ2avxmdX2gFicxHiUSLP\nPs7BzqIeKSfEwf0I/gVcfT3Yw1rYZ5O08kAS2Y1KZzrb9Ay6Z2Mx0elSvElAeVE8\ns5xfvAwwbZXnG+YXZwVlg26K8IXfABzZxvmcW67EMYFvJqDKP3T5HQ/zk1Pc3EQB\nRk5/SxId6VAzfVwoB3EQt2xjLU2lYy0C1Whxt4XebuR/Jrz+rBqHgYIR+HSksTpE\n2tvPEUALAgMBAAECggEAGAaYa8s7qx+vZ+I1emxZVxOYtqE11a2Y9Zwc7cz99kNN\nKbLkV8EbsbkXljaJ8mo8IqA6lJZw63qyMCWjKROAeVb2rS4JSnha7sUrB9JWRh0J\ntiiINRZw61BOAwszomnlYjRaGVVm4t77YGwuJrblodjbx1os5C0vbnvl88y+Rszw\nAHVXFZdP7bdHuEnKxep4OuvrFxPq8XUfxH+j7WFTbHf+Ys3m5zTATfUMcO5teZxH\n5thdTiCHsefMxEHzAXSQGYmK5i4ZPuinfvgGJfuJTXNt3MCgYUHDD/TPg5Hc2ae3\nqxxlKP6sKlxTodfiMzHWl8eIe8Xp3U2VTumYQn5vEQKBgQD+uxCzh0DMfQNk3iFM\nNGO01q5xUc5GS3zsYMZ7v7Y9Gr5QsPCrKC7ArTpYJpXCxKJ2W4H21BYSRlVtLhOZ\n8X7unFyZtAF0c/iRs9BSU4+MGr3SgboS/h4oa95cPJrYahOqT6t9ulPxIoNZkPVW\n+XpHlAp2qZolneW1apJqsW9uIwKBgQDXqEzD/0LrxbUNfaj3E3SWMxTWpQKMaoXY\nwpg6msrOxyLZbMVavMKGeLfPQU7N8LqoI+YtwmefRHxbSP4GvVJN7rndSJ4dhcfU\nadSQSKeIuPW3iHv+DYq/hNAmbl7+kc11Uf9DFj61vMZu6LiCKTK9EOgP+qFajjF0\nEM4vxzZg+QKBgQC9Ya5lCuVuInNnho4S7dBDHmjK7xsAwBa8Vqa6UinW/A8KRsJn\nPZSkwyVhbC5jg3WVsSrKq5tNMuVIKr1/8j+AfteJnn6GacIf8SOsUVujui3uV2xT\nuoIJY0kKIjStORAtytWgv+qwmAw3hsIgS5JRrQqqdiWYWe/yFK2OjSRfKQKBgQCD\na7qsTmh3ydoVyJgpSZ/o0GRIkfJFo7zBZYTjYeVpsY0ZNuHl89YPoI1TLhdaBPOa\n95WUGT6QnmmyL38umD0J5Qs7QL+qehZW6c9xxfTiquSC3hfBsHr3T3aRlP0q4at1\nbWzDc1Dv64R5njSijXywHxdsdW3TA4g7lOoxz5Lh8QKBgAjLwVB99ldz2eTCTQLi\nKcJfVmSPm7cHu2oMG3fBCsTo/70O+nyyzsnMORF5//GtG1FrNJl5AixqU7ihxsLh\ntNVQACC5zTgNR8AkdhqTpTR6+Btjoy73wTmZ9/mKlsrEoTJf8zjePHjt2d6HPXfA\ndt1w4cDqpULw5ue5aHtYiNPI\n-----END PRIVATE KEY-----\n",
+  "client_email": "fibu-report-holder@storeappreports.iam.gserviceaccount.com",
+  "client_id": "115798799142491558915",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fibu-report-holder%40storeappreports.iam.gserviceaccount.com"
+}
