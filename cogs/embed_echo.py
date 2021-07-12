@@ -144,7 +144,7 @@ class EmbedEcho(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(administrator= True, manage_messages= True, manage_guild= True)
     async def editEmbed(self, ctx, channel: typing.Optional[discord.TextChannel], message_id: int):
-       if not channel:
+        if not channel:
             channel = ctx.channel
         message = await channel.fetch_message(message_id) 
         
