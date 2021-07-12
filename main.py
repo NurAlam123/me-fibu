@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
+import discord_components as d_c
 
 import time
 from datetime import datetime
@@ -24,6 +25,8 @@ intents.members = True
 
 bot = commands.Bot(command_prefix= prefixes, intents= intents, case_insensitive= True)
 bot.remove_command("help")
+
+d_c.DiscordComponents(bot)
 
 bot.TEAM = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
 bot.version = 'v0.3.7'
