@@ -227,7 +227,7 @@ class Report(commands.Cog):
                     
                     platform_msg = await ctx.author.send(embed = embed, components = options)
                     try:
-                        platform_select = await bot.wait_for("button_click", timeout = 180)
+                        platform_select = await self.bot.wait_for("button_click", timeout = 180)
                     except asyncio.TimeoutError:
                         await platform_msg.edit(components = [])
                         await ctx.author.send("You didn't respond in time!!")
@@ -520,7 +520,7 @@ class Report(commands.Cog):
                                                     #bug_ch = [634995781404983296, 826683797377384448]
                                                     bug_ch = [856964979667501066, 856549332286570507]
                                                     for i in content_ch:
-                                                        channel = await bot.fetch_channel(i)
+                                                        channel = await self.bot.fetch_channel(i)
                                                         await channel.send(embed = normal_em)
                                                 
                                                 await main_ch.send(embed = main_em)
