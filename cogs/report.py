@@ -3,6 +3,7 @@ from discord.ext import commands
 import discord_components as d_c
 
 import pymongo
+import os
 import asyncio
 import pygsheets
 
@@ -143,7 +144,7 @@ class Report(commands.Cog):
         db = con_fibu["fibu"] #database
         other_tb = db["other_data"] #table
         other_data = other_tb.find_one({"name": "ignore_dm"})
-        if ctx.guild.id != 550676428040044574:
+        if ctx.guild.id != 839126064621027329:
             pass
         else:
             if other_data:
