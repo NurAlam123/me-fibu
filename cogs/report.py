@@ -6,7 +6,7 @@ import pymongo
 import asyncio
 import pygsheets
 
-g_user = pygsheets.authorize(service_file= 'credentials.json')
+g_user = pygsheets.authorize(service_file= 'keys.json')
 
 ID = '1XuQL65cSJR4oGbvWADF-DpEkIIdycEcVw3C9U8oZoic'
 
@@ -31,7 +31,7 @@ class Report(commands.Cog):
         sl = length
         
         row = length+1
-        cols = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+        cols = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
         
         ### collect data
         data = []
@@ -96,8 +96,7 @@ class Report(commands.Cog):
         user_id = user["id"]
         
         ### answers
-        bug_in = answers["bug_in"] # question 2
-        
+        bug_in = answers["bug_in"]
         live_bug = answers["see_bug"]
         screenshots = answers["screenshots"]
         
