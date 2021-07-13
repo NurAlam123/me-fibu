@@ -515,16 +515,16 @@ class Report(commands.Cog):
                                                 main_ch = await self.bot.fetch_channel(848863022905688074)
                                                 normal_em = self.hv_embed(user_info, answers)
                                                 main_em = self.full_report_embed(user_info, answers)
-                                                if answers["bug_in"] != "Content":
+                                                if answers["bug_in"] == "Content":
                                                     #content_ch = [557639363807150092, 826686813103587341]
                                                     content_ch = [846398100447821824, 843870747331526708]
-                                                    for i in bug_ch:
+                                                    for i in content_ch:
                                                         channel = await self.bot.fetch_channel(i)
                                                         await channel.send(embed = normal_em)
                                                 else:
                                                     #bug_ch = [634995781404983296, 826683797377384448]
                                                     bug_ch = [856964979667501066, 856549332286570507]
-                                                    for i in content_ch:
+                                                    for i in bug_ch:
                                                         channel = await self.bot.fetch_channel(i)
                                                         await channel.send(embed = normal_em)
                                                 
