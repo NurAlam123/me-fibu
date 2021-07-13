@@ -38,7 +38,7 @@ class Report(commands.Cog):
         data = []
         
         ### user info
-        _user = user["user"]
+        _user = str(user["user"])
         user_id = user["id"]
         platform = user["platform"]
         device = user["device"]
@@ -101,7 +101,7 @@ class Report(commands.Cog):
         live_bug = answers["see_bug"]
         screenshots = answers["screenshots"]
         
-        embed = discord.Embed(title= "Bug Report-{sl}", description= f"A bug reported by <@{user_id}>\n**User**: {_user}\n**Name:** {user_name}\n**User ID:** {user_id}", color = 0xFDDD0B)
+        embed = discord.Embed(title= f"Bug Report-{sl}", description= f"A bug reported by <@{user_id}>\n\n**User**: {_user}\n**Name:** {user_name}\n**User ID:** {user_id}", color = 0xFDDD0B)
     
         embed.add_field(name = "Bug Found in?", value = f"{bug_in}", inline = False)
         
@@ -505,7 +505,12 @@ class Report(commands.Cog):
                                         else:
                                             value = submit.component.id
                                             await sub_msg.edit(components = [])
-                                            if value == "yes":
+                                            if value == "no":
+                                                await ctx.author.send("Ok... No problem!!")
+                                                if ctx.author.id in ids:
+                                                    ids.remove(ctx.author.id)
+                                                other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                            elif value == "yes":
                                                 self.store_data(user_info, answers) ## storing data
                                                 main_ch = await self.bot.fetch_channel(848863022905688074)
                                                 normal_em = self.hv_embed(user_info, answers)
@@ -535,7 +540,7 @@ class Report(commands.Cog):
             await ctx.send('This command only work in server!!')
         else:
             log = await self.bot.fetch_channel(855048645174755358)
-            await log.send(f'Exception in **report command** > report: {error}')
+            await log.send(f'Exception in **report** command > report:\n{error}')
             raise error
             
     
