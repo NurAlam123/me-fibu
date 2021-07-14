@@ -469,6 +469,9 @@ class Report(commands.Cog):
                                                     if user_ans.attachments:
                                                         for i in user_ans.attachments:
                                                             content += f"\n{i.url}"
+                                                    
+                                                    await user_ans.add_reaction("<:yellowtickbadge:852127577660981258>")
+                                                    await ctx.author.send("Type **'Done'** to finish this process or attachment another screenshot or screen record!!")
                                                    
                                         options = [
                                             [
@@ -529,6 +532,7 @@ class Report(commands.Cog):
                                                         await channel.send(embed = normal_em)
                                                 
                                                 await main_ch.send(embed = main_em)
+                                                await ctx.author.send("Your report successfully submitted!!\nAgain thank you for reporting this bug/error/issue.")
                                                 
                                                 if ctx.author.id in ids:
                                                     ids.remove(ctx.author.id)
