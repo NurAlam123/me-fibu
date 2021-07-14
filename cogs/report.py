@@ -14,6 +14,7 @@ ID = '1XuQL65cSJR4oGbvWADF-DpEkIIdycEcVw3C9U8oZoic'
 class Report(commands.Cog):
     def __init__(self, client):
         self.bot = client
+        self.guild_id = 550676428040044574
 
     def build_embed(self, question, no = None):
         em = discord.Embed(color= 0xFDDD0B)
@@ -101,7 +102,7 @@ class Report(commands.Cog):
         live_bug = answers["see_bug"]
         screenshots = answers["screenshots"]
         
-        embed = discord.Embed(title= f"Bug Report-{sl}", description= f"A bug reported by <@{user_id}>\n\n**User**: {_user}\n**Name:** {user_name}\n**User ID:** {user_id}", color = 0xFDDD0B)
+        embed = discord.Embed(title= f"Bug Report-{sl}", description= f"A bug reported by <@{user_id}>\n\n**----- User information -----**\n**User**: {_user}\n**Name:** {user_name}\n**User ID:** {user_id}", color = 0xFDDD0B)
     
         embed.add_field(name = "Bug Found in?", value = f"{bug_in}", inline = False)
         
@@ -128,7 +129,7 @@ class Report(commands.Cog):
         platform = user["platform"]
         device = user["device"]
         embed_1 = embed.copy()
-        embed_1.insert_field_at(0, name = "Device information", value = f"**Operating system:** {platform}\n{device}", inline = False)
+        embed_1.insert_field_at(0, name = "----- Device information -----", value = f"**Operating system:** {platform}\n{device}\n----------", inline = False)
         if "app_crash_details" in answers:
             crash_details = answers["app_crash_details"] # app crash details
             embed_1.insert_field_at(2, name = "App Crash Details", value = f"{crash_details}", inline = False)
@@ -144,7 +145,7 @@ class Report(commands.Cog):
         db = con_fibu["fibu"] #database
         other_tb = db["other_data"] #table
         other_data = other_tb.find_one({"name": "ignore_dm"})
-        if ctx.guild.id != 839126064621027329:
+        if ctx.guild.id != self.guild_id:
             pass
         else:
             if other_data:
@@ -403,7 +404,7 @@ class Report(commands.Cog):
                                 
                                 if bug_found:
                                     ## question 3
-                                    question_3 = "Do you want to describe the bug?\nIf yes then type 'Yes'\nIf no then type 'No' to skip!!"
+                                    question_3 = "Do you want to describe the bug?\nIf yes then type and send **Yes**\nIf no then type and send **No** to skip!!"
                                     embed = self.build_embed(question_3, 3)
                                     await ctx.author.send(embed = embed)
                                     try:
