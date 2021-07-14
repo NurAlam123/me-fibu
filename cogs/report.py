@@ -260,7 +260,7 @@ class Report(commands.Cog):
                                 ids.remove(ctx.author.id)
                             other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                         else:
-                            user_info["device"] = device_info.content.replace("Device Name:", "**Device Name:**").replace("Model Number:", "**Model Number:**").replace("Android Version:", "**Android Version:**").replace("iOS Version:", "**iOS Version:**").replace("App Version:", "**App Version:**").replace("Ram (Optional):", "**Ram:**").replace("Rom (Optional):", "**Ram:**") # store user device information
+                            user_info["device"] = device_info.content.replace("Device Name:", "**Device Name:**").replace("Model Number:", "**Model Number:**").replace("Android Version:", "**Android Version:**").replace("iOS Version:", "**iOS Version:**").replace("App Version:", "**App Version:**").replace("Ram (Optional):", "**Ram:**").replace("Rom (Optional):", "**Rom:**") # store user device information
                             
                             ## question 2
                             question_2 = "Where was this bug sucking your happiness?"
@@ -449,6 +449,7 @@ class Report(commands.Cog):
                                         embed = self.build_embed(text)
                                         await ctx.author.send(embed = embed)
                                         content = ""
+                                        has_ss = False
                                         while True:
                                             try:
                                                 user_ans = await self.bot.wait_for("message", check = message_check, timeout = 180)
@@ -457,11 +458,13 @@ class Report(commands.Cog):
                                                 if ctx.author.id in ids:
                                                     ids.remove(ctx.author.id)
                                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                                has_ss = False
                                                 break
                                             else:
                                                 
                                                 if user_ans.content.lower().strip() == "done":
                                                     answers["screenshots"] = content
+                                                    has_ss = True
                                                     break
                                                 else:
                                                     if user_ans.content:
@@ -471,72 +474,73 @@ class Report(commands.Cog):
                                                             content += f"\n{i.url}"
                                                     
                                                     await user_ans.add_reaction("<:yellowtickbadge:852127577660981258>")
-                                                    await ctx.author.send("Type **'Done'** to finish this process or attachment another screenshot or screen record!!")
+                                                    await ctx.author.send("Type and send **Done** to finish this process or attach another screenshot or screen record!!")
+                                                    has_ss = True
                                                    
-                                        options = [
-                                            [
-                                                d_c.Button(
-                                                    label = "Yes",
-                                                    id = "yes",
-                                                    style = 3
-                                                ),
-                                                d_c.Button(
-                                                    label = "No",
-                                                    id = "no",
-                                                    style = 4
-                                                )
+                                        if has_ss:
+                                            options = [
+                                                [
+                                                    d_c.Button(
+                                                        label = "Yes",
+                                                        id = "yes",
+                                                        style = 3
+                                                    ),
+                                                    d_c.Button(
+                                                        label = "No",
+                                                        id = "no",
+                                                        style = 4
+                                                    )
+                                                ]
                                             ]
-                                        ]
-                                        
-                                        ### preview
-                                        preview_embed = self.full_report_embed(user_info, answers)
-                                        preview = await ctx.author.send(content = "Here is the preview of your report!!", embed = preview_embed)
-                                        
-                                        ### submit
-                                        text = "Do you want to submit this bug?"
-                                        
-                                        embed = self.build_embed(text)
-                                        sub_msg = await ctx.author.send(embed = embed, components = options)
-                                        try:
-                                            submit = await self.bot.wait_for("button_click", timeout = 180)
-                                        except asyncio.TimeoutError:
-                                            await ctx.send("Time out!!\nYou didn't respond in time!!")
-                                            await sub_msg.edit(components = [])
-                                            if ctx.author.id in ids:
-                                                ids.remove(ctx.author.id)
-                                            other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
-                                        else:
-                                            value = submit.component.id
-                                            await sub_msg.edit(components = [])
-                                            if value == "no":
-                                                await ctx.author.send("Ok... No problem!!")
+                                            
+                                            ### preview
+                                            preview_embed = self.full_report_embed(user_info, answers)
+                                            preview = await ctx.author.send(content = "Here is the preview of your report!!", embed = preview_embed)
+                                            
+                                            ### submit
+                                            text = "Do you want to submit this bug?"
+                                            
+                                            embed = self.build_embed(text)
+                                            sub_msg = await ctx.author.send(embed = embed, components = options)
+                                            try:
+                                                submit = await self.bot.wait_for("button_click", timeout = 180)
+                                            except asyncio.TimeoutError:
+                                                await ctx.send("Time out!!\nYou didn't respond in time!!")
+                                                await sub_msg.edit(components = [])
                                                 if ctx.author.id in ids:
                                                     ids.remove(ctx.author.id)
                                                 other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
-                                            elif value == "yes":
-                                                self.store_data(user_info, answers) ## storing data
-                                                main_ch = await self.bot.fetch_channel(848863022905688074)
-                                                normal_em = self.hv_embed(user_info, answers)
-                                                main_em = self.full_report_embed(user_info, answers)
-                                                if answers["bug_in"] == "Content":
-                                                    #content_ch = [557639363807150092, 826686813103587341]
-                                                    content_ch = [846398100447821824, 843870747331526708]
-                                                    for i in content_ch:
-                                                        channel = await self.bot.fetch_channel(i)
-                                                        await channel.send(embed = normal_em)
-                                                else:
-                                                    #bug_ch = [634995781404983296, 826683797377384448]
-                                                    bug_ch = [856964979667501066, 856549332286570507]
-                                                    for i in bug_ch:
-                                                        channel = await self.bot.fetch_channel(i)
-                                                        await channel.send(embed = normal_em)
-                                                
-                                                await main_ch.send(embed = main_em)
-                                                await ctx.author.send("Your report successfully submitted!!\nAgain thank you for reporting this bug/error/issue.")
-                                                
-                                                if ctx.author.id in ids:
-                                                    ids.remove(ctx.author.id)
-                                                other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                            else:
+                                                value = submit.component.id
+                                                await sub_msg.edit(components = [])
+                                                if value == "no":
+                                                    await ctx.author.send("Ok... No problem!!")
+                                                    if ctx.author.id in ids:
+                                                        ids.remove(ctx.author.id)
+                                                    other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
+                                                elif value == "yes":
+                                                    self.store_data(user_info, answers) ## storing data
+                                                    main_ch = await self.bot.fetch_channel(807983704852398110)
+                                                    normal_em = self.hv_embed(user_info, answers)
+                                                    main_em = self.full_report_embed(user_info, answers)
+                                                    if answers["bug_in"] == "Content":
+                                                        content_ch = [557639363807150092, 826686813103587341]
+                                                        
+                                                        for i in content_ch:
+                                                            channel = await self.bot.fetch_channel(i)
+                                                            await channel.send(embed = normal_em)
+                                                    else:
+                                                        bug_ch = [634995781404983296, 826683797377384448]
+                                                        for i in bug_ch:
+                                                            channel = await self.bot.fetch_channel(i)
+                                                            await channel.send(embed = normal_em)
+                                                    
+                                                    await main_ch.send(embed = main_em)
+                                                    await ctx.author.send("Your report successfully submitted!!\nAgain thank you for reporting this bug/error/issue.")
+                                                    
+                                                    if ctx.author.id in ids:
+                                                        ids.remove(ctx.author.id)
+                                                    other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
 
     @report.error
     async def _error(self, ctx, error):
