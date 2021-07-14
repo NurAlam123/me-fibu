@@ -29,7 +29,7 @@ class Challenge(commands.Cog):
             
             total_xp = old_xp + xp
             if total_xp >= old_need_xp:
-                level = int(total_xp/100) + old_level
+                level = int(total_xp/100)
                 need_xp = (level+1)*100
                 _xp = total_xp - ((level-old_level)*100)
             else:
