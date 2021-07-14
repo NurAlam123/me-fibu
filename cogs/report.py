@@ -128,7 +128,7 @@ class Report(commands.Cog):
         platform = user["platform"]
         device = user["device"]
         embed_1 = embed.copy()
-        embed_1.insert_field_at(0, name = "Device information", value = f"Operating system: {platform}\n{device}", inline = False)
+        embed_1.insert_field_at(0, name = "Device information", value = f"**Operating system:** {platform}\n{device}", inline = False)
         if "app_crash_details" in answers:
             crash_details = answers["app_crash_details"] # app crash details
             embed_1.insert_field_at(2, name = "App Crash Details", value = f"{crash_details}", inline = False)
@@ -260,7 +260,7 @@ class Report(commands.Cog):
                                 ids.remove(ctx.author.id)
                             other_tb.update_one({'name': 'ignore_dm'}, {'$set': {'user_ids': ids}})
                         else:
-                            user_info["device"] = device_info.content # store user device information
+                            user_info["device"] = device_info.content.replace("Device Name:", "**Device Name:**").replace("Model Number:", "**Model Number:**").replace("Android Version:", "**Android Version:**").replace("iOS Version:", "**iOS Version:**").replace("App Version:", "**App Version:**").replace("Ram (Optional):", "**Ram:**").replace("Rom (Optional):", "**Ram:**") # store user device information
                             
                             ## question 2
                             question_2 = "Where was this bug sucking your happiness?"
@@ -345,7 +345,7 @@ class Report(commands.Cog):
                                 elif option_value == "profile":
                                     ## question 2.1
                                     ques = "Where did you find the bug in profile?"
-                                    embed = self.build_embed(lques, 2.1)
+                                    embed = self.build_embed(ques, 2.1)
                                     await ctx.author.send(embed = embed)
                                     try:
                                         location_msg = await self.bot.wait_for("message", check = message_check, timeout = 180)
