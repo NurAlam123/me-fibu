@@ -214,7 +214,7 @@ class Info(commands.Cog):
 
 #avatar
     @commands.command(name = "avatar", aliases=["av"])
-    async def _av(self, ctx, member: discord.Member = None]):
+    async def _av(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.author
         avatar = discord.Embed(title="Avatar", color=0xffdf08, timestamp=time.now())
