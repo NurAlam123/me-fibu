@@ -151,8 +151,6 @@ class Info(commands.Cog):
             info_em.add_field(name= 'ID', value= f'```\n{user_id}\n```', inline= False)
             if user_nickname:
                 info_em.add_field(name= 'Nickname', value= f'```\n{user_nickname}\n```', inline= False)
-            if bot_user:
-                info_em.add_field(name= 'Owner', value= f'{}')
             info_em.add_field(name= 'Status', value= f'{status_emoji[user_status]} - {status}', inline= False)
             info_em.add_field(name= f'Joined {guild.name} at', value= f'```\n{joined_guild} UTC\n```', inline= False)
             info_em.add_field(name= 'Account Created at', value= f'```\n{created_acc} UTC\n```', inline= False)
