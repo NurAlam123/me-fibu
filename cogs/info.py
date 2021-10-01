@@ -195,7 +195,7 @@ class Info(commands.Cog):
             info_em.add_field(name= "Badges", value= user_badges, inline= False) if not user_badges else None
            #### challenge"s information ####
             if find_user:
-                output = f"Level: {find_user["level"]}\nXP: {find_user["xp"]}/{find_user["need_xp"]}"
+                output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
                 info_em.add_field(name= "Challenge Profile", value= output, inline= False)
                 challenges_name = find_user["challenges"]
                 if challenges_name:
