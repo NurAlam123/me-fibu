@@ -46,14 +46,12 @@ class UsersDm(commands.Cog):
             if message.author.id not in user_ids:
                 users, Msg = self.db()
                 ###################
-                receivers = [i for i in self.bot.TEAM if i != message.author.id]
+                receive_channel = await self.bot.fetch_channel(856057917705814056)
                 if len(users) >= 20:
                     removed_user_id = users.pop(0)
                     user = await self.bot.fetch_user(removed_user_id)
                     UsersDm.tb.delete_one({"user_id": removed_user_id})
-                    for receiver in receivers:
-                            receiver = await self.bot.fetch_user(receiver)
-                            await receiver.send(f":warning: {user} remove from list.:warning:", mention_author= True)
+                    await receive_channel.send(f":warning: {user} remove from list.:warning:")
                         
                         
                 elif Msg.get(message.author.id):
@@ -88,45 +86,43 @@ class UsersDm(commands.Cog):
                                 UsersDm.tb.update_one({"user_id": id}, {"$set": {"msg_ids": Msg[id]}})
                             
                         name = message.author
-                        for dev in self.bot.TEAM:
-                            receiver = await self.bot.fetch_user(dev)
-                            info_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(message.id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n----------"
-                            to_receiver = await receiver.send(info_format)
-                            if message.attachments:
-                                attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
-                                await to_receiver.reply(attach_format)
-                                for attachment in message.attachments:
-                                    await to_receiver.reply(attachment.url)
-                            else:
-                                message_format = f"`{name}::` {message.content}\n"
-                                await to_receiver.reply(message_format)
+                        receive_channel = await self.bot.fetch_channel(856057917705814056)
+                        info_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(message.id)}\n**UserId:** {id}\n**MessageId:** {message.id}\n----------"
+                        to_receiver = await receive_channel.send(info_format)
+                        if message.attachments:
+                            attach_format = f"`{name}::` {message.content}\n--- Attachment!! ---"
+                            await to_receiver.reply(attach_format)
+                            for attachment in message.attachments:
+                                await to_receiver.reply(attachment.url)
+                        else:
+                            message_format = f"`{name}::` {message.content}\n"
+                            await to_receiver.reply(message_format)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before_msg, after_msg):
         if isinstance(before_msg.channel, discord.channel.DMChannel):
                 users, Msg = self.db()
-                for dev in self.bot.TEAM:
-                    receiver = await self.bot.fetch_user(dev)
-                    id = before_msg.author.id
-                    name = before_msg.author.name
-                    if id != self.bot.user.id:
-                        identity_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(after_msg.id)}\n**UserId:** {id}\n**MessageId:** {after_msg.id}\n----------"
-                        to_receiver = await receiver.send(identity_format)
-                        edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg.content}\n**To:** {after_msg.content}"
-                        await to_receiver.reply(edit_msg_format)
-                    else: pass
+                receive_channel = await self.bot.fetch_channel(856057917705814056)
+                id = before_msg.author.id
+                name = before_msg.author.name
+                if id != self.bot.user.id:
+                    identity_format = f"----------\n**Username:** {name}\n**UserIndex:** {users.index(id)}\n**MessageIndex**: {Msg[id].index(after_msg.id)}\n**UserId:** {id}\n**MessageId:** {after_msg.id}\n----------"
+                    to_receiver = await receive_channel.send(identity_format)
+                    edit_msg_format = f"++++ Message Edited ++++\n**From:** {before_msg.content}\n**To:** {after_msg.content}"
+                    await to_receiver.reply(edit_msg_format)
+                else: pass
 
     @commands.command()
     @commands.dm_only()
     async def msg(self, ctx, index_no: int, *, message):
         if ctx.author.id in self.bot.TEAM:
             users, Msg = self.db()
-            receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
+            receive_channel = await self.bot.fetch_channel(856057917705814056)
             try:
                 id = users[index_no]
             except Exception as e:
-                receiver = await self.bot.fetch_user(self.bot.TEAM[0])
-                await receiver.send(f'Exception in msg: {e}')
+                receiver = await self.bot.fetch_channel(855048645174755358)
+                await receiver.send(f'Exception in **fibu_dm**: msg >\n{e}')
                 await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
             else:
                 files= None
@@ -139,10 +135,8 @@ class UsersDm(commands.Cog):
                         files.append(file)
                         
                 msg = await user.send(f"{message}", files= files)
-                for receiver in receivers:
-                    receiver = await self.bot.fetch_user(receiver)
-                    to_receiver = await receiver.send(f"`{ctx.author.name} to {user}::` {message}", files= files)
-                    await to_receiver.reply(f'Message ID: {msg.id}')
+                to_receiver = await receive_channel.send(f"`{ctx.author.name} to {user}::` {message}", files= files)
+                await to_receiver.reply(f'Message ID: {msg.id}')
                 
                 await ctx.message.add_reaction("✅")
                 await ctx.send(f'Message sent to {user}..\nUse bellow message id to **edit or delete** message next time')
@@ -152,19 +146,19 @@ class UsersDm(commands.Cog):
     async def reply(self, ctx, user_index: int, msg_index: int, *, message):
         if ctx.author.id in self.bot.TEAM:
             users, Msg = self.db()
-            receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
+            receive_channel = await self.bot.fetch_channel(856057917705814056)
             try:
                 user_id = users[user_index]
             except Exception as e:
-                receiver = await self.bot.fetch_user(self.bot.TEAM[0])
-                await receiver.send(f'Exception in reply: {e}')
+                receiver = await self.bot.fetch_channel(855048645174755358)
+                await receiver.send(f'Exception in **fibu_dm**: __reply__ >\n {e}')
                 await ctx.send("User not in list.\nTry `new_dm` command to continue!!")
             else:
                 try:
                     msg_id = Msg[user_id][msg_index]
                 except Exception as e:
-                    receiver = await self.bot.fetch_user(self.bot.TEAM[0])
-                    await receiver.send(f'Exception in reply: {e}')
+                    receiver = await self.bot.fetch_channel(855048645174755358)
+                    await receiver.send(f'Exception in **fibu_dm**: __reply__ >\n {e}')
                     await ctx.send("Oops!! Message not found..\nTry `msg` command!!")
                 else:
                     files= None
@@ -177,10 +171,8 @@ class UsersDm(commands.Cog):
                             file = attachment.to_file()
                             files.append(file)
                     reply_msg = await msg.reply(f"{message}", files= files)
-                    for receiver in receivers:
-                        receiver = await self.bot.fetch_user(receiver)
-                        to_receiver = await receiver.send(f"`{ctx.author.name} replied to {user}::` {message}", files= files)
-                        await to_receiver.reply(f'Message ID: {reply_msg.id}')
+                    to_receiver = await receive_channel.send(f"`{ctx.author.name} replied to {user}::` {message}", files= files)
+                    await to_receiver.reply(f'Message ID: {reply_msg.id}')
                     await ctx.message.add_reaction("✅")
                     await ctx.send(f'You replied a message of {user}..\nUse bellow message id to **edit or delete** message next time')
                     await ctx.reply(f'Message ID: {reply_msg.id}')
@@ -222,8 +214,8 @@ class UsersDm(commands.Cog):
             try:
                 user = await self.bot.fetch_user(user_id)
             except Exception as e:
-                receiver = await self.bot.fetch_user(self.bot.TEAM[0])
-                await receiver.send(f'Exception in new_dm: {e}')
+                receiver = await self.bot.fetch_channel(855048645174755358)
+                await receiver.send(f'Exception in **fibu_dm**: __new_dm__ >\n {e}')
                 await ctx.reply("\N{NO ENTRY SIGN} Not found this user or user might be disabled direct messages form server members!!!")
             else:
                 if user.id not in users:
@@ -232,7 +224,7 @@ class UsersDm(commands.Cog):
                     UsersDm.tb.insert_one(new_value)
                 else:
                     pass
-                receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
+                receive_channel = await self.bot.fetch_channel(856057917705814056)
                 files= None
                 if ctx.message.attachments:
                     files = []
@@ -240,11 +232,9 @@ class UsersDm(commands.Cog):
                         file = await attachment.to_file()
                         files.append(file)
                 sent_msg = await user.send(f"{msg}", files= files)
-                
-                for receiver in receivers:
-                    receiver = await self.bot.fetch_user(receiver)
-                    to_receiver = await receiver.send(f"`{ctx.author.name} to {user}`:: {msg}", files= files)
-                    await to_receiver.reply(f'Message ID: {sent_msg.id}')
+
+                to_receiver = await receive_channel.send(f"`{ctx.author.name} to {user}`:: {msg}", files= files)
+                await to_receiver.reply(f'Message ID: {sent_msg.id}')
                 await ctx.message.add_reaction("✅")
                 await ctx.author.send(f'Message sent to {user}..\nTo Check **UserIndex** use ```!fibu show_all_dm```\nUse bellow message id to **edit or delete** message next time')
                 await ctx.reply(f'Message ID: {sent_msg.id}')
@@ -259,10 +249,8 @@ class UsersDm(commands.Cog):
                 if message:
                     from_msg = msg_id.content
                     await msg_id.edit(content= message)
-                    receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
-                    for receiver in receivers:
-                            receiver = await self.bot.fetch_user(receiver)
-                            await receiver.send(f"Message Edited by {ctx.author}::\nMessageID: {msg_id.id}\nFrom: {from_msg}\nTo: {message}")
+                    receive_channel = await self.bot.fetch_channel(856057917705814056)
+                    await receive_channel.send(f"Message Edited by {ctx.author}::\nMessageID: {msg_id.id}\nFrom: {from_msg}\nTo: {message}")
                     await ctx.send(f"Message Edited::\nFrom: {from_msg}\nTo: {message}")
                     await ctx.message.add_reaction('✅')
                 else:
@@ -279,10 +267,8 @@ class UsersDm(commands.Cog):
                 if msg_id:
                     msg_content = msg_id.content
                     await msg_id.delete()
-                    receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
-                    for receiver in receivers:
-                            receiver = await self.bot.fetch_user(receiver)
-                            await receiver.send(f"Message Deleted by {ctx.author}::\nMessageID: {msg_id.id}\nMessage: {msg_content}")
+                    receive_channel = await self.bot.fetch_channel(856057917705814056)
+                    await receive_channel.send(f"Message Deleted by {ctx.author}::\nMessageID: {msg_id.id}\nMessage: {msg_content}")
                     await ctx.send(f"Message Deleted::\nMessage: {msg_content}")
                     await ctx.message.add_reaction('✅')
                     
@@ -303,8 +289,8 @@ class UsersDm(commands.Cog):
                     data+= f'{i} - {j}\n'
                 await ctx.send(f'Username: {user}\nUserId: {user.id}\nUserIndex: {index}\nMessagesIDs:\n```\nindex - message ID\n{data}\n```')
             except Exception as e:
-                receiver = await self.bot.fetch_user(self.bot.TEAM[0])
-                await receiver.send(f'Exception in show_dm: {e}')
+                receiver = await self.bot.fetch_channel(855048645174755358)
+                await receiver.send(f'Exception in **fibu_dm**: __show_dm__ > {e}')
     
     @commands.command()
     async def clean_dm(self, ctx, index_no = None):
@@ -315,19 +301,15 @@ class UsersDm(commands.Cog):
                 user = await self.bot.fetch_user(user_id)
                 users.pop(int(index_no))
                 UsersDm.tb.delete_one({"user_id": user.id})
-                receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
-                for receiver in receivers:
-                        receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f":warning: {user} removed from list. :warning:", mention_author= True)
+                receive_channel = await self.bot.fetch_channel(856057917705814056)
+                await receive_channel.send(f":warning: {user} removed from list. :warning:")
                 await ctx.message.add_reaction('✅')
                 await ctx.send(f"{user.name} removed from db!!")
                 
             else:
                 UsersDm.tb.delete_many({})
-                receivers = [i for i in self.bot.TEAM if i != ctx.author.id]
-                for receiver in receivers:
-                        receiver = await self.bot.fetch_user(receiver)
-                        await receiver.send(f":warning::warning: Users list fully cleared by `{ctx.author.name}` :warning::warning:", mention_author= True)
+                receive_channel = await self.bot.fetch_channel(856057917705814056)
+                await receive_channel.send(f":warning::warning: Users list fully cleared by `{ctx.author.name}` :warning::warning:", mention_author= True)
                 await ctx.message.add_reaction('✅')
                 await ctx.send("Data Successfully Deleted!!")
 
