@@ -23,7 +23,7 @@ class Math(c.Cog):
             if 'x' in eq.lower():
                 eq = eq.replace('x','*')
             try:
-                result = eval(eq)
+                result = eval(eq, {"__builtins__": {}}, {})
                 await ctx.send(f"**__Your Input:__**\n```{eq}```\n**__Result:__**\n```{result}```")
             except:
                 await ctx.send("Invalid Input")

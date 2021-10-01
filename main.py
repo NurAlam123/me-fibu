@@ -13,7 +13,7 @@ import logging
 
 #### logging [recommended]####
 logging.basicConfig(level= logging.INFO)
-########
+#############################
 
 token = os.getenv("TOKEN")
 
@@ -28,8 +28,14 @@ bot.remove_command("help")
 
 d_c.DiscordComponents(bot)
 
-bot.TEAM = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
-bot.version = 'v0.3.7'
+bot.TEAM = [
+                            838836138537648149, # Nur
+                            664550550527803405, # Tamim
+                            728260210464129075, # Rishikesh
+                            693375549686415381, # Soren
+                            555452986885668886 # Karim
+                        ] # our team's discord ids
+bot.version = 'v0.3.9'
 
 
 @bot.event
@@ -37,13 +43,19 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="!fibu help | Fibu | Programming Hero"))
     print(f"Logged in as {bot.user}")
     
-#ping
+# ping
 @bot.command()
 async def ping(ctx):
     msg = discord.Embed(title="Pong 🏓", description=f"{round(bot.latency*1000)} _ms_!",color=0xffdf08)
     await ctx.send(embed=msg)
 
-#cogs load and unload
+# fibu
+@bot.listen()
+async def on_message(message):
+    if message.content.lower().strip() == "!fibu":
+        await message.channel.send(f"Type `!fibu help` to get help message!!")
+
+# cogs load and unload
 @bot.command()
 async def on(ctx,file):
     if ctx.author.id in bot.TEAM:
@@ -56,6 +68,7 @@ async def on(ctx,file):
             await ctx.send(f"{file} is already loaded!")
     else:
         await ctx.send(f"You don't have the permission to do that!!")
+
 @bot.command()
 async def off(ctx,file):
         if ctx.author.id in bot.TEAM:
