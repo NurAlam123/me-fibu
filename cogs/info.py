@@ -75,43 +75,105 @@ class Info(commands.Cog):
 
 #user info
     @commands.command(name = "userinfo", aliases = ["ui"])
-    async def info(self, ctx, member: discord.Member = None):
+    async def userinfo(self, ctx, member: discord.Member= None):
+        if not member:
+            member = ctx.author
         if member.id == self.bot.user.id:
-            await ctx.invoke(self.bot.get_command("botinfo"))
+            await ctx.invoke(self.bot.get_command('yourinfo'))
         else:
-            if not member:
-                member = ctx.author
-            roles = [i.mention for i in member.roles if i.name!="@everyone"]
-            if roles==[]:
-                roles =["No roles!"]
-            msg = discord.Embed(title="User information", description=f"{member.mention}",color=0xffdf08,timestamp=time.now())
-            msg.add_field(name="Name",value=f"{member.name}", inline= False)
-            msg.set_thumbnail(url=member.avatar_url)
-            msg.add_field(name="Created at",value=f"{(member.created_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
-            msg.add_field(name="Joined at",value=f"{(member.joined_at).strftime('%a, %d-%b-%Y %I:%M %p')}", inline= False)
-            msg.add_field(name=f"Roles [{len(member.roles)-1}]",value=f"{', '.join(roles)}", inline= False)
-            
+            ## Connect with database ##
             con_fibu = pymongo.MongoClient(os.getenv("DB"))
             db = con_fibu["fibu"]
-            tb = db["all_about_challenge"]
-            find_user = tb.find_one({"user_id": member.id, "guild_id": ctx.guild.id})
-            if find_user is not None:
+            #tb = db["challenge_data"]
+            tb = db['all_about_challenge']
+            
+            find_user = tb.find_one({"user_id": member.id, "guild_id": member.guild.id})
+            roles = []
+            for role in member.roles:
+                if role.name != '@everyone':
+                    role_format = f'{role}'
+                    roles.append(role_format)
+                    
+            #### Information Variables ####
+            roles_format = '\n'.join(f'{i}. {j}' for i, j in enumerate(roles, 1)) if len(roles) != 0 else 'No Roles'
+            guild = member.guild
+            user_id = member.id
+            user_name = member.name
+            user_tag = member.discriminator
+            user_nickname = member.nick
+            user_status = str(member.status)
+            bot_user = member.bot
+            user_avatar = str(member.avatar_url)
+            status_emoji = {
+                'online': '<:online:848818909292658729>:', 
+                'offline': '<:offline:848818930830016533>', 
+                'invisible': '<:offline:848818930830016533>',
+                'idle': '<:idle:848818891446681620>',
+                'dnd': '<:dnd:848819104446283806>', 
+                'do_not_disturb': '<:dnd:848819104446283806>',
+            }
+            badges_value = {
+                0: None,
+                1 << 0: 'Discord Employee',
+                1 << 1: 'Partnered Server Owner',
+                1 << 2: 'HypeSquad Events',
+                1 << 3: 'Bug Hunter Level 1',
+                1 << 6: 'House Bravery',
+                1 << 7: 'House Brilliance',
+                1 << 8: 'House Balance',
+                1 << 9: 'Early Supporter',
+                1 << 10: 'Team User',
+                1 << 14: 'Bug Hunter Level 2',
+                1 << 16: 'Verified Bot',
+                1 << 17: 'Early Verified Bot Developer',
+                1 << 18: 'Discord Certified Moderator'
+            }
+            
+            user_activities = member.activities
+            status = user_status.capitalize() if user_status != 'dnd' else user_status.upper()
+            
+            user_badges = ''
+            user_all_badges = member.public_flags.all()
+            for no, badge in enumerate(user_all_badges, 1):
+                value = badge.value
+                user_badges+= f'{no}. {badges_value[value]}\n'
+            joined_guild = (member.joined_at).strftime('%a, %d-%b-%Y %I:%M %p')
+            created_acc = (member.created_at).strftime('%a, %d-%b-%Y %I:%M %p')
+            
+            if bot_user:
+                suf = 'Bot '
+            else:
+                suf = ''
+            #### Embed Part ####
+            info_em = discord.Embed(title= '{suf}User Information', color= random.choice(self.colors))
+            info_em.add_field(name= 'Name', value= f'```\n{user_name}\n```', inline= True)
+            info_em.add_field(name= 'Tag', value= f'```\n#{user_tag}\n```', inline= True)
+            info_em.add_field(name= 'ID', value= f'```\n{user_id}\n```', inline= False)
+            if user_nickname:
+                info_em.add_field(name= 'Nickname', value= f'```\n{user_nickname}\n```', inline= False)
+            if bot_user:
+                info_em.add_field(name= 'Owner', value= f'{}')
+            info_em.add_field(name= 'Status', value= f'{status_emoji[user_status]} - {status}', inline= False)
+            info_em.add_field(name= f'Joined {guild.name} at', value= f'```\n{joined_guild} UTC\n```', inline= False)
+            info_em.add_field(name= 'Account Created at', value= f'```\n{created_acc} UTC\n```', inline= False)
+            info_em.add_field(name= 'Badges', value= user_badges, inline= False) if not user_badges else None
+           #### challenge's information ####
+            if find_user:
                 output = f"Level: {find_user['level']}\nXP: {find_user['xp']}/{find_user['need_xp']}"
-                msg.add_field(name="Challenge Profile", value=output, inline=False)
+                info_em.add_field(name= "Challenge Profile", value= output, inline= False)
                 challenges_name = find_user["challenges"]
-                if challenges_name == []:
-                    pass
-                else:
+                if challenges_name:
                     all_challenges = ""
                     for no, challenge_name in enumerate(challenges_name, 1):
                         all_challenges += f"{no}. {challenge_name}\n"
-                    msg.add_field(name="Solved Challenges", value = f"```\n{all_challenges}\n```", inline=False)	
+                    info_em.add_field(name= "Solved Challenges", value= f"```\n{all_challenges}\n```", inline= False)
+            ########
+            info_em.add_field(name= f'Roles [{len(roles)}]', value= f'```\n{roles_format}\n```', inline= False)
+            info_em.set_thumbnail(url= f'{user_avatar}')
+            #info_em.set_author(name= f"{self.bot.user.name}", icon_url= f"{self.bot.user.avatar_url}")
+            info_em.set_footer(text= f"Requested by {ctx.author} | Programming Hero ")
             
-            else:
-                pass
-            msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
-            msg.set_footer(text="Programming Hero ")
-            await ctx.send(embed=msg)
+            await ctx.send(embed= info_em)
 
 #avatar
     @commands.command(name = "avatar", aliases=["av"])
