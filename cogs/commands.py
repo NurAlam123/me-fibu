@@ -255,7 +255,7 @@ class Command(commands.Cog):
         await log.send(f'Error in **Edit** command:\n{error}')
         raise error
     
-   @revive.error
+    @revive.error
     async def _error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")   
