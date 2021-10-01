@@ -28,8 +28,14 @@ bot.remove_command("help")
 
 d_c.DiscordComponents(bot)
 
-bot.TEAM = [838836138537648149, 728260210464129075, 664550550527803405, 693375549686415381, 555452986885668886] # our team's discord ids
-bot.version = 'v0.3.7'
+bot.TEAM = [
+                            838836138537648149, # Nur
+                            664550550527803405, # Tamim
+                            728260210464129075, # Rishikesh
+                            693375549686415381, # Soren
+                            555452986885668886 # Karim
+                        ] # our team's discord ids
+bot.version = 'v0.3.8'
 
 
 @bot.event

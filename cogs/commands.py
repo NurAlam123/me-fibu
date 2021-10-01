@@ -163,7 +163,22 @@ class Command(commands.Cog):
             log_format = f':warning: ️Clean command used by **{ctx.author}**\n**UserID:** {ctx.author.id}\nServer: {ctx.guild}\n**Limit:** {limit}\n**Deleted**: {count}'
             log_channel = await self.bot.fetch_channel(796371191837229098)
             await log_channel.send(log_format)
-
+    
+    @commands.command(name= "revive")
+    @has_permissions(manage_messages = True)
+    async def revive(self, ctx):
+        await ctx.message.delete()
+        role_id = None
+        if ctx.guild.id == 720365448809545742:
+            role_id = 874979840741244959
+        elif ctx.guild.id == 550676428040044574:
+            role_id = 867668660247592980
+            
+        if role_id:
+            await ctx.send(f"<@&{role_id}>")
+            log_format = f"========== Revive Ping Log ==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\n===================="
+            log_channel = await self.bot.fetch_channel(796371191837229098)
+            await log_channel.send(log_format)
 
 # add swap channels
 #    @commands.command()
@@ -239,7 +254,11 @@ class Command(commands.Cog):
         log = await self.bot.fetch_channel(855048645174755358)
         await log.send(f'Error in **Edit** command:\n{error}')
         raise error
-                
+    
+   @revive.error
+    async def _error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")   
                 
                 
 def setup(bot):
