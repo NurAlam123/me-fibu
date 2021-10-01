@@ -47,9 +47,9 @@ class Info(commands.Cog):
         await ctx.message.add_reaction("⚒️")
         msg = discord.Embed(title="Developer information", description = "Here are my developers:", color = 0xffdf08, timestamp = time.now())
         msg.add_field(name=f"Nur Alam [{team[0]}]",value="Worked on my designing and development.", inline= False)
-        msg.add_field(name="Tamim Vaiya [team[1]]",value="Gave suggestions to my developers.", inline= False)
-        msg.add_field(name="Rishikesh [team[2]]",value="Worked on my development.", inline= False)
-        msg.add_field(name="Soren_Blank [team[3]]",value="Worked on my development.", inline= False)
+        msg.add_field(name=f"Tamim Vaiya [{team[1]}]",value="Gave suggestions to my developers.", inline= False)
+        msg.add_field(name=f"Rishikesh [{team[2]}]",value="Worked on my development.", inline= False)
+        msg.add_field(name=f"Soren_Blank [{team[3]}]",value="Worked on my development.", inline= False)
         msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
         msg.set_footer(text=f"Programming Hero ")
         await ctx.send(embed=msg)
@@ -58,9 +58,6 @@ class Info(commands.Cog):
 #fibu info
     @commands.command(name = "botinfo")
     async def _botinfo(self, ctx):
-        roles = [i.mention for i in member.roles if i.name!="@everyone"]
-        if roles==[]:
-            roles =["No roles!"]
         msg = discord.Embed(title="My information",  description="Hey there! I am Fibu. Your friend and a friendly bot. I am from Programming Hero", color=0xffdf08, timestamp=time.now())
         msg.set_thumbnail(url=f"{self.bot.user.avatar_url}")
         msg.add_field(name="Version",value=f"{self.bot.version}", inline= False)
@@ -70,7 +67,7 @@ class Info(commands.Cog):
         msg.add_field(name="Application",value="[Android App](https://is.gd/z11RUg)\n[Iphone Version](https://is.gd/eVH92i)", inline= False)
         msg.add_field(name="Social Media",value="[Facebook](https://m.facebook.com/programmingHero/)\n[Instagram](https://is.gd/6m3hgd)\n[Twitter](https://twitter.com/ProgrammingHero?s=09)\n[Youtube](https://is.gd/EulQLJ)\n[Pinterest](https://www.pinterest.com/programminghero1/)", inline= False)
         msg.add_field(name="Team",value="**1. Nur Alam,\n2. Tamim Vaiya,\n3. Rishikesh,\n4. Soren_Blank**\nFor more info type ```!fibu show your team```", inline= False)
-        msg.add_field(name=f"Roles [{len(member.roles)-1}]", value=f"{', '.join(roles)}", inline= False)
+        #msg.add_field(name=f"Roles [{len(member.roles)-1}]", value=f"{', '.join(roles)}", inline= False)
         msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
         msg.set_footer(text=f"Programming Hero ")
         await ctx.send(embed=msg)
@@ -78,10 +75,12 @@ class Info(commands.Cog):
 
 #user info
     @commands.command(name = "userinfo", aliases = ["ui"])
-    async def info(self,ctx,member: discord.Member):
+    async def info(self, ctx, member: discord.Member = None):
         if member.id == self.bot.user.id:
             await ctx.invoke(self.bot.get_command("botinfo"))
         else:
+            if not member:
+                member = ctx.author
             roles = [i.mention for i in member.roles if i.name!="@everyone"]
             if roles==[]:
                 roles =["No roles!"]
