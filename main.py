@@ -50,7 +50,7 @@ async def ping(ctx):
     await ctx.send(embed=msg)
 
 # fibu
-@bot.event
+@bot.listen()
 async def on_message(message):
     if message.content.lower().strip() == "!fibu":
         await message.channel.send(f"Type `!fibu help` to get help message!!")
