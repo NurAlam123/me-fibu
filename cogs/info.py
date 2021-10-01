@@ -14,15 +14,13 @@ class Info(commands.Cog):
     @commands.command(name = "serverinfo", aliases = ["si", "guildinfo", "gi"])
     async def serverinfo(self, ctx):
         guild = ctx.guild
-        guild_emojis = []
         guild_roles = []
         for role in guild.roles:
-            if role.name != "@everyone":
-                role_format = f"{role}"
-                guild_roles.append(role_format)
+            role_format = f"{role}"
+            guild_roles.append(role_format)
         
         ### Information Variable ###
-        guild_roles = "\n".join(f"{i}. {j}" for i, j in enumerate(guild_roles, 1))
+        guild_roles = "\n".join(f"{i}. {j}" for i, j in enumerate(guild_roles[::-1], 1))
         guild_name = guild.name
         guild_id = guild.id
         guild_owner = guild.owner
@@ -30,6 +28,7 @@ class Info(commands.Cog):
         guild_region = str(guild.region).capitalize()
         guild_description = guild.description
         guild_icon = str(guild.icon_url)
+        guild_created_at = (guild.created_at).strftime("%a, %d-%b-%Y %I:%M %p")
         
         ### Member count ###
         members = guild.member_count
@@ -64,11 +63,12 @@ class Info(commands.Cog):
         info_em.add_field(name= "Guild ID", value= f"```\n{guild_id}\n```", inline= False)
         info_em.add_field(name= "Owner", value= f"{guild_owner}", inline= False)
         info_em.add_field(name= "Owner ID", value= f"```\n{guild_owner_id}\n```", inline= False)
+        info_em.add_field(name= "Server Created At", value= f"```\n{guild_created_at}\n```")
         info_em.add_field(name= "Region", value= f"{guild_region}", inline= False)
         if guild_description:
             info_em.add_field(name= "Guild Description", value= f"{guild_description}", inline= False)
         info_em.add_field(name= f"Members [{members}]", value= f"```\nHumans: {humans}\nBots: {bots}\n--------------------\nOnline: {online}\nOffline: {offline}\nIdle: {idle}\nDND: {dnd}\n```", inline= False)
-        info_em.add_field(name= "Channels and Categories", value= f"```\nCategories: {guild_categories}\nChannels: {guild_channels}\n--------------------\nText Channels: {guild_text_channels}\nVoice Channels: {guild_voice_channels}\n```", inline= False)
+        info_em.add_field(name= "Channels and Categories", value= f"```\nCategories: {guild_categories}\n│\n└── Channels: {guild_channels}\n    ├── Text Channels: {guild_text_channels}\n    └── Voice Channels: {guild_voice_channels}\n```", inline= False)
         info_em.add_field(name= "Roles", value= f"```\n{guild_roles}\n```", inline= False)
         
         info_em.set_thumbnail(url= f"{guild_icon}")
@@ -86,10 +86,11 @@ class Info(commands.Cog):
             
         await ctx.message.add_reaction("⚒️")
         msg = discord.Embed(title="Developer information", description = "Here are my developers:", color = 0xffdf08, timestamp = time.now())
-        msg.add_field(name=f"Nur Alam [{team[0]}]",value="Worked on my designing and development.", inline= False)
-        msg.add_field(name=f"Tamim Vaiya [{team[1]}]",value="Gave suggestions to my developers.", inline= False)
-        msg.add_field(name=f"Rishikesh [{team[2]}]",value="Worked on my development.", inline= False)
-        msg.add_field(name=f"Soren_Blank [{team[3]}]",value="Worked on my development.", inline= False)
+        msg.add_field(name=f"Nur Alam [`{team[0]}`]",value="Worked on my designing and development.", inline= False)
+        msg.add_field(name=f"Tamim Vaiya [`{team[1]}`]",value="Gave suggestions to my developers.", inline= False)
+        msg.add_field(name=f"Rishikesh [`{team[2]}`]",value="Worked on my development.", inline= False)
+        msg.add_field(name=f"Soren_Blank [`{team[3]}`]",value="Worked on my development.", inline= False)
+        msg.add_field(name= f"Shajedul Karim [`{team[4]}`]", value = "Secret supporter behind this secret project!!")
         msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
         msg.set_footer(text=f"Programming Hero ")
         await ctx.send(embed=msg)
@@ -106,7 +107,7 @@ class Info(commands.Cog):
         msg.add_field(name="Website",value="[Programming Hero](https://www.programming-hero.com/)", inline= False)
         msg.add_field(name="Application",value="[Android App](https://is.gd/z11RUg)\n[Iphone Version](https://is.gd/eVH92i)", inline= False)
         msg.add_field(name="Social Media",value="[Facebook](https://m.facebook.com/programmingHero/)\n[Instagram](https://is.gd/6m3hgd)\n[Twitter](https://twitter.com/ProgrammingHero?s=09)\n[Youtube](https://is.gd/EulQLJ)\n[Pinterest](https://www.pinterest.com/programminghero1/)", inline= False)
-        msg.add_field(name="Team",value="**1. Nur Alam,\n2. Tamim Vaiya,\n3. Rishikesh,\n4. Soren_Blank**\nFor more info type ```!fibu show your team```", inline= False)
+        msg.add_field(name="Team",value="**1. Nur Alam,\n2. Tamim Vaiya,\n3. Rishikesh,\n4. Soren_Blank\n5. Shajedul Karim**\nFor more info type ```!fibu show your team```", inline= False)
         #msg.add_field(name=f"Roles [{len(member.roles)-1}]", value=f"{", ".join(roles)}", inline= False)
         msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
         msg.set_footer(text=f"Programming Hero ")
@@ -145,7 +146,7 @@ class Info(commands.Cog):
             bot_user = member.bot
             user_avatar = str(member.avatar_url)
             status_emoji = {
-                "online": "<:online:848818909292658729>:", 
+                "online": "<:online:848818909292658729>", 
                 "offline": "<:offline:848818930830016533>", 
                 "invisible": "<:offline:848818930830016533>",
                 "idle": "<:idle:848818891446681620>",
@@ -190,8 +191,8 @@ class Info(commands.Cog):
             if user_nickname:
                 info_em.add_field(name= "Nickname", value= f"```\n{user_nickname}\n```", inline= False)
             info_em.add_field(name= "Status", value= f"{status_emoji[user_status]} ─ **{status}**", inline= False)
-            info_em.add_field(name= f"Joined {guild.name} at", value= f"```\n{joined_guild} UTC\n```", inline= False)
-            info_em.add_field(name= "Account Created at", value= f"```\n{created_acc} UTC\n```", inline= False)
+            info_em.add_field(name= f"Joined {guild.name} at", value= f"```\n{joined_guild}\n```", inline= False)
+            info_em.add_field(name= "Account Created at", value= f"```\n{created_acc}\n```", inline= False)
             info_em.add_field(name= "Badges", value= user_badges, inline= False) if not user_badges else None
            #### challenge"s information ####
             if find_user:
@@ -213,7 +214,9 @@ class Info(commands.Cog):
 
 #avatar
     @commands.command(name = "avatar", aliases=["av"])
-    async def _av(self,ctx, member: discord.Member):
+    async def _av(self, ctx, member: discord.Member = None]):
+        if not member:
+            member = ctx.author
         avatar = discord.Embed(title="Avatar", color=0xffdf08, timestamp=time.now())
         avatar.set_author(name=f"{self.bot.user.name}", icon_url=self.bot.user.avatar_url)
         avatar.set_footer(text="Programming Hero ")
@@ -253,7 +256,7 @@ class Info(commands.Cog):
             msg = discord.Embed(title="Members", color=0xffdf08, timestamp=time.now())
             msg.add_field(name="Server Name",value=f"{guild.name}", inline= False)
             msg.add_field(name="Members",value=f"{members}", inline= False)
-            msg.add_field(name="Humans",value=f"{hhumans}", inline= False)
+            msg.add_field(name="Humans",value=f"{humans}", inline= False)
             msg.add_field(name="Bots",value=f"{bots}", inline= False)
             msg.add_field(name = "Online", value = f"{online}", inline = False)
             msg.add_field(name = "Offline", value = f"{offline}", inline = False)
