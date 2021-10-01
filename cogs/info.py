@@ -3,10 +3,12 @@ from datetime import datetime as time
 from discord.ext import commands
 import pymongo
 import os
+import random
 
 class Info(commands.Cog):
     def __init__(self,client):
         self.bot = client
+        self.colors = [0x7700fe, 0x340e72, 0xfdb706]
 		
 #server info
     @commands.command(name = "serverinfo", aliases = ["si"])
