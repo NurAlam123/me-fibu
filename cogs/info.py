@@ -253,7 +253,7 @@ class Info(commands.Cog):
             msg = discord.Embed(title="Members", color=0xffdf08, timestamp=time.now())
             msg.add_field(name="Server Name",value=f"{guild.name}", inline= False)
             msg.add_field(name="Members",value=f"{members}", inline= False)
-            msg.add_field(name="Humans",value=f"{hhumans", inline= False)
+            msg.add_field(name="Humans",value=f"{hhumans}", inline= False)
             msg.add_field(name="Bots",value=f"{bots}", inline= False)
             msg.add_field(name = "Online", value = f"{online}", inline = False)
             msg.add_field(name = "Offline", value = f"{offline}", inline = False)
