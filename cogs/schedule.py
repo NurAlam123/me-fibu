@@ -70,7 +70,7 @@ class Schedule(commands.Cog):
                             dataFormat = {
                                 "guild_id": guild_id,
                                 "channel_id": channel_id,
-                                "message": userMessage
+                                "message": message
                             }
                             if time in self.bot.scheduleData:
                                 timeData = self.bot.scheduleData.get(time)
@@ -100,7 +100,7 @@ class Schedule(commands.Cog):
     
     @tasks.loop(seconds = 1)
     async def timeCheck(self):
-        if self.bot.scheduleData.__len__():
+        if len(self.bot.scheduleData) >= 1:
             timeFormat = "%d-%m-%y %H:%M:%S"
             timeFormat_2 = "%d-%m-%y %H:%M"
             
