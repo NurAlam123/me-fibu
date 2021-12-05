@@ -113,7 +113,7 @@ class Schedule(commands.Cog):
                 self.bot.scheduleData.pop(dateTimeNow)
                 
                 
-    @timeCheck.before_loop()
+    @timeCheck.before_loop
     async def before_check(self):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
