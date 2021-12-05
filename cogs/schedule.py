@@ -119,10 +119,8 @@ class Schedule(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["other_data"]
-        self.bot.scheduleData = tb.find()
-        print(self.bot.scheduleData)
-    
-        await self.bot.wait_until_ready()
+        self.bot.scheduleData = tb.find({"name": "scheduleTask"})
+        print(f"\n\n----------------\n{self.bot.scheduleData}\n------------\n\n")
 
 
 def setup(bot):
