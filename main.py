@@ -35,13 +35,15 @@ bot.TEAM = [
                             693375549686415381, # Soren
                             555452986885668886 # Karim
                         ] # our team's discord ids
-bot.version = 'v0.3.9'
+bot.version = 'v0.4.0'
 
 
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="!fibu help | Fibu | Programming Hero"))
     print(f"Logged in as {bot.user}")
+    
+    
     
 # ping
 @bot.command()

@@ -90,7 +90,7 @@ class Info(commands.Cog):
         msg.add_field(name=f"Tamim Vaiya [`{team[1]}`]",value="Gave suggestions to my developers.", inline= False)
         msg.add_field(name=f"Rishikesh [`{team[2]}`]",value="Worked on my development.", inline= False)
         msg.add_field(name=f"Soren_Blank [`{team[3]}`]",value="Worked on my development.", inline= False)
-        msg.add_field(name= f"Shajedul Karim [`{team[4]}`]", value = "Secret person behind this secret project!! 😜")
+        msg.add_field(name= f"Shajedul Karim [`{team[4]}`]", value = "Secret person behind this secret project!!")
         msg.set_author(name=f"{self.bot.user.name}",url="https://www.programming-hero.com/",icon_url=f"{self.bot.user.avatar_url}")
         msg.set_footer(text=f"Programming Hero ")
         await ctx.send(embed=msg)
