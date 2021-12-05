@@ -9,33 +9,23 @@ import pymongo
 
 class Schedule(commands.Cog):
     
+    con_fibu = pymongo.MongoClient(os.getenv("DB"))
+    db = con_fibu["fibu"] #database
+    tb = db["other_data"]
+    
     def __init__(self, bot):
         self.bot = bot
+        self.bot.scheduleDone = False
         self.db()
+        self.timeCheck.start()
         
     def db(self):
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["other_data"]
-        data = tb.find_one({"name": "scheduleTask"})
+        data = Schedule.tb.find_one({"name": "scheduleTask"})
         task = data.get("task")
-        print(task)
-        dataFormat = {
-            "task": {
-                "1234": [
-                    {
-                        "guild_id": 1234,
-                        "channel_id": 4321
-                    },
-                    {
-                        "guild_id": 1234,
-                        "channel_id": 4321
-                    }
-                ]
-            }
-        }
-        tb.update_one({"name": "scheduleTask"}, {"$set": dataFormat})
-        
+        if not task:
+            self.bot.scheduleData = {}
+        else:
+            self.bot.schedulData = task   
     
     
     @commands.group(case_insensitive = True)
@@ -83,12 +73,13 @@ class Schedule(commands.Cog):
                                 "message": userMessage
                             }
                             if time in self.bot.scheduleData:
-                                timeData = scheduleData.get(time)
+                                timeData = self.bot.scheduleData.get(time)
                                 timeData.append(dataFormat)
                             else:
-                                scheduleData[time] = [dataFormat]
+                                self.bot.scheduleData[time] = [dataFormat]
                                 
-                            await ctx.send("**<:greentickbadge:852127602373951519> Schedule message added successfully!!**")
+                            Schedule.tb.update_one({"name": "scheduleTask"}, {"$set": self.bot.scheduleData})
+                            await ctx.send("<:greentickbadge:852127602373951519> **Schedule message added successfully!!**")
                             break
                 else:
                     await ctx.send("Process stopped!!")
@@ -109,6 +100,7 @@ class Schedule(commands.Cog):
     
     @tasks.loop(seconds = 1)
     async def timeCheck(self):
+        print(1)
         if self.bot.scheduleData.__len__():
             timeFormat = "%d-%m-%y %H:%M:%S"
             timeFormat_2 = "%d-%m-%y %H:%M"
@@ -136,6 +128,8 @@ class Schedule(commands.Cog):
                     await channel.send(message)
                     self.bot.scheduleDone = True
                 self.bot.scheduleData.pop(dateTimeNow)
+                Schedule.tb.update_one({"name": "scheduleTask"}, {"$set": self.bot.scheduleData})
+                
 
 
 def setup(bot):
