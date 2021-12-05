@@ -11,7 +11,7 @@ class Schedule(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
-        Schedule.db()
+        self.db()
         
     def db(self):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
