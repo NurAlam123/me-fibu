@@ -100,7 +100,6 @@ class Schedule(commands.Cog):
     
     @tasks.loop(seconds = 1)
     async def timeCheck(self):
-        print(1)
         if self.bot.scheduleData.__len__():
             timeFormat = "%d-%m-%y %H:%M:%S"
             timeFormat_2 = "%d-%m-%y %H:%M"
