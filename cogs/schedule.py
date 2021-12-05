@@ -11,6 +11,7 @@ class Schedule(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
+        self.timeCheck.start()
         
     
     @commands.group(case_insensitive = True)
@@ -83,7 +84,7 @@ class Schedule(commands.Cog):
                         await ctx.send(dataFormat)
     
     @tasks.loop(seconds = 1)
-    async def timeCheck():
+    async def timeCheck(self):
         if self.bot.scheduleData.__len__():
             timeFormat = "%d-%m-%y %H:%M:%S"
             timeFormat_2 = "%d-%m-%y %H:%M"
