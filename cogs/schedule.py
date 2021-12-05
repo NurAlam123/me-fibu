@@ -17,8 +17,25 @@ class Schedule(commands.Cog):
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"] #database
         tb = db["other_data"]
-        self.bot.scheduleData = tb.find({"name": "scheduleTask"})
-        print(f"\n\n----------------\n{self.bot.scheduleData}\n------------\n\n")
+        data = tb.find_one({"name": "scheduleTask"})
+        task = data.get("task")
+        print(task)
+        dataFormat = {
+            "task": {
+                "1234": [
+                    {
+                        "guild_id": 1234,
+                        "channel_id": 4321
+                    },
+                    {
+                        "guild_id": 1234,
+                        "channel_id": 4321
+                    }
+                ]
+            }
+        }
+        tb.update_one({"name": "scheduleTask"}, {"$set": dataFormat})
+        
     
     
     @commands.group(case_insensitive = True)
