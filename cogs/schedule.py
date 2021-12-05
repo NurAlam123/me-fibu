@@ -11,8 +11,15 @@ class Schedule(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
-        self.timeCheck.start()
+        Schedule.db()
         
+    def db(self):
+        con_fibu = pymongo.MongoClient(os.getenv("DB"))
+        db = con_fibu["fibu"] #database
+        tb = db["other_data"]
+        self.bot.scheduleData = tb.find({"name": "scheduleTask"})
+        print(f"\n\n----------------\n{self.bot.scheduleData}\n------------\n\n")
+    
     
     @commands.group(case_insensitive = True)
     async def schedule(self, ctx):
@@ -112,15 +119,6 @@ class Schedule(commands.Cog):
                     await channel.send(message)
                     self.bot.scheduleDone = True
                 self.bot.scheduleData.pop(dateTimeNow)
-                
-                
-    @timeCheck.before_loop
-    async def before_check(self):
-        con_fibu = pymongo.MongoClient(os.getenv("DB"))
-        db = con_fibu["fibu"] #database
-        tb = db["other_data"]
-        self.bot.scheduleData = tb.find({"name": "scheduleTask"})
-        print(f"\n\n----------------\n{self.bot.scheduleData}\n------------\n\n")
 
 
 def setup(bot):
