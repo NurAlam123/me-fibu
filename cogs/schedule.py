@@ -65,7 +65,7 @@ class Schedule(commands.Cog):
                         else:
                             guild_id = ctx.guild.id
                             channel_id = channel.id
-                            message = userMessage
+                            message = userMessage.content
                             time = userTime
                             dataFormat = {
                                 "guild_id": guild_id,
