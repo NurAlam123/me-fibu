@@ -15,7 +15,6 @@ class Schedule(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
-        self.bot.scheduleDone = False
         self.db()
         self.timeCheck.start()
         
@@ -70,7 +69,8 @@ class Schedule(commands.Cog):
                             dataFormat = {
                                 "guild_id": guild_id,
                                 "channel_id": channel_id,
-                                "message": message
+                                "message": message,
+                                "done": False
                             }
                             if time in self.bot.scheduleData:
                                 timeData = self.bot.scheduleData.get(time)
@@ -101,6 +101,11 @@ class Schedule(commands.Cog):
     @tasks.loop(seconds = 1)
     async def timeCheck(self):
         if len(self.bot.scheduleData) >= 1:
+            ######
+            print(1)
+            ######
+            scheduleDone = self.bot.scheduleData["done"]
+            
             timeFormat = "%d-%m-%y %H:%M:%S"
             timeFormat_2 = "%d-%m-%y %H:%M"
             
@@ -111,12 +116,25 @@ class Schedule(commands.Cog):
             dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
             dateTimeNowCheck = f"{now.strftime(timeFormat_2)}:{dateTimeNowSec}"
             dateTimeNowCheck = datetime.strptime(dateTimeNowCheck, timeFormat).strftime(timeFormat)
-            
-            if self.bot.scheduleDone and dateTimeNowCheck in self.scheduleData:
-                self.bot.scheduleDone = False
-        
-            if dateTimeNow in self.bot.scheduleData and not self.bot.scheduleDone:
+            ######
+            print(2)
+            ######
+#            if scheduleDone and dateTimeNowCheck in self.scheduleData:
+#                scheduleDone = False
+                ######
+                print(4)
+                ######
+            #####
+            print(3)
+            #####
+            if dateTimeNow in self.bot.scheduleData and not scheduleDone:
+                ######
+                print(5)
+                ######
                 for scheduleData in self.bot.scheduleData[dateTimeNow]:
+                    ####
+                    print(7)
+                    #####
                     guild_id = scheduleData.get("guild_id")
                     channel_id = scheduleData.get("channel_id")
                     message = scheduleData.get("message")
@@ -125,10 +143,14 @@ class Schedule(commands.Cog):
                     channel = guild.get_channel(channel_id)
                         
                     await channel.send(message)
-                    self.bot.scheduleDone = True
+                    ######
+                    print(8)
+                    ######
                 self.bot.scheduleData.pop(dateTimeNow)
                 Schedule.tb.update_one({"name": "scheduleTask"}, {"$set": self.bot.scheduleData})
-                
+                ######
+                print(6)
+                ######
 
 
 def setup(bot):
