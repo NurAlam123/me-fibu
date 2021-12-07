@@ -65,7 +65,7 @@ class Schedule(commands.Cog):
                             guild_id = ctx.guild.id
                             channel_id = channel.id
                             message = userMessage.content
-                            time = userTime - 21600
+                            time = int(userTime) - 21600
                             dataFormat = {
                                 "guild_id": guild_id,
                                 "channel_id": channel_id,
@@ -106,7 +106,7 @@ class Schedule(commands.Cog):
             
             now = datetime.now()
             
-            dateTimeNow = now.timestamp()
+            dateTimeNow = int(now.timestamp())
 #            print(f"{dateTimeNow} → {self.bot.scheduleData}")
 #            nowSec = now.second + 1
 #            dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
