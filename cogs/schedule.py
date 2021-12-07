@@ -69,8 +69,7 @@ class Schedule(commands.Cog):
                             dataFormat = {
                                 "guild_id": guild_id,
                                 "channel_id": channel_id,
-                                "message": message,
-                                "done": False
+                                "message": message
                             }
                             if time in self.bot.scheduleData:
                                 timeData = self.bot.scheduleData.get(time)
@@ -104,7 +103,6 @@ class Schedule(commands.Cog):
             ######
             print(1)
             ######
-            scheduleDone = self.bot.scheduleData["done"]
             
             timeFormat = "%d-%m-%y %H:%M:%S"
             timeFormat_2 = "%d-%m-%y %H:%M"
@@ -124,7 +122,7 @@ class Schedule(commands.Cog):
             #####
             print(3)
             #####
-            if dateTimeNow in self.bot.scheduleData and not scheduleDone:
+            if dateTimeNow in self.bot.scheduleData:
                 ######
                 print(4)
                 ######
