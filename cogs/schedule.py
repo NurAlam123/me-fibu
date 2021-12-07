@@ -25,7 +25,7 @@ class Schedule(commands.Cog):
         if not task:
             self.bot.scheduleData = {}
         else:
-            self.bot.schedulData = task   
+            self.bot.scheduleData = task   
     
     
     @commands.group(case_insensitive = True)
@@ -111,7 +111,7 @@ class Schedule(commands.Cog):
             dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
             dateTimeNowCheck = f"{now.strftime(timeFormat_2)}:{dateTimeNowSec}"
             dateTimeNowCheck = datetime.strptime(dateTimeNowCheck, timeFormat).strftime(timeFormat)
-        
+            
             if self.bot.scheduleDone and dateTimeNowCheck in self.scheduleData:
                 self.bot.scheduleDone = False
         
@@ -132,5 +132,4 @@ class Schedule(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Schedule(bot))
-        
+    bot.add_cog(Schedule(bot))  
