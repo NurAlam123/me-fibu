@@ -121,19 +121,16 @@ class Schedule(commands.Cog):
             ######
 #            if scheduleDone and dateTimeNowCheck in self.scheduleData:
 #                scheduleDone = False
-                ######
-                print(4)
-                ######
             #####
             print(3)
             #####
             if dateTimeNow in self.bot.scheduleData and not scheduleDone:
                 ######
-                print(5)
+                print(4)
                 ######
                 for scheduleData in self.bot.scheduleData[dateTimeNow]:
                     ####
-                    print(7)
+                    print(6)
                     #####
                     guild_id = scheduleData.get("guild_id")
                     channel_id = scheduleData.get("channel_id")
@@ -144,12 +141,12 @@ class Schedule(commands.Cog):
                         
                     await channel.send(message)
                     ######
-                    print(8)
+                    print(7)
                     ######
                 self.bot.scheduleData.pop(dateTimeNow)
                 Schedule.tb.update_one({"name": "scheduleTask"}, {"$set": self.bot.scheduleData})
                 ######
-                print(6)
+                print(5)
                 ######
 
 
