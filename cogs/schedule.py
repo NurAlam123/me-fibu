@@ -51,7 +51,7 @@ class Schedule(commands.Cog):
                     dateTime = userDateTime.content.strip()
                     timeFormat = "%d-%m-%y %H:%M:%S"
                     try:
-                        userTime = datetime.strptime(dateTime, timeFormat).strftime(timeFormat)
+                        userTime = datetime.strptime(dateTime, timeFormat).timestamp()
                     except:
                         await ctx.send("<:redtickbadge:854250345113714688> **Wrong format!!**\nSend time in correct format...")
                     else:
@@ -65,7 +65,7 @@ class Schedule(commands.Cog):
                             guild_id = ctx.guild.id
                             channel_id = channel.id
                             message = userMessage.content
-                            time = userTime
+                            time = userTime - 21600
                             dataFormat = {
                                 "guild_id": guild_id,
                                 "channel_id": channel_id,
@@ -106,8 +106,8 @@ class Schedule(commands.Cog):
             
             now = datetime.now()
             
-            dateTimeNow = now.strftime(timeFormat)
-            print(f"{dateTimeNow} → {self.bot.scheduleData}")
+            dateTimeNow = now.timestamp()
+#            print(f"{dateTimeNow} → {self.bot.scheduleData}")
 #            nowSec = now.second + 1
 #            dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
 #            dateTimeNowCheck = f"{now.strftime(timeFormat_2)}:{dateTimeNowSec}"
