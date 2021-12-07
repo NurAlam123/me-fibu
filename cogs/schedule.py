@@ -100,28 +100,22 @@ class Schedule(commands.Cog):
     @tasks.loop(seconds = 1)
     async def timeCheck(self):
         if len(self.bot.scheduleData) >= 1:
-            ######
-            print(1)
-            ######
             
             timeFormat = "%d-%m-%y %H:%M:%S"
-            timeFormat_2 = "%d-%m-%y %H:%M"
+            #timeFormat_2 = "%d-%m-%y %H:%M"
             
             now = datetime.now()
             
             dateTimeNow = now.strftime(timeFormat)
-            nowSec = now.second + 1
-            dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
-            dateTimeNowCheck = f"{now.strftime(timeFormat_2)}:{dateTimeNowSec}"
-            dateTimeNowCheck = datetime.strptime(dateTimeNowCheck, timeFormat).strftime(timeFormat)
-            ######
-            print(2)
-            ######
+            print(f"{dateTimeNow} → {self.bot.scheduleData}")
+#            nowSec = now.second + 1
+#            dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
+#            dateTimeNowCheck = f"{now.strftime(timeFormat_2)}:{dateTimeNowSec}"
+#            dateTimeNowCheck = datetime.strptime(dateTimeNowCheck, timeFormat).strftime(timeFormat)
+#            
 #            if scheduleDone and dateTimeNowCheck in self.scheduleData:
 #                scheduleDone = False
-            #####
-            print(3)
-            #####
+
             if dateTimeNow in self.bot.scheduleData:
                 ######
                 print(4)
