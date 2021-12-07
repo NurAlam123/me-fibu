@@ -65,7 +65,7 @@ class Schedule(commands.Cog):
                             guild_id = ctx.guild.id
                             channel_id = channel.id
                             message = userMessage.content
-                            time = int(userTime) - 21600
+                            time = str(int(userTime) - 21600)
                             dataFormat = {
                                 "guild_id": guild_id,
                                 "channel_id": channel_id,
@@ -96,17 +96,18 @@ class Schedule(commands.Cog):
                         message = scheduleData.get("message")
                         dataFormat = f"Time: {time}\nGuild: {guild_id}\nChannel: {channel_id}\nMessage: {message}"
                         await ctx.send(dataFormat)
+        else:
+            await ctx.send("Empty!!")
     
     @tasks.loop(seconds = 1)
     async def timeCheck(self):
         if len(self.bot.scheduleData) >= 1:
             
             timeFormat = "%d-%m-%y %H:%M:%S"
-            #timeFormat_2 = "%d-%m-%y %H:%M"
             
             now = datetime.now()
             
-            dateTimeNow = int(now.timestamp())
+            dateTimeNow = str(int(now.timestamp()))
 #            print(f"{dateTimeNow} → {self.bot.scheduleData}")
 #            nowSec = now.second + 1
 #            dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
@@ -117,13 +118,7 @@ class Schedule(commands.Cog):
 #                scheduleDone = False
 
             if dateTimeNow in self.bot.scheduleData:
-                ######
-                print(4)
-                ######
                 for scheduleData in self.bot.scheduleData[dateTimeNow]:
-                    ####
-                    print(6)
-                    #####
                     guild_id = scheduleData.get("guild_id")
                     channel_id = scheduleData.get("channel_id")
                     message = scheduleData.get("message")
@@ -132,14 +127,9 @@ class Schedule(commands.Cog):
                     channel = guild.get_channel(channel_id)
                         
                     await channel.send(message)
-                    ######
-                    print(7)
-                    ######
+                    
                 self.bot.scheduleData.pop(dateTimeNow)
                 Schedule.tb.update_one({"name": "scheduleTask"}, {"$set": self.bot.scheduleData})
-                ######
-                print(5)
-                ######
 
 
 def setup(bot):
