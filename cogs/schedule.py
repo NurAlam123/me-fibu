@@ -108,14 +108,7 @@ class Schedule(commands.Cog):
             now = datetime.now()
             
             dateTimeNow = str(int(now.timestamp()))
-#            print(f"{dateTimeNow} → {self.bot.scheduleData}")
-#            nowSec = now.second + 1
-#            dateTimeNowSec = str(nowSec) if nowSec != 60 else "00"
-#            dateTimeNowCheck = f"{now.strftime(timeFormat_2)}:{dateTimeNowSec}"
-#            dateTimeNowCheck = datetime.strptime(dateTimeNowCheck, timeFormat).strftime(timeFormat)
-#            
-#            if scheduleDone and dateTimeNowCheck in self.scheduleData:
-#                scheduleDone = False
+
 
             if dateTimeNow in self.bot.scheduleData:
                 for scheduleData in self.bot.scheduleData[dateTimeNow]:
