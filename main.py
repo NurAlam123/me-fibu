@@ -7,8 +7,11 @@ import time
 from datetime import datetime
 import os
 import asyncio
-import pymongo
 import logging
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 #### logging [recommended]####
@@ -28,16 +31,18 @@ bot.remove_command("help")
 
 d_c.DiscordComponents(bot)
 
+# Team
 bot.TEAM = [
-                            838836138537648149, # Nur
-                            664550550527803405, # Tamim
-                            728260210464129075, # Rishikesh
-                            693375549686415381, # Soren
-                            555452986885668886 # Karim
-                        ] # our team's discord ids
-bot.version = 'v0.4.0'
+    838836138537648149, # Nur
+    664550550527803405, # Tamim
+    728260210464129075, # Rishikesh
+    693375549686415381, # Soren
+    555452986885668886 # Karim
+] # our team's discord ids
 
+bot.version = 'v0.4.1'
 
+# on ready
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="!fibu help | Fibu | Programming Hero"))
@@ -48,13 +53,13 @@ async def on_ready():
 # ping
 @bot.command()
 async def ping(ctx):
-    msg = discord.Embed(title="Pong 🏓", description=f"{round(bot.latency*1000)} _ms_!",color=0xffdf08)
+    msg = discord.Embed(title="Pong :ping_pong:", description=f"{round(bot.latency*1000)} _ms_!", color=0xffdf08)
     await ctx.send(embed=msg)
 
 # fibu
 @bot.listen()
 async def on_message(message):
-    if message.content.lower().strip() == "!fibu":
+    if message.content.lower().strip() == "!fibu" or message.content.lower().strip() == f"<@{bot.user.id}>":
         await message.channel.send(f"Type `!fibu help` to get help message!!")
 
 # cogs load and unload
@@ -85,9 +90,10 @@ async def off(ctx,file):
             
             
 
-for files in os.listdir("./cogs"):
-    if files.endswith(".py") and files != "nqn.py":
-        bot.load_extension(f"cogs.{files[:-3]}")
+#for files in os.listdir("./cogs"):
+#    if files.endswith(".py") and files != "nqn.py":
+#        bot.load_extension(f"cogs.{files[:-3]}")
 
+bot.load_extension(f"cogs.fibu_dm")
 
 bot.run(token)
