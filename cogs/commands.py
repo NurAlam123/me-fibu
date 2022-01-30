@@ -24,23 +24,24 @@ class Command(commands.Cog):
         attachments = ctx.message.attachments
         files = None
         log_attach = ''
-        if msg:
-            if attachments:
-                files = []
-                for attachment in attachments:
-                    file = await attachment.to_file()
-                    log_attach += f'{attachment.url}\n'
-                    files.append(file)
-        elif attachments:
+#        if msg:
+#            if attachments:
+#                files = []
+#                for attachment in attachments:
+#                    file = await attachment.to_file()
+#                    log_attach += f'\n{attachment.url}\n'
+#                    files.append(file)
+        if attachments:
             files = []
             for attachment in attachments:
                 file = await attachment.to_file()
-                log_attach += f'{attachment.url}\n'
+                log_attach += f'\n{attachment.url}\n'
                 files.append(file)
-        await channel.send(msg, files= files)
+        
+        await channel.send(msg, files = files)
         log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}{log_attach}\n=========="
         log_channel = await self.bot.fetch_channel(802766376719876107)
-        await log_channel.send(log_format, files= files)
+        await log_channel.send(log_format)
 
     @commands.command()
     @has_permissions(administrator= True, manage_guild= True, manage_messages= True)
@@ -106,7 +107,7 @@ class Command(commands.Cog):
                     await ctx.send('Time out...\nYou took long time')
                     break
                 else:
-                    if len(replace_message.content) >=2000:
+                    if len(replace_message.content) >= 2000:
                         await ctx.send('Message character length is greater then 2000 or character limit\nTry again after reducing limit waiting for your messages for 5 min')
                     elif replace_message.content.lower().strip() == 'cancel':
                         await ctx.send('Process cancelled!!')
