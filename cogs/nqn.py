@@ -4,7 +4,7 @@ import discord
 import re
 
 
-### only server animated emojis
+# only server animated emojis
 class emoji(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,39 +16,45 @@ class emoji(commands.Cog):
         if ":" in message.content:
             user_message = message.content
             emotes = set(re.findall(r":\w+:", user_message))
-    
+
             em = False
             for emote in emotes:
-                server_emoji = utils.get(message.guild.emojis, name= emote.strip(':'))
+                server_emoji = utils.get(
+                    message.guild.emojis, name=emote.strip(':'))
                 if server_emoji:
                     if server_emoji.animated:
                         server_emoji = f"<a:{server_emoji.name}:{server_emoji.id}>"
-                        user_message = user_message.replace(emote, server_emoji)
+                        user_message = user_message.replace(
+                            emote, server_emoji)
                         em = True
                 else:
-                    emoji = utils.get(self.bot.emojis, name= emote.strip(":"))
+                    emoji = utils.get(self.bot.emojis, name=emote.strip(":"))
                     if emoji:
                         if emoji.animated:
-                            pre= 'a'
+                            pre = 'a'
                         else:
                             pre = ''
                         server_emoji = f"<{pre}:{emoji.name}:{emoji.id}>"
-                        user_message = user_message.replace(emote, server_emoji)
+                        user_message = user_message.replace(
+                            emote, server_emoji)
                         em = True
-                        
+
             if em:
                 webhooks = await message.channel.webhooks()
-                webhook = utils.get(webhooks, name = "Server Emoji")
+                webhook = utils.get(webhooks, name="Server Emoji")
                 if webhook is None:
-                    webhook = await message.channel.create_webhook(name = "Server Emoji")
+                    webhook = await message.channel.create_webhook(name="Server Emoji")
                 if message.reference:
                     get_message = await message.channel.fetch_message(message.reference.message_id)
-                    em = discord.Embed(title= f"{message.author} replied {get_message.author}'s message", description= f"[Jump to that message!]({get_message.jump_url})")
-                    em.set_author(name= get_message.author.name, icon_url= get_message.author.avatar_url)
-                    await webhook.send(content= user_message, embed= em, username= message.author.name, avatar_url= message.author.avatar_url)
+                    em = discord.Embed(title=f"{message.author} replied {get_message.author}'s message",
+                                       description=f"[Jump to that message!]({get_message.jump_url})")
+                    em.set_author(name=get_message.author.name,
+                                  icon_url=get_message.author.avatar_url)
+                    await webhook.send(content=user_message, embed=em, username=message.author.name, avatar_url=message.author.avatar_url)
                 else:
-                    await webhook.send(user_message,username = message.author.name, avatar_url = message.author.avatar_url)
+                    await webhook.send(user_message, username=message.author.name, avatar_url=message.author.avatar_url)
                 await message.delete()
 
+
 def setup(bot):
-	bot.add_cog(emoji(bot))
+    bot.add_cog(emoji(bot))
