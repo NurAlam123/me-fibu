@@ -146,26 +146,31 @@ class Command(commands.Cog):
 
     @commands.command(name="dm")
     @commands.has_permissions(administrator=True)
-    async def dm(self, ctx, member: discord.Member = None, *, msg=None):
+    async def dm(self, ctx, member: int = None, *, msg=None):
         if not member:
             await ctx.send('Please mention a member...')
         elif not msg:
             await ctx.send('Please provide a message...')
         else:
-            attachments = ctx.message.attachments
-            files = None
-            log_attach = ''
-            if attachments:
-                files = []
-                for attachment in attachments:
-                    file = await attachment.to_file()
-                    log_attach += f'\n{attachment.url}\n'
-                    files.append(file)
-            await member.send(msg, files=files)
-            await ctx.send('Message sent successfully...')
-            log_format = f"========== DM Message Log ==========\n**From:** `{ctx.author}`\n**UserID:** {ctx.author.id}\n**Server:** {ctx.message.guild.name}\n**Channel:** {ctx.message.channel}\n**To:** {member}\n**UserID:** {member.id}\nMessage: {msg}{log_attach}\n===================="
-            log_channel = await self.bot.fetch_channel(938085689772355594)
-            await log_channel.send(log_format)
+            try:
+                member = await self.bot.fetch_user(member)
+            except:
+                await ctx.send('Member Not Found!\nPlease provide a valid user id...')
+            else:
+                attachments = ctx.message.attachments
+                files = None
+                log_attach = ''
+                if attachments:
+                    files = []
+                    for attachment in attachments:
+                        file = await attachment.to_file()
+                        log_attach += f'\n{attachment.url}\n'
+                        files.append(file)
+                await member.send(msg, files=files)
+                await ctx.send('Message sent successfully...')
+                log_format = f"========== DM Message Log ==========\n**From:** `{ctx.author}`\n**UserID:** {ctx.author.id}\n**Server:** {ctx.message.guild.name}\n**Channel:** {ctx.message.channel}\n**To:** {member}\n**UserID:** {member.id}\nMessage: {msg}{log_attach}\n===================="
+                log_channel = await self.bot.fetch_channel(938085689772355594)
+                await log_channel.send(log_format)
 
 
 # delete message
