@@ -130,6 +130,7 @@ class Command(commands.Cog):
 
 # quotes
 
+
     @commands.command()
     async def quote(self, ctx, *, arg=None):
         if not arg:
@@ -166,14 +167,43 @@ class Command(commands.Cog):
                         file = await attachment.to_file()
                         log_attach += f'\n{attachment.url}\n'
                         files.append(file)
+
+                await ctx.message.delete()
                 await member.send(msg, files=files)
                 await ctx.send('Message sent successfully...')
                 log_format = f"========== DM Message Log ==========\n**From:** `{ctx.author}`\n**UserID:** {ctx.author.id}\n**Server:** {ctx.message.guild.name}\n**Channel:** {ctx.message.channel}\n**To:** {member}\n**UserID:** {member.id}\nMessage: {msg}{log_attach}\n===================="
                 log_channel = await self.bot.fetch_channel(938085689772355594)
                 await log_channel.send(log_format)
 
+    @commands.command(name="bndm")
+    @commands.has_permissions(administrator=True)
+    async def bndm(self, ctx, member: int = None, *, msg=None):
+        if not member:
+            await ctx.send('Please mention a member...')
+        elif not msg:
+            await ctx.send('Please provide a message...')
+        else:
+            try:
+                member = await self.bot.fetch_user(member)
+            except:
+                await ctx.send('Member Not Found!\nPlease provide a valid user id...')
+            else:
+                embed_msg = discord.Embed(
+                    title="Underage Ban from Hero Programmers", description=msg, color=0xfdb706)
+                embed_msg.set_image(
+                    url="https://media.discordapp.net/attachments/938133816097263686/938134127100702780/Under_Age_Ban_Message.png")
+                embed_msg.set_footer(
+                    text=f"{ctx.author.name}", icon_url=ctx.author.avatar_url)
+                await ctx.message.delete()
+                await member.send(embed=embed_msg)
+                await ctx.send('Message sent successfully...')
+                log_format = f"========== Under Age Ban DM Message Log ==========\n**From:** `{ctx.author}`\n**UserID:** {ctx.author.id}\n**Server:** {ctx.message.guild.name}\n**Channel:** {ctx.message.channel}\n**To:** {member}\n**UserID:** {member.id}\nMessage: {msg}\n===================="
+                log_channel = await self.bot.fetch_channel(938085689772355594)
+                await log_channel.send(log_format)
+
 
 # delete message
+
 
     @commands.command()
     @has_permissions(administrator=True, manage_guild=True, manage_roles=True, manage_messages=True)

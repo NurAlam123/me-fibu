@@ -9,9 +9,9 @@ import os
 import asyncio
 import logging
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-# load_dotenv()
+load_dotenv()
 
 
 #### logging [recommended]####
@@ -96,10 +96,10 @@ async def off(ctx, file):
         await ctx.send("You don't have the permission to do that!!")
 
 
-for files in os.listdir("./cogs"):
-    if files.endswith(".py") and files != "nqn.py":
-        bot.load_extension(f"cogs.{files[:-3]}")
+# for files in os.listdir("./cogs"):
+#     if files.endswith(".py") and files != "nqn.py":
+#         bot.load_extension(f"cogs.{files[:-3]}")
 
-# bot.load_extension(f"cogs.commands")
+bot.load_extension(f"cogs.commands")
 
 bot.run(token)
