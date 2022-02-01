@@ -9,18 +9,19 @@ import random
 import pymongo
 import os
 
+
 class Command(commands.Cog):
-    def __init__(self,client):
+    def __init__(self, client):
         self.bot = client
 
-#echo
+# echo
     @commands.command()
-    @has_permissions(administrator= True, manage_guild= True, manage_messages= True)
-    async def echo(self, ctx, channel: typing.Optional[discord.TextChannel] = None, *, msg= None):
+    @has_permissions(administrator=True, manage_guild=True, manage_messages=True)
+    async def echo(self, ctx, channel: typing.Optional[discord.TextChannel] = None, *, msg=None):
         await ctx.message.delete()
         if not channel:
             channel = ctx.channel
-        
+
         attachments = ctx.message.attachments
         files = None
         log_attach = ''
@@ -37,15 +38,15 @@ class Command(commands.Cog):
                 file = await attachment.to_file()
                 log_attach += f'\n{attachment.url}\n'
                 files.append(file)
-        
-        await channel.send(msg, files = files)
+
+        await channel.send(msg, files=files)
         log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}{log_attach}\n=========="
         log_channel = await self.bot.fetch_channel(802766376719876107)
         await log_channel.send(log_format)
 
     @commands.command()
-    @has_permissions(administrator= True, manage_guild= True, manage_messages= True)
-    async def echoin(self, ctx, guild = None, channel = None, *, msg= None):
+    @has_permissions(administrator=True, manage_guild=True, manage_messages=True)
+    async def echoin(self, ctx, guild=None, channel=None, *, msg=None):
         if isinstance(ctx.message.channel, discord.channel.DMChannel):
             attachments = ctx.message.attachments
             files = None
@@ -75,14 +76,14 @@ class Command(commands.Cog):
                     log_attach += f'{attachment.url}\n'
                     files.append(file)
             if msg or attachments:
-                await channel.send(msg, files= files)
+                await channel.send(msg, files=files)
                 log_format = f"==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\nMessage: {ctx.message.content}{log_attach}\n=========="
                 log_channel = await self.bot.fetch_channel(802766376719876107)
-                await log_channel.send(log_format, files= files)
-            
+                await log_channel.send(log_format, files=files)
+
 # edit message
     @commands.command()
-    @has_permissions(administrator= True, manage_guild= True)
+    @has_permissions(administrator=True, manage_guild=True)
     async def edit(self, ctx, channel: typing.Optional[discord.TextChannel], message_id: int):
         if not channel:
             channel = ctx.channel
@@ -91,18 +92,20 @@ class Command(commands.Cog):
             await ctx.send('This is not my message so I can\'t edit it')
         else:
             message_content = message.content
-            message_content = discord.utils.escape_markdown(message_content, as_needed= True) # escape markdown
-            message_content = discord.utils.escape_mentions(message_content) # escape mentions
+            message_content = discord.utils.escape_markdown(
+                message_content, as_needed=True)  # escape markdown
+            message_content = discord.utils.escape_mentions(
+                message_content)  # escape mentions
             attachments = message.attachments
             files = []
             for i in attachments:
                 file = await i.to_file()
                 files.append(file)
-            original_message = await ctx.send(f'{message_content}', files= files)
+            original_message = await ctx.send(f'{message_content}', files=files)
             await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.\n**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
             while True:
                 try:
-                    replace_message = await self.bot.wait_for('message', check= lambda msg: msg.author.id == ctx.author.id, timeout= 300)
+                    replace_message = await self.bot.wait_for('message', check=lambda msg: msg.author.id == ctx.author.id, timeout=300)
                 except asyncio.TimeoutError:
                     await ctx.send('Time out...\nYou took long time')
                     break
@@ -118,19 +121,19 @@ class Command(commands.Cog):
                         for i in attach:
                             message_content += f'\n{i.url}'
                         update = await ctx.send('Wait... Editing message!!')
-                        await message.edit(content= message_content)
-                        await update.edit(content= '<:greentickbadge:852127602373951519> Message successfully edited!!')
+                        await message.edit(content=message_content)
+                        await update.edit(content='<:greentickbadge:852127602373951519> Message successfully edited!!')
                         break
                     else:
                         await ctx.send('Put > at the beginning of the message...')
-        
 
 
-#quotes
+# quotes
+
     @commands.command()
-    async def quote(self, ctx, *, arg = None):
+    async def quote(self, ctx, *, arg=None):
         if not arg:
-            random_q = q.random_titles(max_titles = 1)[0]
+            random_q = q.random_titles(max_titles=1)[0]
             quote_text = random.choice(q.quotes(random_q))
             await ctx.send(f">>> {quote_text}\n	- *{random_q}*")
         else:
@@ -141,10 +144,35 @@ class Command(commands.Cog):
             except:
                 pass
 
+    @commands.command(name="dm")
+    @commands.has_permissions(administrator=True)
+    async def dm(self, ctx, member: discord.Member = None, *, msg=None):
+        if not member:
+            await ctx.send('Please mention a member...')
+        elif not msg:
+            await ctx.send('Please provide a message...')
+        else:
+            attachments = ctx.message.attachments
+            files = None
+            log_attach = ''
+            if attachments:
+                files = []
+                for attachment in attachments:
+                    file = await attachment.to_file()
+                    log_attach += f'\n{attachment.url}\n'
+                    files.append(file)
+            await member.send(msg, files=files)
+            await ctx.send('Message sent successfully...')
+            log_format = f"========== DM Message Log ==========\n**From:** `{ctx.author}`\n**UserID:** {ctx.author.id}\n**Server:** {ctx.message.guild.name}\n**Channel:** {ctx.message.channel}\n**To:** {member}\n**UserID:** {member.id}\nMessage: {msg}{log_attach}\n===================="
+            log_channel = await self.bot.fetch_channel(938085689772355594)
+            await log_channel.send(log_format)
+
+
 # delete message
+
     @commands.command()
-    @has_permissions(administrator= True, manage_guild= True, manage_roles= True, manage_messages= True)
-    async def clean(self, ctx, limit: int= 10, member: discord.Member= None):
+    @has_permissions(administrator=True, manage_guild=True, manage_roles=True, manage_messages=True)
+    async def clean(self, ctx, limit: int = 10, member: discord.Member = None):
         await ctx.message.delete()
         if limit > 100 or limit < 1:
             await ctx.send(f"Can't delete {limit} messages! My limit is from 1 to 100.")
@@ -155,18 +183,19 @@ class Command(commands.Cog):
                 check = check_msg
             else:
                 check = None
-            deleted = await ctx.channel.purge(limit= limit, check= check)
+            deleted = await ctx.channel.purge(limit=limit, check=check)
             count = len(deleted)
             msg = await ctx.send(f"{count} messages deleted!!")
             await asyncio.sleep(3)
             await msg.delete()
             ### log update ###
-            log_format = f':warning: ️Clean command used by **{ctx.author}**\n**UserID:** {ctx.author.id}\nServer: {ctx.guild}\n**Limit:** {limit}\n**Deleted**: {count}'
+            log_format = f':warning: Clean command used by **{ctx.author}**\n**UserID:** {ctx.author.id}\nServer: {ctx.guild}\n**Limit:** {limit}\n**Deleted**: {count}'
             log_channel = await self.bot.fetch_channel(796371191837229098)
             await log_channel.send(log_format)
-    
-    @commands.command(name= "revive")
-    @has_permissions(manage_messages = True)
+
+# revive ping command
+    @commands.command(name="revive")
+    @has_permissions(manage_messages=True)
     async def revive(self, ctx):
         await ctx.message.delete()
         role_id = None
@@ -174,7 +203,7 @@ class Command(commands.Cog):
             role_id = 874979840741244959
         elif ctx.guild.id == 550676428040044574:
             role_id = 867668660247592980
-            
+
         if role_id:
             await ctx.send(f"<@&{role_id}>")
             log_format = f"========== Revive Ping Log ==========\nUser: `{ctx.author}`\nName: {ctx.author.name}\nID: {ctx.author.id}\nServer: {ctx.message.guild.name}\nChannel: {ctx.message.channel}\n===================="
@@ -217,7 +246,7 @@ class Command(commands.Cog):
 #    async def _error(self,ctx,error):
 #        if isinstance(error,commands.MissingPermissions):
 #            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-#    
+#
 #    @removeSwap.error
 #    async def _error(self,ctx,error):
 #        if isinstance(error,commands.MissingPermissions):
@@ -225,20 +254,22 @@ class Command(commands.Cog):
 
 ### Error Handling ###
     @clean.error
-    async def _error(self, ctx, error):
-        if isinstance(error,commands.MissingPermissions):
+    async def _clean_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+
     @echo.error
-    async def _error(self, ctx, error):
-        if isinstance(error,commands.MissingPermissions):
+    async def _echo_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+
     @echoin.error
-    async def _error(self, ctx, error):
-        if isinstance(error,commands.MissingPermissions):
+    async def _echoin_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
-    
+
     @edit.error
-    async def _error(self, ctx, error):
+    async def _edit_error(self, ctx, error):
         if isinstance(error, commands.MessageNotFound):
             await ctx.send(f'Not found any message that associated with the message id in this server!')
         elif isinstance(error, commands.NoPrivateMessage):
@@ -255,12 +286,19 @@ class Command(commands.Cog):
         log = await self.bot.fetch_channel(855048645174755358)
         await log.send(f'Error in **Edit** command:\n{error}')
         raise error
-    
+
     @revive.error
-    async def _error(self, ctx, error):
+    async def _revive_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")   
-                
-                
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+
+    @dm.error
+    async def _dm_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"Hey {ctx.author.mention}, you don't have permissions to do that!")
+        # if isinstance():
+        #     pass
+
+
 def setup(bot):
     bot.add_cog(Command(bot))

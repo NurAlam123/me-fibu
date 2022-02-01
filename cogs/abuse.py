@@ -1,4 +1,5 @@
-import discord,sqlite3
+import discord
+import sqlite3
 from datetime import datetime as time
 from discord.ext import commands
 from discord.utils import get
@@ -8,12 +9,16 @@ import asyncio
 con_fibu = sqlite3.connect("data/fibu.db")
 c_fibu = con_fibu.cursor()
 
-dev = [680360098836906004,728260210464129075,664550550527803405,693375549686415381,555452986885668886]
+dev = [680360098836906004, 728260210464129075,
+       664550550527803405, 693375549686415381, 555452986885668886]
+
 
 class Abuse(commands.Cog):
-  
-  def __init__(self,client):
-    self.client=client
+
+    def __init__(self, client):
+        self.client = client
+
+
 '''
   warns = 0
   
@@ -65,5 +70,6 @@ class Abuse(commands.Cog):
       await ctx.send("Sorry... You haven't any permission to fo this!")
 '''
 
+
 def setup(bot):
-  bot.add_cog(Abuse(bot))
+    bot.add_cog(Abuse(bot))
