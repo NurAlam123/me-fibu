@@ -1,22 +1,26 @@
-from email import message
 import discord
 from discord.ext import commands
 import os
 import pymongo
 
-import re
 import asyncio
 
 
 class Chat(commands.Cog):
     def __init__(self, client):
         self.bot = client
+        self.data = Chat.offline_database()
 
-    def database():
+    def online_database():
         con_fibu = pymongo.MongoClient(os.getenv("DB"))
         db = con_fibu["fibu"]  # database
         tb = db["other_data"]  # table
         return tb
+
+    def offline_database():
+        tb = Chat.online_database()
+        data = tb.find_one({"name": "chat_info"})
+        return data
 
     @commands.command(name="chat_account")
     @commands.has_permissions(administrator=True)
@@ -24,159 +28,253 @@ class Chat(commands.Cog):
         if not member:
             member = ctx.author
 
-        tb = Chat.database()
+        tb = Chat.online_database()
         info = tb.find_one({"name": "chat_info"})
-        fibu_acc = info.get("fibu")
-        if fibu_acc:
-            await ctx.send("Do you really want to change the chat account? (y/n)")
+        guild_data = info.get(str(ctx.guild.id))
+        if guild_data:
+            chat_account = guild_data.get("fibu")
+            if chat_account:
+                await ctx.send("Do you really want to change the chat acoount? (y/n)")
 
-            def check(m):
-                return m.author == ctx.author and m.channel == ctx.channel
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=60)
-            except asyncio.TimeoutError:
-                await ctx.send("Timeout!!\nTry again.")
-            else:
-                if msg.content.lower() == "y":
-                    tb.update_one({"name": "chat_info"}, {
-                                  "$set": {"fibu": member.id}})
-                    await ctx.send(f"Chat account changed to: {member.mention}")
+                def check(m):
+                    return m.author == ctx.author and m.channel == ctx.channel
+                try:
+                    msg = await self.bot.wait_for('message', check=check, timeout=60)
+                except asyncio.TimeoutError:
+                    await ctx.send("Timeout!!\nTry again.")
                 else:
-                    await ctx.send("Canceled.")
+                    if msg.content.lower() == "y":
+                        guild_data["fibu"] = member.id
+                        data = {
+                            str(ctx.guild.id): {
+                                "fibu": member.id
+                            }
+                        }
+                        tb.update_one({"name": "chat_info"}, {
+                            "$set": data})
+                        await ctx.send(f"Chat account changed to: {member.mention}")
+                        self.data = Chat.offline_database()
+                    else:
+                        await ctx.send("Canceled.")
+            else:
+                data = {
+                    str(ctx.guild.id): {
+                        "fibu": member.id
+                    }
+                }
+                tb.update_one({"name": "chat_info"}, {
+                    "$set": data})
+                await ctx.send(f"Chat account set to: {member.mention}")
+                self.data = Chat.offline_database()
         else:
-            tb.update_one({"name": "chat_info"}, {"$set": {"fibu": member.id}})
+            data = {
+                str(ctx.guild.id): {
+                    "fibu": member.id
+                }
+            }
+            tb.update_one({"name": "chat_info"}, {
+                "$set": data})
             await ctx.send(f"Chat account set to: {member.mention}")
+            self.data = Chat.offline_database()
 
     @commands.command(name="chat_channel")
     @commands.has_permissions(administrator=True)
     async def chat_channel(self, ctx, channel: discord.TextChannel):
-        tb = Chat.database()
+        tb = Chat.online_database()
         info = tb.find_one({"name": "chat_info"})
-        chat_channel = info.get("channel")
-        if chat_channel:
-            await ctx.send("Do you really want to change the chat channel? (y/n)")
+        guild_data = info.get(str(ctx.guild.id))
+        if guild_data:
+            chat_channel = guild_data.get("channel")
+            if chat_channel:
+                await ctx.send("Do you really want to change the chat channel? (y/n)")
 
-            def check(m):
-                return m.author == ctx.author and m.channel == ctx.channel
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=60)
-            except asyncio.TimeoutError:
-                await ctx.send("Timeout!!\nTry again.")
-            else:
-                if msg.content.lower() == "y":
-                    tb.update_one({"name": "chat_info"}, {
-                                    "$set": {"channel": channel.id}})
-                    await ctx.send(f"Chat channel changed to: {channel.mention}")
+                def check(m):
+                    return m.author == ctx.author and m.channel == ctx.channel
+                try:
+                    msg = await self.bot.wait_for('message', check=check, timeout=60)
+                except asyncio.TimeoutError:
+                    await ctx.send("Timeout!!\nTry again.")
                 else:
-                    await ctx.send("Canceled.")
+                    if msg.content.lower() == "y":
+                        guild_data["channel"] = channel.id
+                        data = {
+                            str(ctx.guild.id): guild_data
+                        }
+                        tb.update_one({"name": "chat_info"}, {
+                            "$set": data})
+                        await ctx.send(f"Chat channel changed to: {channel.mention}")
+                        self.data = Chat.offline_database()
+                    else:
+                        await ctx.send("Canceled.")
+            else:
+                guild_data["channel"] = channel.id
+                data = {
+                    str(ctx.guild.id): guild_data
+                }
+                tb.update_one({"name": "chat_info"}, {
+                    "$set": data})
+                await ctx.send(f"Chat channel set to: {channel.mention}")
+                self.data = Chat.offline_database()
         else:
+            data = {
+                str(ctx.guild.id): {
+                    "channel": channel.id
+                }
+            }
             tb.update_one({"name": "chat_info"}, {
-                            "$set": {"channel": channel.id}})
+                "$set": data})
             await ctx.send(f"Chat channel set to: {channel.mention}")
+            self.data = Chat.offline_database()
 
-    @commands.command(name="chat")
-    async def chat(self, ctx, *, message):
-        tb = Chat.database()
+    @commands.command(name="chat_command")
+    @commands.has_permissions(administrator=True)
+    async def chat_command(self, ctx, channel: discord.TextChannel):
+        tb = Chat.online_database()
         info = tb.find_one({"name": "chat_info"})
-        fibu_acc_id = info.get("fibu")
-        chat_channel_id = info.get("channel")
-        if not fibu_acc_id:
-            await ctx.send("First link your account with me by typing\n```\n!fibu chat_account [member]\n```")
-        elif not chat_channel_id:
-            await ctx.send("First link a channel where I should chat. Type\n```\n!fibu chat_channel <channel>\n```")
+        guild_data = info.get(str(ctx.guild.id))
+        if guild_data:
+            chat_channel = guild_data.get("command")
+            if chat_channel:
+                await ctx.send("Do you really want to change the chat command channel? (y/n)")
+
+                def check(m):
+                    return m.author == ctx.author and m.channel == ctx.channel
+                try:
+                    msg = await self.bot.wait_for('message', check=check, timeout=60)
+                except asyncio.TimeoutError:
+                    await ctx.send("Timeout!!\nTry again.")
+                else:
+                    if msg.content.lower() == "y":
+                        guild_data["command"] = channel.id
+                        data = {
+                            str(ctx.guild.id): guild_data
+                        }
+                        tb.update_one({"name": "chat_info"}, {
+                            "$set": data})
+                        await ctx.send(f"Chat command channel changed to: {channel.mention}")
+                        self.data = Chat.offline_database()
+                    else:
+                        await ctx.send("Canceled.")
+            else:
+                guild_data["command"] = channel.id
+                data = {
+                    str(ctx.guild.id): guild_data
+                }
+                tb.update_one({"name": "chat_info"}, {
+                    "$set": data})
+                await ctx.send(f"Chat command channel set to: {channel.mention}")
+                self.data = Chat.offline_database()
         else:
-            if fibu_acc_id == ctx.author.id:
-                ref_message = ctx.message.reference
-                if ref_message:
-                    ref_message_id = ref_message.message_id
-                    ref_message_obj = await ctx.channel.fetch_message(ref_message_id)
-                    ref_message_content = ref_message_obj.content.replace("!fibu chat ", "").lstrip("> ")
-                    chat_channel = ctx.guild.get_channel(chat_channel_id)
+            data = {
+                str(ctx.guild.id): {
+                    "command": channel.id
+                }
+            }
+            tb.update_one({"name": "chat_info"}, {
+                "$set": data})
+            await ctx.send(f"Chat command channel set to: {channel.mention}")
+            self.data = Chat.offline_database()
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        data = self.data
+        guild_data = data.get(f"{message.guild.id}")
+        if guild_data:
+            fibu_account = guild_data.get("fibu")
+            chat_channel_id = guild_data.get("channel")
+            command_channel = guild_data.get("command")
+            if command_channel == message.channel.id:
+                if fibu_account == message.author.id:
+                    if message.content.lower().startswith("!fibu ") or message.content.lower().startswith("!f "):
+                        return
+
+                    ref_message = message.reference
+                    if ref_message:
+                        ref_message_id = ref_message.message_id
+                        ref_message_obj = await message.channel.fetch_message(ref_message_id)
+                        ref_message_content = ref_message_obj.content
+                        chat_channel = message.guild.get_channel(
+                            chat_channel_id)
+                        channel_messages = await chat_channel.history(limit=100).flatten()
+                        for channel_message in channel_messages:
+                            if channel_message.content == ref_message_content:
+                                await channel_message.reply(message.content)
+                                break
+                    else:
+                        chat_channel = message.guild.get_channel(
+                            chat_channel_id)
+                        await chat_channel.send(message.content)
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        data = self.data
+        guild_data = data.get(f"{before.guild.id}")
+        if guild_data:
+            fibu_account = guild_data.get("fibu")
+            chat_channel_id = guild_data.get("channel")
+            command_channel = guild_data.get("command")
+            if command_channel == before.channel.id:
+                if fibu_account == before.author.id:
+                    chat_channel = before.guild.get_channel(
+                        chat_channel_id)
                     channel_messages = await chat_channel.history(limit=100).flatten()
                     for channel_message in channel_messages:
-                        if channel_message.content == ref_message_content:
-                            await channel_message.reply(message)
+                        if channel_message.content == before.content:
+                            await channel_message.edit(content=after.content)
                             break
-                else:
-                    chat_channel = ctx.guild.get_channel(chat_channel_id)
-                    await chat_channel.send(message)
-            else:
-                await ctx.send("You are not allowed to use this command.")
 
-    @commands.command(name="chatedit")
-    async def chatedit(self, ctx):
-        tb = Chat.database()
-        info = tb.find_one({"name": "chat_info"})
-        fibu_acc_id = info.get("fibu")
-        chat_channel_id = info.get("channel")
-        if not fibu_acc_id:
-            await ctx.send("First link your account with me by typing\n```\n!fibu chat_account [member]\n```")
-        elif not chat_channel_id:
-            await ctx.send("First link a channel where I should chat. Type\n```\n!fibu chat_channel <channel>\n```")
-        else:
-            if fibu_acc_id == ctx.author.id:
-                ref_message = ctx.message.reference
-                if ref_message:
-                    ref_message_id = ref_message.message_id
-                    ref_message_obj = await ctx.channel.fetch_message(ref_message_id)
-                    ref_message_content = ref_message_obj.content.replace("!fibu chat ", "").lstrip("> ")
-                    chat_channel = ctx.guild.get_channel(chat_channel_id)
-                    channel_messages = await chat_channel.history(limit=100).flatten()
-                    for channel_message in channel_messages:
-                        if channel_message.content == ref_message_content:
-                            message_content = channel_message.clean_content
-                            attachments = channel_message.attachments
-                            files = []
-                            for i in attachments:
-                                file = await i.to_file()
-                                files.append(file)
-                            original_message = await ctx.send(f'{message_content}', files=files)
-                            await original_message.reply('Here is the content of that message.\nCopy, edit and send it to replace you can also attachment files.\n**__Note:__ Write \'> \' at the beginning of the message**\nSend \'cancel\' to cancel the process!!\nYou have 5 minutes to response...')
-                            while True:
-                                try:
-                                    replace_message = await self.bot.wait_for('message', check=lambda msg: msg.author.id == ctx.author.id and ctx.channel.id == msg.channel.id, timeout=300)
-                                except asyncio.TimeoutError:
-                                    await ctx.send('Time out...\nYou took long time!!\nNow try again')
-                                    break
-                                else:
-                                    if len(replace_message.content) >= 2000:
-                                        await ctx.send('Message character length is greater then 2000 or character limit\nTry again after reducing limit waiting for your messages for 5 min')
-                                    elif replace_message.content.lower().strip() == 'cancel':
-                                        await ctx.send('Process cancelled!!')
-                                        break
-                                    elif replace_message.content.startswith('>'):
-                                        message_content = replace_message.content.lstrip('> ')
-                                        attach = replace_message.attachments
-                                        for i in attach:
-                                            message_content += f'\n{i.url}'
-                                        update = await message_content.reply('Wait... Editing message!!')
-                                        await channel_message.edit(content=message_content)
-                                        await update.edit(content='<:greentickbadge:852127602373951519> Message successfully edited!!\nNow to reply edited message by me you have to reply the message which I am currently repling to...')
-                                        break
-                                    else:
-                                        await ctx.send('Put > at the beginning of the message...')
-                            break
-                else:
-                    await ctx.send("Reply a message to edit.")
-            else:
-                await ctx.send("You are not allowed to edit message.")
-
+####### on_raw_message_edit ######
+        # data = self.data
+        # message_data = playload.data
+        # guild_id = message_data.get("guild_id")
+        # guild = self.bot.get_guild(guild_id)
+        # guild_data = data.get(guild_id)
+        # if guild_data:
+        #     fibu_account = guild_data.get("fibu")
+        #     chat_channel_id = guild_data.get("channel")
+        #     command_channel = guild_data.get("command")
+        #     channel_id = int(message_data.get("channel_id"))
+        #     if command_channel == channel_id:
+        #         print(7)
+        #         author_id = int(message_data.get("author").get("id"))
+        #         print(8)
+        #         print(message_data)
+        #         print()
+        #         print(playload.cached_message)
+        #         # before_content = message_data.get(
+        #         #     "referenced_message").get("content")
+        #         # print(9)
+        #         # after_content = message_data.get("content")
+        #         # print(10)
+        #         # if fibu_account == author_id:
+        #         #     print(11)
+        #         #     chat_channel = guild.get_channel(
+        #         #         chat_channel_id)
+        #         #     print(12)
+        #         #     channel_messages = await chat_channel.history(limit=100).flatten()
+        #         #     print(13)
+        #         #     for channel_message in channel_messages:
+        #         #         print(14, "loop")
+        #         #         if channel_message.content == before_content:
+        #         #             print(15)
+        #         #             await channel_message.edit(content=after_content)
+        #         #             print(16)
+        #         #             break
 
     ###### Error handling ######
-    @chat.error
-    async def _chat_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f"Message is missing!!\n```\n!fibu chat <message>\n```")
+
     @chat_account.error
     async def _chat_account_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"You don't have the permissions to do that!!")
+
     @chat_channel.error
     async def _chat_channel_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send(f"You don't have the permissions to do that!!")
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f"Channel is missing!!\n```\n!fibu chat_channel <channel>\n```")
+
 
 def setup(bot):
     bot.add_cog(Chat(bot))
