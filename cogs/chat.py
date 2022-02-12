@@ -46,9 +46,7 @@ class Chat(commands.Cog):
                     if msg.content.lower() == "y":
                         guild_data["fibu"] = member.id
                         data = {
-                            str(ctx.guild.id): {
-                                "fibu": member.id
-                            }
+                            str(ctx.guild.id): guild_data
                         }
                         tb.update_one({"name": "chat_info"}, {
                             "$set": data})
@@ -57,10 +55,9 @@ class Chat(commands.Cog):
                     else:
                         await ctx.send("Canceled.")
             else:
+                guild_data["fibu"] = member.id
                 data = {
-                    str(ctx.guild.id): {
-                        "fibu": member.id
-                    }
+                    str(ctx.guild.id): guild_data
                 }
                 tb.update_one({"name": "chat_info"}, {
                     "$set": data})
