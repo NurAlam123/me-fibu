@@ -247,10 +247,8 @@ class Youtube(commands.Cog):
         channel = await self.bot.fetch_channel(channelId)
         await channel.send(f"{text}\n{ytLink}")
 
-    @tasks.loop(seconds=30.0, count=10)
+    @tasks.loop(seconds=600.0)
     async def check_video(self):
-        print("Checking")
-        j = 0
         guilds_data = self.ytData
         for guild_id in guilds_data:
             guild_data = guilds_data[guild_id]
