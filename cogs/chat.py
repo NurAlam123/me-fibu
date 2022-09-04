@@ -175,7 +175,10 @@ class Chat(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         data = self.data
-        guild_data = data.get(f"{message.guild.id}")
+        try:
+            guild_data = data.get(f"{message.guild.id}")
+        except:
+            pass
         if guild_data:
             fibu_account = guild_data.get("fibu")
             chat_channel_id = guild_data.get("channel")

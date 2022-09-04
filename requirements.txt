@@ -11,4 +11,5 @@ whapi
 wikipedia-api
 beautifulsoup4
 pygsheets
-# discord-components
+pytube
+discord-components
