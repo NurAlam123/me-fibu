@@ -1,9 +1,12 @@
 import discord
 from datetime import datetime as time
-from discord.ext import commands
+from discord.ext import commands, tasks
+from discord.ext.commands import has_permissions
 from pyyoutube import Api
 import os
 import asyncio
+import pymongo
+from pytube import Channel
 
 API_KEY = os.getenv("YT_API")
 
@@ -11,10 +14,29 @@ yt_api = Api(api_key=API_KEY)
 
 
 class Youtube(commands.Cog):
+
+    con_fibu = pymongo.MongoClient(os.getenv("DB"))
+    db = con_fibu["fibu"]  # database
+    tb = db["other_data"]
+
     def __init__(self, client):
         self.bot = client
+        self.db()
 
-# YouTube video search
+        # self.yt_ch = "https://www.youtube.com/channel/UCfzA2NPW1UUm-Q6kpVkbN5w"
+        # self.last_video_id = None
+        self.check_video.start()
+
+    # database
+    def db(self):
+        yt_db = Youtube.tb.find_one({"name": "youtube_notify"})
+        data = yt_db.get("data")
+        if not data:
+            self.ytData = {}
+        else:
+            self.ytData = data
+
+    # YouTube video search
     @commands.group(aliases=["youtube", "utube"], case_insensitive=True)
     async def yt(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -157,7 +179,7 @@ class Youtube(commands.Cog):
                     page = + 1
                     await url_msg.edit(content=channel_urls[page-1])
                     await url_msg.remove_reaction(reaction, user)
-                    #page += 1
+                    # page += 1
                     reverse = False
                     out_emoji = False
                 elif reaction.emoji == emojis[0] and page > 1:
@@ -176,6 +198,88 @@ class Youtube(commands.Cog):
             msg = discord.Embed(title=":warning: Error :warning:",
                                 description="Oops.. Not found the channel..\nPlease search again by typing ```!fibu yt channel <channel name>```")
             await ctx.send(embed=msg)
+# YouTube channel notification
+
+    @yt.group(aliases=["alert"], case_insensitive=True)
+    async def notification(self, ctx):
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @notification.command()
+    @has_permissions(administrator=True, manage_roles=True, manage_messages=True)
+    async def add(self, ctx, channel_link: str = None, post_channel: discord.TextChannel = None, *, text: str = ""):
+
+        # arguments error => channel_link and post_channel are require
+        if not channel_link:
+            await ctx.send("Provide the youtube channel link!")
+        elif not post_channel:
+            await ctx.send("Mention the discord channel where you want to get the notification message!")
+        else:
+            # get recent video
+            channel_videos = Channel(channel_link).url_generator()
+            try:
+                first_video_id = str(
+                    channel_videos.__next__()).split("?v=")[-1]
+            except:
+                first_video_id = None
+
+            dataFormat = {
+                "ytChannel": channel_link,
+                "postChannel": str(post_channel.id),
+                "textFormat": text,
+                "lastVideoID": first_video_id
+            }
+
+            get_guild_data = self.ytData.get(f"{ctx.guild.id}")
+
+            if not get_guild_data:
+                self.ytData[f"{ctx.guild.id}"] = [dataFormat]
+                self.tb.update_one({"name": "youtube_notify"}, {
+                                   "$set": {"data": self.ytData}})
+
+            else:
+                self.ytData[f"{ctx.guild.id}"].append(dataFormat)
+                self.tb.update_one({"name": "youtube_notify"}, {
+                                   "$set": {"data": self.ytData}})
+
+    async def send_message(self, ytLink: str, guildId: int, channelId: int, text: str):
+        # guild = await self.bot.fetch_channel(guildId)
+        channel = await self.bot.fetch_channel(channelId)
+        await channel.send(f"{text}\n{ytLink}")
+
+    @tasks.loop(seconds=600.0)
+    async def check_video(self):
+        guilds_data = self.ytData
+        for guild_id in guilds_data:
+            guild_data = guilds_data[guild_id]
+            i = 0
+            for data in guild_data:
+                yt_channel = data.get("ytChannel")
+                lastVideoID = data.get("lastVideoID")
+                postChannel = data.get("postChannel")
+                text = data.get("text")
+                # get all videos of that channel
+                channel_videos = Channel(yt_channel).url_generator()
+                # get first videos of that channel and store video id
+                try:
+                    first_video_id = str(
+                        channel_videos.__next__()).split("?v=")[-1]
+                except:
+                    first_video_id = None
+
+                if not lastVideoID:
+                    self.ytData[guild_id][i]["lastVideoID"] = first_video_id
+                    self.tb.update_one({"name": "youtube_notify"}, {
+                        "$set": {"data": self.ytData}})
+
+                if (lastVideoID != first_video_id) and first_video_id:
+                    ytLink = f"https://youtube.com/watch?v={first_video_id}"
+                    await self.send_message(ytLink, guild_id, postChannel, text)
+
+                    self.ytData[guild_id][i]["lastVideoID"] = first_video_id
+                    self.tb.update_one({"name": "youtube_notify"}, {
+                        "$set": {"data": self.ytData}})
+                i += 1
 
 
 def setup(bot):
