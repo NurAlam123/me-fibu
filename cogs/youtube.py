@@ -236,11 +236,13 @@ class Youtube(commands.Cog):
                 self.ytData[f"{ctx.guild.id}"] = [dataFormat]
                 self.tb.update_one({"name": "youtube_notify"}, {
                                    "$set": {"data": self.ytData}})
+                await ctx.message.add_reaction("\N{White Heavy Check Mark}")
 
             else:
                 self.ytData[f"{ctx.guild.id}"].append(dataFormat)
                 self.tb.update_one({"name": "youtube_notify"}, {
                                    "$set": {"data": self.ytData}})
+                await ctx.message.add_reaction("\N{White Heavy Check Mark}")
 
     async def send_message(self, ytLink: str, guildId: int, channelId: int, text: str):
         # guild = await self.bot.fetch_channel(guildId)

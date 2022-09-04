@@ -41,7 +41,7 @@ bot.TEAM = [
     555452986885668886  # Karim
 ]  # our team's discord ids
 
-bot.version = 'v0.4.5'
+bot.version = 'v0.4.6'
 
 # on ready
 
